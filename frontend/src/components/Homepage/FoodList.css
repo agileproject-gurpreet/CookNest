@@ -232,6 +232,16 @@
   flex-direction: column;
   gap: 4px;
   flex: 1;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.food-details:hover {
+  color: #4CAF50;
+}
+
+.food-details:hover strong {
+  color: #4CAF50;
 }
 
 .food-grid .food-details {

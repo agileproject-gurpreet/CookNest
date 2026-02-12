@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
 import FoodList from "../components/Homepage/FoodList";
+import FoodDetail from "../components/FoodDetail/FoodDetail";
 import Order from "../components/Cart/Cart";
 import Payment from "../components/Payment/Payment";
 import OrderHistory from "../components/OrderHistory/OrdersHistory";
@@ -50,6 +51,18 @@ const routes = (user, handlers) => [
     element: (
       <ProtectedRoute user={user}>
         <FoodList
+          selectedFoods={handlers.selectedFoods}
+          onToggleFood={handlers.toggleFood}
+          onGoToCart={handlers.handleGoToCart}
+        />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/food/:id",
+    element: (
+      <ProtectedRoute user={user}>
+        <FoodDetail
           selectedFoods={handlers.selectedFoods}
           onToggleFood={handlers.toggleFood}
           onGoToCart={handlers.handleGoToCart}

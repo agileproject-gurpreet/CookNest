@@ -1,10 +1,12 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { getFoods } from "../../api";
 import Carousel from "../Carousel/Carousel";
 import "./FoodList.css";
 
 function FoodList({ selectedFoods, onToggleFood, onGoToCart }) {
+  const navigate = useNavigate();
   const [foods, setFoods] = useState([]);
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState("list");
@@ -52,6 +54,10 @@ function FoodList({ selectedFoods, onToggleFood, onGoToCart }) {
   const handleViewModeChange = useCallback((mode) => {
     setViewMode(mode);
   }, []);
+
+  const handleFoodClick = useCallback((foodId) => {
+    navigate(`/food/${foodId}`);
+  }, [navigate]);
 
   if (isLoading) {
     return (
@@ -129,7 +135,17 @@ function FoodList({ selectedFoods, onToggleFood, onGoToCart }) {
               onChange={() => onToggleFood(food)}
               checked={selectedFoods.some(f => f.id === food.id)}
             />
-            <div className="food-details">
+            <div 
+              className="food-details" 
+              onClick={() => handleFoodClick(food.id)}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleFoodClick(food.id);
+                }
+              }}
+            >
               <strong>{food.name}</strong>
               <span className="food-price">₹{food.price}</span>
             </div>

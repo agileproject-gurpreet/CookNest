@@ -34,7 +34,7 @@ INSERT INTO public.food_items(
 	name, description, price)
 	VALUES ('Red Pasta', 'Penne pasta with red sauce', 150),
 	('White Pasta', 'Penne pasta with white sauce', 150),
-	('Mixed Paste', 'Penne pasta with red and white sauce', 150);
+	('Mixed Pasta', 'Penne pasta with red and white sauce', 150);
 
 INSERT INTO public.food_items (
 id, name, description, price) VALUES (
