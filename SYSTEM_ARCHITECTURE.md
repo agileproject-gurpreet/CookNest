@@ -1,9 +1,8 @@
 # CookNest - System Architecture Documentation
 
-> **Version 2.0**  
-> **Last Updated:** February 11, 2026  
-> **Status:** Production-Ready Architecture
-
+> **Version 2.1**  
+> **Last Updated:** February 14, 2026  
+> **Status:** Complete for MVP  
 ---
 
 ## Table of Contents
@@ -11,103 +10,123 @@
 ### **PART I: INTRODUCTION & OVERVIEW**
 1. [Overview](#overview)
 2. [Architecture Pattern](#architecture-pattern)
-3. [Technology Stack](#technology-stack)
 
 ### **PART II: ARCHITECTURE VIEWS & DIAGRAMS**
-4. [C4 Model Architecture Views](#c4-model-architecture-views)
+3. [C4 Model Architecture Views](#c4-model-architecture-views)
    - [Level 1: System Context](#level-1-system-context)
    - [Level 2: Container Diagram](#level-2-container-diagram)
-   - [Level 3: Component Diagram (C4)](#level-3-component-diagram)
-5. Diagrams
-   - [Use Case Diagram](#use-case-diagram)
-   - [Class Diagram](#class-diagram)
-   - [Sequence Diagrams](#sequence-diagrams)
-   - [Activity Diagram](#activity-diagram)
-   - [State Diagram](#state-diagram)
-   - [Deployment Diagram](#deployment-diagram)
-   - [Component Diagram](#component-diagram-uml)
-   - [Package Diagram](#package-diagram)
-6. [Data Flow Diagrams](#data-flow-diagrams)
+   - [Level 3: Component Diagram](#level-3-component-diagram)
+4. [Technology Stack](#technology-stack)
 
 ### **PART III: SYSTEM DESIGN & APIs**
-7. [System Components](#system-components)
-8. [Data Architecture](#data-architecture)
-9. [API Architecture](#api-architecture)
-10. [API Documentation & Specifications](#api-documentation--specifications)
-11. [Architecture Decision Records](#architecture-decision-records)
+5. [System Components](#system-components)
+6. [Data Architecture](#data-architecture)
+   - [Database Schema](#database-schema)
+   - [Entity Relationship Diagram](#entity-relationship-diagram)
+   - [Table Descriptions](#table-descriptions)
+7. [API Architecture](#api-architecture)
+   - [API Endpoints](#api-endpoints)
+8. [Data Flow Diagrams](#data-flow-diagrams)
+   - [Level 0 DFD - Context Diagram](#level-0-dfd---context-diagram)
+   - [Level 1 DFD - System Processes](#level-1-dfd---system-processes)
+   - [Level 2 DFD - Detailed Order Processing](#level-2-dfd---detailed-order-processing)
 
-### **PART IV: SECURITY & COMPLIANCE**
-12. [Security Architecture](#security-architecture)
-13. [Access Control & Identity Management](#access-control--identity-management)
+### **PART IV: UML DIAGRAMS**
+9. [Use Case Diagram](#use-case-diagram)
+10. [Class Diagram](#class-diagram)
+11. [Sequence Diagrams](#sequence-diagrams)
+    - [User Registration Sequence](#user-registration-sequence)
+    - [Order Placement Sequence](#order-placement-sequence)
+    - [Authentication Flow Sequence](#authentication-flow-sequence)
+12. [Activity Diagram](#activity-diagram)
+13. [State Diagram](#state-diagram)
+    - [Order State Diagram](#order-state-diagram)
+    - [User Account State Diagram](#user-account-state-diagram)
+14. [Deployment Diagram](#deployment-diagram)
+15. [Package Diagram](#package-diagram)
 
-### **PART V: INFRASTRUCTURE & OPERATIONS**
-14. [Infrastructure Architecture](#infrastructure-architecture)
-15. [Monitoring and Observability](#monitoring-and-observability)
-16. [Disaster Recovery & Business Continuity](#disaster-recovery--business-continuity)
+### **PART V: SECURITY & COMPLIANCE**
+16. [Architecture Decision Records](#architecture-decision-records)
+17. [Security Architecture](#security-architecture)
+18. [Access Control & Identity Management](#access-control--identity-management)
 
-### **PART VI: QUALITY ASSURANCE & PERFORMANCE**
-17. [Testing Strategy](#testing-strategy)
-18. [Non-Functional Requirements](#non-functional-requirements)
+### **PART VI: INFRASTRUCTURE & OPERATIONS**
+19. [Infrastructure Architecture](#infrastructure-architecture)
+20. [Monitoring and Observability](#monitoring-and-observability)
+21. [Disaster Recovery & Business Continuity](#disaster-recovery--business-continuity)
 
-### **PART VII: GOVERNANCE & MANAGEMENT**
-19. [Change Management](#change-management)
-20. [Incident Response](#incident-response)
+### **PART VII: QUALITY ASSURANCE & PERFORMANCE**
+22. [Non-Functional Requirements](#non-functional-requirements)
+23. [Testing Strategy](#testing-strategy)
 
-### **PART VIII: REFERENCE MATERIALS**
-21. [Glossary](#glossary)
-22. [Appendices](#appendices)
+### **PART VIII: GOVERNANCE & MANAGEMENT**
+24. [Change Management](#change-management)
+25. [Incident Response](#incident-response)
+
+### **PART IX: API SPECIFICATIONS**
+26. [API Documentation & Specifications](#api-documentation--specifications)
+
+### **PART X: REFERENCE MATERIALS**
+27. [Glossary](#glossary)
+28. [Quick Reference Guide](#quick-reference-guide)
+29. [References & Further Reading](#references--further-reading)
+30. [Appendix: Diagram Legend](#appendix-diagram-legend)
+31. [Appendices](#appendices)
 
 ---
 
-### Quick Navigation by Role
+###  Quick Navigation by Role
 
 **Executives & Stakeholders**
-- Start with: [Overview](#overview), [Architecture Pattern](#architecture-pattern), [Technology Stack](#technology-stack)
+- Start with: [Overview](#overview) → [Architecture Pattern](#architecture-pattern) → [Technology Stack](#technology-stack)
+- Key metrics: [Non-Functional Requirements](#non-functional-requirements)
 
-**Developers**
-- Start with: [Architecture Pattern](#architecture-pattern), [System Components](#system-components), [API Documentation](#api-documentation--specifications)
+**Developers (New to Project)**
+- Start with: [Overview](#overview) → [System Components](#system-components) → [API Architecture](#api-architecture)
+- Implementation details: [Class Diagram](#class-diagram) → [API Documentation](#api-documentation--specifications)
 
-**Architects**
-- Start with: [C4 Model](#c4-model-architecture-views), [Architecture Decision Records](#architecture-decision-records), [Data Architecture](#data-architecture)
+**Software Architects**
+- Start with: [C4 Model](#c4-model-architecture-views) → [Architecture Pattern](#architecture-pattern)
+- Deep dive: [Data Architecture](#data-architecture) → [Architecture Decision Records](#architecture-decision-records)
+- Diagrams: [Class Diagram](#class-diagram) → [Sequence Diagrams](#sequence-diagrams)
 
 **Security Team**
-- Start with: [Security Architecture](#security-architecture), [Access Control & Identity Management](#access-control--identity-management)
+- Start with: [Security Architecture](#security-architecture) → [Access Control & Identity Management](#access-control--identity-management)
+- **Critical**: Review security warnings in [Overview](#overview) and [Technology Stack](#technology-stack)
 
 **DevOps/SRE**
-- Start with: [Infrastructure Architecture](#infrastructure-architecture), [Monitoring](#monitoring-and-observability), [Disaster Recovery](#disaster-recovery--business-continuity)
+- Start with: [Infrastructure Architecture](#infrastructure-architecture) → [Deployment Diagram](#deployment-diagram)
+- Monitoring: [Monitoring and Observability](#monitoring-and-observability)
+- DR Planning: [Disaster Recovery & Business Continuity](#disaster-recovery--business-continuity)
 
 **QA Engineers**
-- Start with: [Testing Strategy](#testing-strategy), [Non-Functional Requirements](#non-functional-requirements)
+- Start with: [Testing Strategy](#testing-strategy) → [Non-Functional Requirements](#non-functional-requirements)
+- Test scenarios: [Use Case Diagram](#use-case-diagram) → [Activity Diagram](#activity-diagram)
+
+**Data Engineers**
+- Start with: [Data Architecture](#data-architecture) → [Entity Relationship Diagram](#entity-relationship-diagram)
+- Flow analysis: [Data Flow Diagrams](#data-flow-diagrams)
+
+**Students/Learning**
+- Recommended path: [Overview](#overview) → [Architecture Pattern](#architecture-pattern) → [C4 Model](#c4-model-architecture-views) → [Class Diagram](#class-diagram) → [API Documentation](#api-documentation--specifications)
 
 ---
 
 # PART I: INTRODUCTION & OVERVIEW
 
 > **Purpose:** High-level overview, architecture patterns, technology choices, and implementation timeline
-
 ---
 
 ## Overview
 
 CookNest is a full-stack e-commerce application that connects users with local home-cooked food providers. The system follows a **layered architecture** pattern to ensure separation of concerns, maintainability, and scalability.
 
-### Core Features
-- User authentication and authorization
-- Food item browsing and search
-- Order placement and management
-- Payment processing (dummy gateway)
-- Order history tracking
-
-### System Characteristics
-
-| Aspect | Description |
-|--------|-------------|
-| **Type** | Web-based SaaS Platform |
-| **Architecture** | 3-Tier Layered (Presentation, Business Logic, Data) |
-| **Scale** | MVP: 500 users → Production: 50,000+ users |
-| **Deployment** | AWS Cloud (Multi-AZ, Auto-scaling) |
-| **Security** | Enterprise-grade (OAuth 2.0, JWT, Encryption at rest/transit) |
-| **Availability** | 99.9% uptime SLA |
+### Core Features (Current Implementation)
+-  User registration and login (simple authentication)
+-  Food item browsing (all items and by ID)
+-  Order placement with multiple items
+-  Order history viewing
+-  Payment processing (basic payment method field, no gateway integration)
 
 ---
 
@@ -235,10 +254,10 @@ The System Context diagram shows how CookNest fits into the world around it - wh
 │           │                                             │       │
 │           │      ┌──────────────────────────┐           │       │
 │           │      │                          │           │       │
-│           └─────▶│     CookNest System      │◀──────────┘       │
+│           └─────▶│     CookNest System      │◀──────────┘      │
 │                  │                          │                   │
 │                  │  ┌────────────────────┐  │                   │
-│                  │  │  Web Application   │  │◀──────────┐       │
+│                  │  │  Web Application   │  │◀──────────┐      │
 │                  │  │  (React + Express) │  │           │       │
 │                  │  └────────────────────┘  │  Manage   │       │
 │                  │                          │  users,   │       │
@@ -379,43 +398,43 @@ The Component diagram shows how the Backend API container is broken down into co
 │  │  │    User      │  │    Food      │  │    Order     │       │   │
 │  │  │  Controller  │  │  Controller  │  │  Controller  │       │   │
 │  │  │              │  │              │  │              │       │   │
-│  │  │ • register() │  │ • getFoods() │  │ • create()   │       │   │
-│  │  │ • login()    │  │ • search()   │  │ • getById()  │       │   │
-│  │  │ • getUser()  │  │ • getById()  │  │ • getByUser()│       │   │
+│  │  │ • register() │  │ • getFoods() │  │• placeOrder()│       │   │
+│  │  │ • login()    │  │ • getFoodById│  │ • getOrders()│       │   │
+│  │  │              │  │ ()           │  │              │       │   │
 │  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘       │   │
 │  │         │                 │                 │               │   │
 │  └─────────┼─────────────────┼─────────────────┼───────────────┘   │
 │            │                 │                 │                   │
-│            ▼                 ▼                 ▼                   │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                    Service Layer                            │   │
-│  │                (Business Logic Components)                  │   │
-│  │                                                             │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │   │
-│  │  │    User      │  │    Food      │  │    Order     │       │   │
-│  │  │   Service    │  │   Service    │  │   Service    │       │   │
-│  │  │              │  │              │  │              │       │   │
-│  │  │ • validate   │  │ • listItems()│  │ • calculate  │       │   │
-│  │  │   Credentials│  │ • filterBy() │  │   Total()    │       │   │
-│  │  │ • hashPwd()  │  │ • searchBy() │  │ • process    │       │   │
-│  │  │ • createUser │  │              │  │   Payment()  │       │   │
-│  │  └──────┬───────┘  └───────┬──────┘  └────────┬─────┘       │   │
-│  │         │                  │                  │             │   │
-│  └─────────┼──────────────────┼──────────────────┼─────────────┘   │
-│            │                  │                  │                 │
-│            ▼                  ▼                  ▼                 │
+│            ▼                 ▼                 │                   │
+│  ┌─────────────────────────────────────┐       │                   │
+│  │         Service Layer               │       │ (Order directly   │
+│  │     (Business Logic Components)     │       │  uses db.query)   │
+│  │                                     │       │                   │
+│  │  ┌──────────────┐  ┌──────────────┐ │       │                   │
+│  │  │    User      │  │    Food      │ │       │                   │
+│  │  │   Service    │  │   Service    │ │       │                   │
+│  │  │              │  │              │ │       │                   │
+│  │  │ • register() │  │• listFoodItem│ │       │                   │
+│  │  │ • login()    │  │  s()         │ │       │                   │
+│  │  │              │  │•getFoodItemBy│ │       │                   │
+│  │  │              │  │  Id()        │ │       │                   │
+│  │  └──────┬───────┘  └───────┬──────┘ │       │                   │
+│  │         │                  │        │       │                   │
+│  └─────────┼──────────────────┼────────┘       │                   │
+│            │                  │                │                   │
+│            ▼                  ▼                ▼                   │
 │  ┌─────────────────────────────────────────────────────────────┐   │
 │  │                  Repository Layer                           │   │
 │  │                (Data Access Components)                     │   │
 │  │                                                             │   │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │   │
-│  │  │    User      │  │    Food      │  │    Order     │       │   │
-│  │  │  Repository  │  │  Repository  │  │  Repository  │       │   │
+│  │  │    User      │  │    Food      │  │    db.js     │       │   │
+│  │  │  Repository  │  │  Repository  │  │  (Direct DB) │       │   │
 │  │  │              │  │              │  │              │       │   │
-│  │  │ • findByEmail│  │ • getAll()   │  │ • create()   │       │   │
-│  │  │ • create()   │  │ • findById() │  │ • findById() │       │   │
-│  │  │ • findById() │  │ • search()   │  │ • findByUser │       │   │
-│  │  │ • update()   │  │              │  │ • addItems() │       │   │
+│  │  │ • createUser │  │• getAllFood  │  │ • db.query() │       │   │
+│  │  │   ()         │  │  Items()     │  │   Used by    │       │   │
+│  │  │ • findByEmail│  │• getFoodItem │  │   Order      │       │   │
+│  │  │   ()         │  │  ById()      │  │   Controller │       │   │
 │  │  └──────┬───────┘  └───────┬──────┘  └────────┬─────┘       │   │
 │  │         │                  │                  │             │   │
 │  └─────────┼──────────────────┼──────────────────┼─────────────┘   │
@@ -440,42 +459,52 @@ The Component diagram shows how the Backend API container is broken down into co
 
 #### Component Details
 
+> **Note:** Reflects current implementation as of February 2026
+
 ##### API Routes Components
 | Component | Responsibility | Dependencies |
 |-----------|---------------|--------------|
-| userRoutes.js | Define user endpoints, route HTTP methods | userController |
-| foodRoutes.js | Define food endpoints, route HTTP methods | foodController |
-| orderRoutes.js | Define order endpoints, route HTTP methods | orderController |
+| userRoutes.js | Define user endpoints: POST /register, POST /login | userController |
+| foodRoutes.js | Define food endpoints: GET /, GET /:id | foodController |
+| orderRoutes.js | Define order endpoints: POST /, GET / | orderController |
 
 ##### Controller Components
 | Component | Key Methods | Responsibility |
 |-----------|-------------|----------------|
-| userController.js | register(), login(), getUser() | Handle HTTP request/response for users |
-| foodController.js | getFoods(), searchFoods(), getById() | Handle HTTP request/response for food items |
-| orderController.js | createOrder(), getOrder(), getUserOrders() | Handle HTTP request/response for orders |
+| userController.js | register(), login() | Handle HTTP request/response for user registration and authentication |
+| foodController.js | getFoods(), getFoodById() | Handle HTTP request/response for food catalog |
+| orderController.js | placeOrder(), getOrders() | Handle HTTP request/response for order management (directly uses db.query) |
 
 ##### Service Components
 | Component | Key Methods | Responsibility |
 |-----------|-------------|----------------|
-| userService.js | validateCredentials(), hashPassword(), createUser() | User business logic, authentication |
-| foodService.js | listFoodItems(), filterItems(), searchItems() | Food catalog business logic |
-| orderService.js (future) | calculateTotal(), processPayment(), createOrder() | Order processing business logic |
+| userService.js | register(), login() | User registration and authentication business logic |
+| foodService.js | listFoodItems(), getFoodItemById() | Food catalog business logic |
+| *No Order Service* | - | Order logic is in controller (planned for future refactoring) |
 
 ##### Repository Components
 | Component | Key Methods | Responsibility |
 |-----------|-------------|----------------|
-| userRepository.js | findByEmail(), create(), findById(), update() | User data access operations |
-| foodRepository.js | getAllFoodItems(), findById(), search() | Food data access operations |
-| orderRepository.js (future) | create(), findById(), findByUserId(), addItems() | Order data access operations |
+| userRepository.js | createUser(), findByEmail() | User data access operations |
+| foodRepository.js | getAllFoodItems(), getFoodItemById() | Food data access operations |
+| *No Order Repository* | - | Order uses direct db.query calls (planned for future refactoring) |
+
+##### Database Configuration
+| Component | Key Methods | Responsibility |
+|-----------|-------------|----------------|
+| db.js | query() | PostgreSQL connection pool and query execution |
 
 ---
 
 #### User Registration Flow
 
+> **Current Implementation:** Simple registration without password hashing or JWT tokens
+
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                        USER REGISTRATION FLOW                                │
 │                     End-to-End Request Processing                            │
+│                          Current Simple Implementation                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
     USER              WEB BROWSER         REACT SPA          EXPRESS API        DATABASE
@@ -486,8 +515,8 @@ The Component diagram shows how the Backend API container is broken down into co
      │ 2. Click Submit    │                   │                   │                 │
      │─────────────────►  │                   │                   │                 │
      │                    │                   │                   │                 │
-     │                    │ 3. POST /api/users/register          │                 │
-     │                    │    (name, email, password, phone)    │                 │
+     │                    │ 3. POST /api/users/register           │                 │
+     │                    │    (name, email, password)            │                 │
      │                    │───────────────────►                   │                 │
      │                    │                   │                   │                 │
      │                    │                   │ 4. axios.post()   │                 │
@@ -497,50 +526,50 @@ The Component diagram shows how the Backend API container is broken down into co
      │                    │                   │    │ CONTROLLER LAYER         │     │
      │                    │                   │    │ userController.register()│     │
      │                    │                   │    │ - Extract req.body       │     │
-     │                    │                   │    │ - Validate input fields  │     │
+     │                    │                   │    │ - Pass to service        │     │
      │                    │                   │    └──────────────┬───────────┘     │
      │                    │                   │                   │                 │
      │                    │                   │    ┌──────────────▼───────────┐     │
      │                    │                   │    │ SERVICE LAYER            │     │
-     │                    │                   │    │ userService.createUser() │     │
-     │                    │                   │    │ - Check email uniqueness │     │
-     │                    │                   │    │ - Hash password (bcrypt) │     │
-     │                    │                   │    │ - Sanitize data          │     │
+     │                    │                   │    │ userService.register()   │     │
+     │                    │                   │    │ - Call repository        │     │
      │                    │                   │    └──────────────┬───────────┘     │
      │                    │                   │                   │                 │
      │                    │                   │    ┌──────────────▼───────────┐     │
      │                    │                   │    │ REPOSITORY LAYER         │     │
-     │                    │                   │    │ userRepository.create()  │     │
-     │                    │                   │    │ - Build SQL query        │     │
+     │                    │                   │    │ userRepository.createUser│     │
+     │                    │                   │    │ - Build SQL INSERT       │     │
      │                    │                   │    │ - Prepare parameters     │     │
      │                    │                   │    └──────────────┬───────────┘     │
      │                    │                   │                   │                 │
      │                    │                   │                   │ 5. SQL Execute  │
      │                    │                   │                   │   INSERT INTO   │
-     │                    │                   │                   │   users(...)    │
+     │                    │                   │                   │   users(name,   │
+     │                    │                   │                   │   email,        │
+     │                    │                   │                   │   password)     │
+     │                    │                   │                   │   RETURNING *   │
      │                    │                   │                   │─────────────────►
      │                    │                   │                   │                 │
      │                    │                   │                   │ 6. Row Created  │
-     │                    │                   │                   │ (id, email,     │
-     │                    │                   │                   │  created_at)    │
+     │                    │                   │                   │ {id, name,      │
+     │                    │                   │                   │  email,         │
+     │                    │                   │                   │  password}      │
      │                    │                   │                   │◄─────────────────
      │                    │                   │                   │                 │
      │                    │                   │    ┌──────────────┴───────────┐     │
      │                    │                   │    │ REPOSITORY LAYER         │     │
-     │                    │                   │    │ - Map DB row to object   │     │
-     │                    │                   │    │ - Exclude password hash  │     │
+     │                    │                   │    │ - Return result.rows[0]  │     │
      │                    │                   │    └──────────────┬───────────┘     │
      │                    │                   │                   │                 │
      │                    │                   │    ┌──────────────▼───────────┐     │
      │                    │                   │    │ SERVICE LAYER            │     │
-     │                    │                   │    │ - Generate JWT token     │     │
-     │                    │                   │    │ - Prepare response       │     │
+     │                    │                   │    │ - Return user object     │     │
      │                    │                   │    └──────────────┬───────────┘     │
      │                    │                   │                   │                 │
      │                    │                   │    ┌──────────────▼───────────┐     │
      │                    │                   │    │ CONTROLLER LAYER         │     │
      │                    │                   │    │ - Send HTTP 201          │     │
-     │                    │                   │    │ - Set auth cookie        │     │
+     │                    │                   │    │ - JSON response          │     │
      │                    │                   │    └──────────────┬───────────┘     │
      │                    │                   │                   │                 │
      │                    │                   │ 7. Response 201   │                 │
@@ -561,11 +590,12 @@ The Component diagram shows how the Backend API container is broken down into co
      │                    │                                                         │
 
 ═══════════════════════════════════════════════════════════════════════════════════
-KEY OPERATIONS:
-  • Input Validation: Email format, password strength (min 8 chars)
-  • Password Hashing: bcrypt with salt rounds = 10
-  • JWT Generation: Expires in 24h, includes user_id, email, role
+KEY OPERATIONS (Current MVP Implementation):
+  • Input Validation: Basic validation in controller
+  • Password Storage: Plain text 
+  • Authentication: Simple email/password comparison (no JWT tokens yet)
   • Response Time: Target < 500ms (95th percentile)
+  
 ═══════════════════════════════════════════════════════════════════════════════════
 ```
 
@@ -728,80 +758,23 @@ ERROR HANDLING:
 
 ### Frontend Stack
 
-| Component | Technology | Version | Purpose |
-|-----------|-----------|---------|---------|
-| **Framework** | React | 18+ | UI component library |
-| **Build Tool** | Create React App / Vite | Latest | Development and build setup |
-| **HTTP Client** | Axios | 1.x | API communication |
-| **State Management** | React Context / Redux | - | Global state management |
-| **Routing** | React Router | 6.x | Client-side routing |
-| **Styling** | CSS Modules / Styled Components | - | Component styling |
+| Component | Technology | Version | Status | Purpose |
+|-----------|-----------|---------|--------|---------|
+| **Framework** | React | 18+ | ✅ | UI component library |
+| **Build Tool** | Create React App | Latest | ✅ | Development and build setup |
+| **HTTP Client** | Axios | 1.x | ✅ | API communication |
+| **State Management** | React useState/useContext | - | ✅ | Local state management |
+| **Routing** | React Router | 6.x | ✅ | Client-side routing |
+| **Styling** | CSS | - | ✅ | Component styling |
 
 ### Backend Stack
 
-| Component | Technology | Version | Purpose |
-|-----------|-----------|---------|---------|
-| **Runtime** | Node.js | 18 LTS | JavaScript runtime environment |
-| **Framework** | Express | 5.2.1 | Web application framework |
-| **Database Driver** | pg (node-postgres) | 8.18.0 | PostgreSQL client library |
-| **CORS** | cors | 2.8.6 | Cross-origin resource sharing |
-| **Authentication** | jsonwebtoken | 9.x | JWT token generation/validation |
-| **Password Hashing** | bcrypt | 5.x | Secure password hashing |
-| **Validation** | Joi / express-validator | - | Request validation |
-| **Logging** | Winston | 3.x | Application logging |
-
-### Database Stack
-
-| Component | Technology | Version | Purpose |
-|-----------|-----------|---------|---------|
-| **Primary Database** | PostgreSQL | 14+ | Relational data storage |
-| **Cache** | Redis | 7.x | Session storage, API caching |
-| **Search** | PostgreSQL Full-Text | - | Food item search (future: Elasticsearch) |
-
-### Infrastructure & DevOps
-
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Cloud Provider** | AWS | Hosting infrastructure |
-| **Compute** | EC2 (t3.medium) | Application servers |
-| **Load Balancer** | ALB | Traffic distribution |
-| **Storage** | S3 | Static assets, images |
-| **CDN** | CloudFront | Content delivery |
-| **Container** | Docker | Application containerization |
-| **Container Registry** | ECR | Docker image storage |
-| **CI/CD** | GitHub Actions | Automated deployments |
-| **IaC** | Terraform | Infrastructure automation |
-| **Monitoring** | CloudWatch, Prometheus, Grafana | System monitoring |
-| **Error Tracking** | Sentry | Error monitoring and alerts |
-
-### Security & Compliance
-
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **SSL/TLS** | AWS Certificate Manager | HTTPS encryption |
-| **Secrets Management** | AWS Secrets Manager | Secure credential storage |
-| **WAF** | AWS WAF | Web application firewall |
-| **DDoS Protection** | AWS Shield | DDoS mitigation |
-
-###  Third-Party Services
-
-| Service | Provider | Purpose |
-|---------|----------|---------|
-| **Payment Processing** | Stripe | Credit card payments |
-| **Email** | SendGrid | Transactional emails |
-| **SMS** | Twilio | SMS notifications |
-| **Analytics** | Google Analytics | User behavior tracking |
-
-### Development & Testing
-
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Unit Testing** | Jest | JavaScript testing framework |
-| **API Testing** | Supertest | HTTP assertion library |
-| **E2E Testing** | Cypress | End-to-end testing |
-| **Load Testing** | k6 / Apache JMeter | Performance testing |
-| **Code Quality** | ESLint, Prettier | Code linting and formatting |
-| **Security Scanning** | OWASP ZAP, Snyk | Vulnerability scanning |
+| Component | Technology | Version | Status | Purpose |
+|-----------|-----------|---------|--------|---------|
+| **Runtime** | Node.js | 18+ | ✅ | JavaScript runtime environment |
+| **Framework** | Express | 5.2.1 | ✅ | Web application framework |
+| **Database Driver** | pg (node-postgres) | 8.18.0 | ✅ | PostgreSQL client library |
+| **CORS** | cors | 2.8.6 | ✅ | Cross-origin resource sharing |
 
 ---
 
@@ -879,13 +852,13 @@ HTTP Response
 
 #### Entity Relationship Diagram
 
-> 📊 **Complete Database Schema**: All 12 tables with relationships for the CookNest platform.
+> 📊 **Database Schema**: Simple 4-table schema for the CookNest MVP implementation.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                         COOKNEST DATABASE SCHEMA (ERD)                          │
 │                          Entity-Relationship Diagram                            │
-│                                                                                 │
+│                           Implementation (MVP)                          │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
                             ┌──────────────────────────┐
@@ -894,130 +867,62 @@ HTTP Response
                             │ PK id: SERIAL            │
                             │    name: VARCHAR(100)    │
                             │ UK email: VARCHAR(100)   │
-                            │    password: VARCHAR(255)│
-                            │    role: VARCHAR(20)     │ ← 'customer','chef','admin'
-                            │    phone: VARCHAR(20)    │
-                            │    avatar_url: VARCHAR   │
-                            │    email_verified: BOOL  │
-                            │    status: VARCHAR(20)   │ ← 'active','suspended','deleted'
-                            │    created_at: TIMESTAMP │
-                            │    updated_at: TIMESTAMP │
-                            │    last_login: TIMESTAMP │
-                            └─┬─┬───────┬──────┬───┬───┘
-                              │ │       │      │   │
-                              │ │       │      │   └────────────────────────┐
-                1:N           │ │       │      │                            │ 1:N
-         ┌────────────────────┘ │       │      └─────┐                      │
-         │                      │       │            │                      │
-         │ 1:N                  │       │ 1:0..1     │ 1:N                  │
-         ▼                      │       │            ▼                      ▼
-  ┌──────────────┐     ┌────────┴───────▼────┐   ┌──────────────────┐  ┌────────────────┐
-  │   sessions   │     │    password_resets  │   │    addresses     │  │    audit_logs  │
-  ├──────────────┤     ├─────────────────────┤   ├──────────────────┤  ├────────────────┤
-  │ PK id: SERIAL│     │ PK id: SERIAL       │   │ PK id: SERIAL    │  │ PK id: SERIAL  │
-  │ FK user_id   │     │ FK user_id          │   │ FK user_id       │  │ FK user_id     │
-  │    token     │     │    token: VARCHAR   │   │    label: VAR(50)│  │    action: VAR │
-  │    expires_at│     │    expires_at: TIME │   │    street: VAR   │  │    entity_type │
-  │    created_at│     │    used: BOOLEAN    │   │    city: VAR(100)│  │    entity_id   │
-  │    ip_address│     │    created_at: TIME │   │    state: VAR(50)│  │    old_values  │
-  └──────────────┘     └─────────────────────┘   │    postal_code   │  │    new_values  │
-                                                 │    country: VAR  │  │    ip_address  │
-                       ┌─────────────────────────│    latitude: DEC │  │    created_at  │
-                       │ 1:1 (via role='chef')   │    longitude: DEC│  └────────────────┘
-                       │                         │    is_default    │
-                       ▼                         └─────────┬────────┘
-           ┌───────────────────────┐                       │
-           │     chefs             │                       │
-           ├───────────────────────┤                       │ N:1 (used in orders)
-           │ PK id: SERIAL         │                       │
-           │ FK user_id: INT (UK)  │                       │
-           │    bio: TEXT          │                       │
-           │    specialty: VARCHAR │                       │
-           │    years_exp: INTEGER │                       ▼
-           │    rating: DEC(3,2)   │         ┌─────────────────────────┐
-           │    total_orders: INT  │         │     orders              │
-           │    verified: BOOLEAN  │◀────────├─────────────────────────┤
-           │    license_no: VARCHAR│   1:N   │ PK id: SERIAL           │
-           │    bank_account: VAR  │         │ FK user_id: INTEGER     │
-           │    commission_rate    │         │ FK chef_id: INTEGER     │
-           │    created_at: TIME   │         │ FK address_id: INTEGER  │
-           └─┬───────────┬─────────┘         │    order_number: VARCHAR│ ← ORD-{timestamp}
-             │ 1:N       │                   │    total_amount: DECIMAL│
-             │           │ 1:N               │    tax_amount: DECIMAL  │
-             │           │                   │    delivery_fee: DECIMAL│
-             ▼           ▼                   │    status: VARCHAR(20)  │ ← pending,confirmed,
-  ┌──────────────┐  ┌────────────────┐       │    payment_status: VAR  │   preparing,delivered
-  │ food_items   │  │ delivery_zones │       │    payment_method: VAR  │
-  ├──────────────┤  ├────────────────┤       │    special_instructions │
-  │PK id: SERIAL │  │PK id: SERIAL   │       │    scheduled_for: TIME  │
-  │FK chef_id    │  │FK chef_id      │       │    created_at: TIMESTAMP│
-  │  name: VAR   │  │  name: VARCHAR │       │    updated_at: TIMESTAMP│
-  │  description │  │  polygon: GEO  │       │    completed_at: TIME   │
-  │  price: DEC  │  │  min_order: DEC│       │    cancelled_at: TIME   │
-  │  category    │  │  delivery_fee  │       └─┬────────┬──────────────┘
-  │  cuisine     │  │  active: BOOL  │         │ 1:N    │ 1:0..1
-  │  prep_time   │  │  created_at    │         │        │
-  │  serves: INT │  └────────────────┘         │        ▼
-  │  ingredients │                             │   ┌──────────────────┐
-  │  allergens[] │                             │   │  payments        │
-  │  is_vegan    │                             │   ├──────────────────┤
-  │  is_gluten_free                            │   │ PK id: SERIAL    │
-  │  image_url   │                             │   │ FK order_id (UK) │ ← 1:1 relationship
-  │  available   │                             │   │    amount: DEC   │
-  │  stock_qty   │                             │   │    payment_method│
-  │  created_at  │                             │   │    stripe_pay_id │
-  │  updated_at  │                             │   │    status: VAR   │
-  └──┬───────────┘                             │   │    processed_at  │
-     │ 1:N                                     │   │    refunded_at   │
-     │                                         │   │    refund_amount │
-     │         ┌──────────────────────────┐    │   └──────────────────┘
-     │         │   order_items            │    │
-     └────────▶├──────────────────────────┤◀───┘
-         N:1   │ PK id: SERIAL            │
-               │ FK order_id: INTEGER     │
-               │ FK food_item_id: INTEGER │
-               │    quantity: INTEGER     │
-               │    food_name: VARCHAR    │ ← Denormalized
-               │    food_price: DECIMAL   │ ← for historical accuracy
-               │    subtotal: DECIMAL     │
-               │    notes: TEXT           │
-               └──────────┬───────────────┘
+                            │    password: VARCHAR(100)│
+                            └─────────────┬────────────┘
+                                          │
+                                          │ 1:N
+                                          │
+                                          ▼
+                      ┌────────────────────────────────┐
+                      │     orders                     │
+                      ├────────────────────────────────┤
+                      │ PK id: SERIAL                  │
+                      │ FK user_id: INTEGER            │
+                      │    total_amount: DECIMAL(10,2) │
+                      │    payment_method: VARCHAR(50) │
+                      │    created_at: TIMESTAMP       │
+                      │       DEFAULT CURRENT_TIMESTAMP│
+                      └──────────────┬─────────────────┘
+                                     │
+                                     │ 1:N
+                                     │
+                                     ▼
+           ┌─────────────────────────────────────────┐
+           │   order_items                           │
+           ├─────────────────────────────────────────┤
+           │ PK id: SERIAL                           │
+           │ FK order_id: INTEGER                    │
+           │ FK food_item_id: INTEGER                │
+           │    quantity: INTEGER                    │
+           │    food_name: VARCHAR(100)              │ ← Denormalized
+           │    food_price: DECIMAL(10,2)            │ ← for historical accuracy
+           └──────────────┬──────────────────────────┘
                           │
-                          │ 1:N (order can have multiple reviews)
+                          │ N:1
                           │
-                      ┌───▼────────────────┐
-                      │   reviews          │
-                      ├────────────────────┤
-                      │ PK id: SERIAL      │
-                      │ FK order_id: INT   │ ← Reviews linked to orders
-                      │ FK user_id: INT    │ ← Reviewer
-                      │ FK chef_id: INT    │ ← Chef being reviewed
-                      │ FK food_item_id    │ ← Optional: specific item review
-                      │    rating: INT(1-5)│
-                      │    comment: TEXT   │
-                      │    helpful_count   │
-                      │    response: TEXT  │ ← Chef response
-                      │    created_at      │
-                      │    updated_at      │
-                      └────────────────────┘
+                          ▼
+              ┌───────────────────────────┐
+              │     food_items            │
+              ├───────────────────────────┤
+              │ PK id: SERIAL             │
+              │    name: VARCHAR(100)     │
+              │    description: TEXT      │
+              │    price: DECIMAL(10,2)   │
+              └───────────────────────────┘
 ```
 
 **Key Relationships:**
-- users → chefs (1:0..1) - Users with role='chef' have extended profiles
-- users → orders (1:N) - Customers place multiple orders
-- chefs → food_items (1:N) - Chefs create menu items
-- chefs → orders (1:N) - Chefs receive orders
-- orders → order_items (1:N) - Orders contain line items
-- orders → payments (1:0..1) - Orders have payment records
-- food_items → order_items (1:N) - Items referenced in orders
+- users → orders (1:N) - One user can place multiple orders
+- orders → order_items (1:N) - Each order contains multiple line items
+- food_items → order_items (1:N) - Food items can appear in multiple orders
+- order_items has denormalized fields (food_name, food_price) to preserve historical data
 
-**Schema Files:**
-- `database/schema.sql` - Basic 4-table schema
-- `database/schema_comprehensive.sql` - Complete 12-table production schema
+**Schema File:**
+- `database/schema.sql` - Current implementation with 4 tables
 
 #### Table Descriptions
 
-> **Note:** For complete schema with constraints, indexes, and triggers, see `database/schema_comprehensive.sql`
+> **Note:** Current implementation uses a simple 4-table schema. See `database/schema.sql` for the complete schema definition.
 
 ##### Core Tables
 
@@ -1027,76 +932,36 @@ HTTP Response
 | id | SERIAL PRIMARY KEY | Unique user identifier |
 | name | VARCHAR(100) | User's full name |
 | email | VARCHAR(100) UNIQUE | User's email (login) |
-| password | VARCHAR(255) | Hashed password (bcrypt) |
-| role | VARCHAR(20) | 'customer', 'chef', 'admin' |
-| phone | VARCHAR(20) | Contact number |
-| email_verified | BOOLEAN | Email verification status |
-| status | VARCHAR(20) | 'active', 'suspended', 'deleted' |
+| password | VARCHAR(100) | User password (plain text in MVP, should be hashed) |
 
-**chefs** - Chef profiles (extends users with role='chef')
-| Column | Type | Description |
-|--------|------|-------------|
-| id | SERIAL PRIMARY KEY | Chef identifier |
-| user_id | INT UNIQUE FK | Links to users table |
-| bio | TEXT | Chef biography |
-| specialty | VARCHAR(100) | Cuisine specialty |
-| rating | DECIMAL(3,2) | Average rating (0-5) |
-| verified | BOOLEAN | Verification status |
-| commission_rate | DECIMAL(5,2) | Platform commission % |
-
-**food_items** - Menu items created by chefs
+**food_items** - Menu items available for ordering
 | Column | Type | Description |
 |--------|------|-------------|
 | id | SERIAL PRIMARY KEY | Food item identifier |
-| chef_id | INT FK | Chef who created item |
 | name | VARCHAR(100) | Food item name |
+| description | TEXT | Detailed description of the food item |
 | price | DECIMAL(10,2) | Item price |
-| category | VARCHAR(50) | 'Appetizer', 'Main', 'Dessert' |
-| cuisine | VARCHAR(50) | 'Italian', 'Mexican', etc. |
-| available | BOOLEAN | Availability status |
-| stock_quantity | INTEGER | Inventory count |
 
 **orders** - Customer orders
 | Column | Type | Description |
 |--------|------|-------------|
 | id | SERIAL PRIMARY KEY | Order identifier |
-| user_id | INT FK | Customer who placed order |
-| chef_id | INT FK | Chef fulfilling order |
-| address_id | INT FK | Delivery address |
-| order_number | VARCHAR(50) UNIQUE | ORD-{timestamp}-{random} |
+| user_id | INT FK → users(id) | Customer who placed order |
 | total_amount | DECIMAL(10,2) | Total order value |
-| status | VARCHAR(20) | Order status workflow |
-| payment_status | VARCHAR(20) | Payment processing status |
+| created_at | TIMESTAMP | Order creation timestamp (default: CURRENT_TIMESTAMP) |
+| payment_method | VARCHAR(50) | Payment method used |
 
-**order_items** - Order line items (denormalized for history)
+**order_items** - Order line items (denormalized for historical accuracy)
 | Column | Type | Description |
 |--------|------|-------------|
 | id | SERIAL PRIMARY KEY | Line item identifier |
-| order_id | INT FK | Associated order |
-| food_item_id | INT FK | Food item reference |
+| order_id | INT FK → orders(id) | Associated order |
+| food_item_id | INT FK → food_items(id) | Food item reference |
 | quantity | INTEGER | Quantity ordered |
-| food_name | VARCHAR(100) | Snapshot of food name |
+| food_name | VARCHAR(100) | Snapshot of food name at order time |
 | food_price | DECIMAL(10,2) | Snapshot of price at order time |
 
-##### Supporting Tables
-
-**addresses** - User delivery addresses
-| Column | Type | Description |
-|--------|------|-------------|
-| id | SERIAL PRIMARY KEY | Address identifier |
-| user_id | INT FK | User who owns address |
-| street, city, state, postal_code | VARCHAR | Address components |
-| is_default | BOOLEAN | Default address flag |
-
-**sessions** - User session management
-| Column | Type | Description |
-|--------|------|-------------|
-| id | SERIAL PRIMARY KEY | Session identifier |
-| user_id | INT FK | Logged-in user |
-| token | VARCHAR(255) UNIQUE | Session token |
-| expires_at | TIMESTAMP | Session expiration |
-
-**password_resets** - Password recovery tokens
+>  **Design Note:** The `order_items` table uses denormalization (storing `food_name` and `food_price`) to preserve historical accuracy. This ensures that even if a food item's name or price changes, past orders retain the correct information as it was at the time of purchase.
 | Column | Type | Description |
 |--------|------|-------------|
 | id | SERIAL PRIMARY KEY | Reset token identifier |
@@ -1184,26 +1049,168 @@ http://localhost:<port>/api
 
 #### API Endpoints
 
+> **Current Implementation:** The following endpoints are currently implemented in the application.
+
 ##### User Management (`/api/users`)
 | Method | Endpoint | Description | Request Body | Response |
 |--------|----------|-------------|--------------|----------|
-| POST | `/api/users/register` | Register new user | `{ name, email, password }` | User object |
-| POST | `/api/users/login` | Authenticate user | `{ email, password }` | Auth token/User |
-| GET | `/api/users/:id` | Get user details | - | User object |
+| POST | `/api/users/register` | Register new user | `{ name, email, password }` | `{ id, name, email, password }` |
+| POST | `/api/users/login` | Authenticate user | `{ email, password }` | User object or 401 error |
+
+**Example - Register:**
+```json
+// Request
+POST /api/users/register
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+// Response (201 Created)
+{
+  "id": 1,
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+**Example - Login:**
+```json
+// Request
+POST /api/users/login
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+// Response (200 OK)
+{
+  "id": 1,
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+// Response (401 Unauthorized)
+{
+  "message": "Invalid credentials"
+}
+```
 
 ##### Food Management (`/api/foods`)
 | Method | Endpoint | Description | Request Body | Response |
 |--------|----------|-------------|--------------|----------|
 | GET | `/api/foods` | Get all food items | - | Array of food items |
-| GET | `/api/foods/:id` | Get specific food item | - | Food item object |
-| GET | `/api/foods/search?q=` | Search food items | - | Filtered food items |
+| GET | `/api/foods/:id` | Get specific food item | - | Food item object or 404 |
+
+**Example - Get All Foods:**
+```json
+// Request
+GET /api/foods
+
+// Response (200 OK)
+[
+  {
+    "id": 1,
+    "name": "Red Pasta",
+    "description": "Penne pasta with red sauce",
+    "price": "150.00"
+  },
+  {
+    "id": 2,
+    "name": "White Pasta",
+    "description": "Penne pasta with white sauce",
+    "price": "150.00"
+  }
+]
+```
+
+**Example - Get Food by ID:**
+```json
+// Request
+GET /api/foods/1
+
+// Response (200 OK)
+{
+  "id": 1,
+  "name": "Red Pasta",
+  "description": "Penne pasta with red sauce",
+  "price": "150.00"
+}
+
+// Response (404 Not Found)
+{
+  "error": "Food item not found"
+}
+```
 
 ##### Order Management (`/api/orders`)
 | Method | Endpoint | Description | Request Body | Response |
 |--------|----------|-------------|--------------|----------|
-| POST | `/api/orders` | Create new order | `{ user_id, items[], total_amount }` | Order object |
-| GET | `/api/orders/:id` | Get order details | - | Order with items |
-| GET | `/api/orders/user/:userId` | Get user's orders | - | Array of orders |
+| POST | `/api/orders` | Create new order | `{ userId, foods[], total, paymentMethod }` | `{ orderId }` |
+| GET | `/api/orders` | Get all orders | - | Array of orders with items |
+
+**Example - Create Order:**
+```json
+// Request
+POST /api/orders
+{
+  "userId": 1,
+  "foods": [
+    {
+      "id": 1,
+      "name": "Red Pasta",
+      "price": "150.00"
+    },
+    {
+      "id": 4,
+      "name": "Veg Cheese Corn Pizza",
+      "price": "350.00"
+    }
+  ],
+  "total": "500.00",
+  "paymentMethod": "credit_card"
+}
+
+// Response (201 Created)
+{
+  "orderId": 1
+}
+
+// Response (400 Bad Request)
+{
+  "error": "Invalid order data"
+}
+```
+
+**Example - Get All Orders:**
+```json
+// Request
+GET /api/orders
+
+// Response (200 OK)
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "total_amount": "500.00",
+    "payment_method": "credit_card",
+    "created_at": "2026-02-14T10:30:00Z",
+    "items": [
+      {
+        "food_name": "Red Pasta",
+        "food_price": "150.00"
+      },
+      {
+        "food_name": "Veg Cheese Corn Pizza",
+        "food_price": "350.00"
+      }
+    ]
+  }
+]
+```
 
 ### Request/Response Flow
 
@@ -1495,104 +1502,183 @@ The Use Case diagram shows the functional requirements of the system from the us
 
 ## Class Diagram
 
+> **Current Implementation:** Class diagram reflecting the actual MVP implementation with 4-table schema and simplified layered architecture.
+
 The Class diagram shows the structure of the system's domain model with classes, attributes, methods, and relationships.
 
-```
-┌─────────────────────────────┐
-│          User               │
-├─────────────────────────────┤
-│ - id: Integer               │
-│ - name: String              │
-│ - email: String             │
-│ - password: String          │
-│ - role: String              │
-│ - createdAt: DateTime       │
-├─────────────────────────────┤
-│ + register(): User          │
-│ + login(): Token            │
-│ + updateProfile(): void     │
-│ + deleteAccount(): void     │
-└──────────┬──────────────────┘
-           │ 1
-           │
-           │ places
-           │
-           │ *
-┌──────────▼──────────────────┐
-│          Order              │
-├─────────────────────────────┤
-│ - id: Integer               │
-│ - userId: Integer           │
-│ - totalAmount: Decimal      │
-│ - status: String            │
-│ - createdAt: DateTime       │
-│ - updatedAt: DateTime       │
-├─────────────────────────────┤
-│ + create(): Order           │
-│ + getById(id): Order        │
-│ + updateStatus(): void      │
-│ + calculateTotal(): Decimal │
-│ + cancel(): void            │
-└──────────┬──────────────────┘
-           │ 1
-           │
-           │ contains
-           │
-           │ *
-┌──────────▼──────────────────┐         ┌─────────────────────────┐
-│       OrderItem             │    *    │      FoodItem           │
-├─────────────────────────────┤─────────├─────────────────────────┤
-│ - id: Integer               │ refers  │ - id: Integer           │
-│ - orderId: Integer          │   to    │ - name: String          │
-│ - foodItemId: Integer       │    1    │ - description: Text     │
-│ - quantity: Integer         │         │ - price: Decimal        │
-│ - foodName: String          │         │ - chefId: Integer       │
-│ - foodPrice: Decimal        │         │ - category: String      │
-├─────────────────────────────┤         │ - available: Boolean    │
-│ + addItem(): OrderItem      │         │ - createdAt: DateTime   │
-│ + updateQuantity(): void    │         ├─────────────────────────┤
-│ + removeItem(): void        │         │ + create(): FoodItem    │
-│ + getSubtotal(): Decimal    │         │ + update(): void        │
-└─────────────────────────────┘         │ + delete(): void        │
-                                        │ + search(query): List   │
-                                        └────────┬────────────────┘
-                                                 │ *
-                                                 │
-                                                 │ manages
-                                                 │
-                                                 │ 1
-                                        ┌────────▼────────────────┐
-                                        │       Chef              │
-                                        ├─────────────────────────┤
-                                        │ (inherits from User)    │
-                                        ├─────────────────────────┤
-                                        │ + addFoodItem(): void   │
-                                        │ + viewOrders(): List    │
-                                        │ + updateOrderStatus()   │
-                                        └─────────────────────────┘
+### Domain Model Layer
 
-┌───────────────────────────────────────────────────────────────────┐
-│                      Supporting Classes                           │
-├───────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  ┌─────────────────────┐  ┌──────────────────┐  ┌─────────────┐   │
-│  │   UserRepository    │  │  FoodRepository  │  │OrderRepository  │
-│  ├─────────────────────┤  ├──────────────────┤  ├─────────────┤   │
-│  │+ findByEmail()      │  │+ getAll()        │  │+ create()   │   │
-│  │+ create()           │  │+ findById()      │  │+ findById() │   │
-│  │+ update()           │  │+ search()        │  │+ findByUser()│  │
-│  │+ delete()           │  │+ update()        │  │+ addItems() │   │
-│  └─────────────────────┘  └──────────────────┘  └─────────────┘   │
-│                                                                   │
-│  ┌─────────────────────┐  ┌──────────────────┐  ┌─────────────┐   │
-│  │   UserService       │  │   FoodService    │  │OrderService │   │
-│  ├─────────────────────┤  ├──────────────────┤  ├─────────────┤   │
-│  │+ validateCreds()    │  │+ listItems()     │  │+ processOrder│  │
-│  │+ hashPassword()     │  │+ filterItems()   │  │+ calcTotal()│   │
-│  │+ createUser()       │  │+ searchItems()   │  │+ validateCart│  │
-│  └─────────────────────┘  └──────────────────┘  └─────────────┘   │
-│                                                                   │
-└───────────────────────────────────────────────────────────────────┘
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         DOMAIN MODELS                                   │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────┐
+│      «entity»          │
+│        User            │
+├────────────────────────┤
+│ - id: Integer          │
+│ - name: String(100)    │
+│ - email: String(100)   │  ← UNIQUE
+│ - password: String(100)│   Plain text (MVP)
+└──────────┬─────────────┘
+           │
+           │ 1        places
+           │
+           ▼ *
+┌────────────────────────┐
+│      «entity»          │
+│        Order           │
+├────────────────────────┤
+│ - id: Integer          │
+│ - userId: Integer      │  ← FK to User
+│ - totalAmount: Decimal │
+│ - paymentMethod: String│
+│ - createdAt: Timestamp │
+└──────────┬─────────────┘
+           │
+           │ 1     contains
+           │
+           ▼ *
+┌────────────────────────┐                  ┌────────────────────────┐
+│      «entity»          │                  │      «entity»          │
+│      OrderItem         │      *           │      FoodItem          │
+├────────────────────────┤  ─────────────►  ├────────────────────────┤
+│ - id: Integer          │  references      │ - id: Integer          │
+│ - orderId: Integer     │       1          │ - name: String(100)    │
+│ - foodItemId: Integer  │                  │ - description: Text    │
+│ - quantity: Integer    │                  │ - price: Decimal(10,2) │
+│ - foodName: String(100)│  ← Denormalized  └────────────────────────┘
+│ - foodPrice: Decimal   │  ← for history
+└────────────────────────┘
+```
+
+### Application Layer - Controllers
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         CONTROLLER LAYER                                │
+│                    (HTTP Request/Response Handlers)                     │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────┐  ┌─────────────────────────┐  ┌──────────────────────────┐
+│   «controller»          │  │   «controller»          │  │   «controller»           │
+│   UserController        │  │   FoodController        │  │   OrderController        │
+├─────────────────────────┤  ├─────────────────────────┤  ├──────────────────────────┤
+│                         │  │                         │  │                          │
+│ + register(req, res)    │  │ + getFoods(req, res)    │  │ + placeOrder(req, res)   │
+│   • Extract body        │  │   • Call service        │  │   • Validate input       │
+│   • Call service        │  │   • Return JSON array   │  │   • Direct db.query()    │
+│   • Return 201 + user   │  │                         │  │   • Insert order         │
+│                         │  │ + getFoodById(req, res) │  │   • Insert order_items   │
+│ + login(req, res)       │  │   • Extract params      │  │   • Return orderId       │
+│   • Extract body        │  │   • Call service        │  │                          │
+│   • Call service        │  │   • Return item or 404  │  │ + getOrders(req, res)    │
+│   • Return user or 401  │  │                         │  │   • Query all orders     │
+│                         │  │                         │  │   • Join order_items     │
+└───────────┬─────────────┘  └───────────┬─────────────┘  │   • Return orders array  │
+            │                            │                │                          │
+            │ uses                       │ uses           │                          │
+            ▼                            ▼                └──────────────────────────┘
+```
+
+### Business Logic Layer - Services
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         SERVICE LAYER                                   │
+│                      (Business Logic)                                   │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────┐  ┌──────────────────────────┐  
+│   «service»              │  │   «service»              │  
+│   UserService            │  │   FoodService            │     
+├──────────────────────────┤  ├──────────────────────────┤  
+│                          │  │                          │  
+│ + register(user): User   │  │ + listFoodItems(): []    │  
+│   • Call repository      │  │   • Call repository      │  
+│   • Return user object   │  │   • Return results       │  
+│                          │  │                          │  
+│ + login(credentials)     │  │ + getFoodItemById(id)    │  
+│   • findByEmail()        │  │   • Call repository      │  
+│   • Compare password     │  │   • Return result        │  
+│   • Return user or null  │  │                          │  
+│                          │  │                          │  
+└───────────┬──────────────┘  └───────────┬──────────────┘  
+            │                             │                 
+            │ uses                        │ uses            
+            ▼                             ▼                 
+```
+
+### Data Access Layer - Repositories
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         REPOSITORY LAYER                                │
+│                      (Database Operations)                              │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────┐  ┌────────────────────────────┐  
+│   «repository»             │  │   «repository»             │  
+│   UserRepository           │  │   FoodRepository           │     
+├────────────────────────────┤  ├────────────────────────────┤  
+│                            │  │                            │  
+│ + createUser(user)         │  │ + getAllFoodItems()        │  
+│   • SQL: INSERT INTO users │  │   • SQL: SELECT * FROM     │  
+│   • RETURNING *            │  │     food_items             │  
+│   • Return result.rows[0]  │  │   • Return result          │  
+│                            │  │                            │  
+│ + findByEmail(email)       │  │ + getFoodItemById(id)      │  
+│   • SQL: SELECT * FROM     │  │   • SQL: SELECT * WHERE    │  
+│     users WHERE email=$1   │  │     id = $1                │  
+│   • Return result          │  │   • Return result          │  
+│                            │  │                            │  
+└──────────────┬─────────────┘  └──────────────┬─────────────┘  
+               │                               │                
+               │ uses pg Pool                  │ uses pg Pool   
+               ▼                               ▼                
+        ┌──────────────────────────────────────────────┐        
+        │   «database config»                          │        
+        │   db.js (PostgreSQL Connection Pool)         │        
+        ├──────────────────────────────────────────────┤        
+        │ - pool: Pool                                 │        
+        │ + query(text, params): Promise<Result>       │        
+        │   • Execute SQL query                        │        
+        │   • Return query result                      │        
+        └──────────────────────────────────────────────┘        
+                         │                                       
+                         │ connects to                           
+                         ▼                                       
+                ┌─────────────────┐                              
+                │   PostgreSQL    │                              
+                │    Database     │                              
+                └─────────────────┘                              
+```
+
+### Class Relationships Summary
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│                    RELATIONSHIP DIAGRAM                            │
+└────────────────────────────────────────────────────────────────────┘
+
+         User (1) ────────places────────► (N) Order
+                                              │
+                                              │ contains
+                                              ▼
+                                         OrderItem (N)
+                                              │
+                                              │ references
+                                              ▼
+                                         FoodItem (1)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ Key:                                                                │
+│   1   = One                                                         │
+│   N   = Many                                                        │
+│   FK  = Foreign Key                                                 │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -1641,17 +1727,17 @@ Sequence diagrams show how objects interact in a particular scenario, focusing o
 #### Order Placement Sequence
 
 ```
-┌──────┐  ┌──────┐  ┌──────────┐  ┌────────┐  ┌──────────┐  ┌──────────┐
-│Client│  │ Auth │  │Order Ctrl│  │Order Svc│ │Food Repo │  │Order Repo│
+┌──────┐  ┌──────┐  ┌──────────┐  ┌─────────┐  ┌──────────┐  ┌──────────┐
+│Client│  │ Auth │  │Order Ctrl│  │Order Svc│  │Food Repo │  │Order Repo│
 └──┬───┘  └──┬───┘  └────┬─────┘  └────┬────┘  └────┬─────┘  └────┬─────┘
    │          │           │             │            │             │
    │POST /orders + JWT    │             │            │             │
    ├─────────────────────>│             │            │             │
-   │          │ verifyJWT()│             │            │             │
+   │          │ verifyJWT()│            │            │             │
    │          │<──────────┤             │            │             │
-   │          │ valid      │             │            │             │
-   │          ├───────────>│             │            │             │
-   │          │           │ createOrder()│            │             │
+   │          │ valid      │            │            │             │
+   │          ├───────────>│            │            │             │
+   │          │           │ createOrder │            │             │
    │          │           ├────────────>│             │            │
    │          │           │             │ validateCart│            │
    │          │           │             ├────────────>│            │
@@ -1676,11 +1762,11 @@ Sequence diagrams show how objects interact in a particular scenario, focusing o
    │          │           │             ├─────────────────────────>│
    │          │           │ order       │             │            │
    │          │           │<────────────┤             │            │
-   │          │ 201 Created│             │            │             │
-   │          │<───────────┤             │            │             │
-   │ 201 + orderData       │             │            │             │
-   │<──────────────────────┤             │            │             │
-   │          │           │             │            │             │
+   │          │ 201 Created│            │             │            │
+   │          │<───────────┤            │             │            │
+   │ 201 + orderData       │            │             │            │
+   │<──────────────────────┤            │             │            │
+   │          │            │            │             │            │
 ```
 
 #### Authentication Flow Sequence
@@ -4062,13 +4148,15 @@ Dashed line     → Optional or async flow
 
 ## API Documentation & Specifications
 
+> **Current Implementation:** OpenAPI specification reflecting actual deployed endpoints
+
 ### OpenAPI 3.0 Specification
 
 ```yaml
 openapi: 3.0.0
 info:
   title: CookNest API
-  description: RESTful API for local home-cooked food ordering platform
+  description: RESTful API for local home-cooked food ordering platform (MVP version)
   version: 1.0.0
   contact:
     name: CookNest Development Team
@@ -4079,10 +4167,6 @@ info:
 servers:
   - url: http://localhost:5000/api
     description: Development server
-  - url: https://staging-api.cooknest.com/api
-    description: Staging server
-  - url: https://api.cooknest.com/api
-    description: Production server
 
 paths:
   /users/register:
@@ -4108,13 +4192,9 @@ paths:
                   example: "john.doe@example.com"
                 password:
                   type: string
-                  format: password
-                  minLength: 8
-                  example: "SecureP@ss123"
-                role:
-                  type: string
-                  enum: [customer, chef]
-                  default: customer
+                  minLength: 1
+                  maxLength: 100
+                  example: "password123"
       responses:
         '201':
           description: User created successfully
@@ -4122,10 +4202,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
-          description: Email already exists
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /users/login:
     post:
@@ -4142,45 +4220,34 @@ paths:
                 email:
                   type: string
                   format: email
+                  example: "john.doe@example.com"
                 password:
                   type: string
-                  format: password
+                  example: "password123"
       responses:
         '200':
           description: Login successful
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
                 type: object
                 properties:
-                  token:
+                  message:
                     type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                  user:
-                    $ref: '#/components/schemas/User'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                    example: "Invalid credentials"
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /foods:
     get:
       summary: Get all food items
       tags: [Foods]
-      parameters:
-        - in: query
-          name: category
-          schema:
-            type: string
-          description: Filter by category
-        - in: query
-          name: maxPrice
-          schema:
-            type: number
-          description: Maximum price filter
-        - in: query
-          name: chefId
-          schema:
-            type: integer
-          description: Filter by chef ID
       responses:
         '200':
           description: List of food items
@@ -4201,6 +4268,7 @@ paths:
           required: true
           schema:
             type: integer
+          example: 1
       responses:
         '200':
           description: Food item details
@@ -4209,70 +4277,91 @@ paths:
               schema:
                 $ref: '#/components/schemas/FoodItem'
         '404':
-          $ref: '#/components/responses/NotFound'
+          description: Food item not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Food item not found"
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /orders:
     post:
       summary: Create a new order
       tags: [Orders]
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [items]
+              required: [userId, foods, total, paymentMethod]
               properties:
-                items:
+                userId:
+                  type: integer
+                  example: 1
+                foods:
                   type: array
                   items:
                     type: object
                     properties:
-                      foodItemId:
+                      id:
                         type: integer
-                      quantity:
-                        type: integer
-                        minimum: 1
-                notes:
+                        example: 1
+                      name:
+                        type: string
+                        example: "Red Pasta"
+                      price:
+                        type: string
+                        example: "150.00"
+                total:
                   type: string
-                  maxLength: 500
+                  example: "500.00"
+                paymentMethod:
+                  type: string
+                  example: "credit_card"
       responses:
         '201':
           description: Order created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Order'
+                type: object
+                properties:
+                  orderId:
+                    type: integer
+                    example: 1
         '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
-  /orders/{id}:
-    get:
-      summary: Get order by ID
-      tags: [Orders]
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Order details
+          description: Invalid order data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Order'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid order data"
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      summary: Get all orders
+      tags: [Orders]
+      responses:
+        '200':
+          description: List of all orders with items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderWithItems'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
 components:
   schemas:
@@ -4289,79 +4378,64 @@ components:
           type: string
           format: email
           example: "john.doe@example.com"
-        role:
+        password:
           type: string
-          enum: [customer, chef, admin]
-          example: "customer"
-        createdAt:
-          type: string
-          format: date-time
+          example: "password123"
+          description: "⚠️ Password is returned in plain text (should be excluded in production)"
 
     FoodItem:
       type: object
       properties:
         id:
           type: integer
+          example: 1
         name:
           type: string
-          example: "Butter Chicken"
+          example: "Red Pasta"
         description:
           type: string
-          example: "Authentic North Indian curry"
+          example: "Penne pasta with red sauce"
         price:
-          type: number
-          format: decimal
-          example: 12.99
-        category:
           type: string
-          example: "Main Course"
-        chefId:
-          type: integer
-        available:
-          type: boolean
-          example: true
-        imageUrl:
-          type: string
-          format: uri
+          example: "150.00"
 
-    Order:
+    OrderWithItems:
       type: object
       properties:
         id:
           type: integer
-        userId:
+          example: 1
+        user_id:
           type: integer
-        totalAmount:
-          type: number
-          format: decimal
-        status:
+          example: 1
+        total_amount:
           type: string
-          enum: [pending, confirmed, preparing, ready, in_transit, delivered, cancelled]
+          example: "500.00"
+        payment_method:
+          type: string
+          example: "credit_card"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-14T10:30:00Z"
         items:
           type: array
           items:
             $ref: '#/components/schemas/OrderItem'
-        createdAt:
-          type: string
-          format: date-time
 
     OrderItem:
       type: object
       properties:
-        id:
-          type: integer
-        foodItemId:
-          type: integer
-        foodName:
+        food_name:
           type: string
-        foodPrice:
-          type: number
-        quantity:
-          type: integer
+          example: "Red Pasta"
+        food_price:
+          type: string
+          example: "150.00"
 
   responses:
-    BadRequest:
-      description: Bad request
+    ServerError:
+      description: Server error
       content:
         application/json:
           schema:
@@ -4369,35 +4443,7 @@ components:
             properties:
               error:
                 type: string
-                example: "Validation failed"
-              details:
-                type: array
-                items:
-                  type: string
-
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-                example: "Invalid credentials"
-
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-                example: "Access denied"
-
-    NotFound:
+                example: "Internal server error"
       description: Resource not found
       content:
         application/json:
@@ -4476,213 +4522,6 @@ components:
 | **E2E Testing** | Cypress | Test complete user flows | Critical paths |
 | **Load Testing** | Apache JMeter / k6 | Performance and scalability | Key endpoints |
 | **Security Testing** | OWASP ZAP | Vulnerability scanning | All endpoints |
-
-### Unit Testing Strategy
-
-#### Example: User Service Tests
-
-```javascript
-// userService.test.js
-const userService = require('../src/services/userService');
-const userRepository = require('../src/repositories/userRepository');
-
-jest.mock('../src/repositories/userRepository');
-
-describe('UserService', () => {
-  describe('createUser', () => {
-    test('should hash password before creating user', async () => {
-      const userData = {
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'plaintext'
-      };
-
-      userRepository.findByEmail.mockResolvedValue(null);
-      userRepository.create.mockResolvedValue({ id: 1, ...userData });
-
-      const result = await userService.createUser(userData);
-
-      expect(result.password).not.toBe('plaintext');
-      expect(userRepository.create).toHaveBeenCalled();
-    });
-
-    test('should throw error if email already exists', async () => {
-      userRepository.findByEmail.mockResolvedValue({ id: 1 });
-
-      await expect(userService.createUser({
-        email: 'existing@example.com'
-      })).rejects.toThrow('Email already exists');
-    });
-  });
-});
-```
-
-### Integration Testing Strategy
-
-#### Example: Order API Tests
-
-```javascript
-// orderRoutes.test.js
-const request = require('supertest');
-const app = require('../src/app');
-const db = require('../src/config/db');
-
-describe('Order API', () => {
-  beforeAll(async () => {
-    await db.query('BEGIN');
-  });
-
-  afterAll(async () => {
-    await db.query('ROLLBACK');
-    await db.end();
-  });
-
-  describe('POST /api/orders', () => {
-    test('should create order for authenticated user', async () => {
-      const authToken = 'valid-jwt-token';
-      
-      const response = await request(app)
-        .post('/api/orders')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({
-          items: [
-            { foodItemId: 1, quantity: 2 }
-          ]
-        });
-
-      expect(response.status).toBe(201);
-      expect(response.body.data).toHaveProperty('id');
-      expect(response.body.data.status).toBe('pending');
-    });
-
-    test('should return 401 for unauthenticated request', async () => {
-      const response = await request(app)
-        .post('/api/orders')
-        .send({ items: [] });
-
-      expect(response.status).toBe(401);
-    });
-  });
-});
-```
-
-### E2E Testing Strategy
-
-#### Example: Complete Order Flow
-
-```javascript
-// cypress/e2e/order-flow.cy.js
-describe('Complete Order Flow', () => {
-  it('should allow user to browse, select, and order food', () => {
-    // Login
-    cy.visit('/login');
-    cy.get('[data-testid="email"]').type('customer@example.com');
-    cy.get('[data-testid="password"]').type('password123');
-    cy.get('[data-testid="login-button"]').click();
-
-    // Browse food
-    cy.url().should('include', '/foods');
-    cy.get('[data-testid="food-item"]').should('have.length.gt', 0);
-
-    // Add to cart
-    cy.get('[data-testid="food-item"]').first().click();
-    cy.get('[data-testid="add-to-cart"]').click();
-    cy.get('[data-testid="cart-count"]').should('contain', '1');
-
-    // Checkout
-    cy.get('[data-testid="cart-icon"]').click();
-    cy.get('[data-testid="checkout-button"]').click();
-
-    // Confirm order
-    cy.get('[data-testid="confirm-order"]').click();
-    cy.get('[data-testid="order-success"]').should('be.visible');
-    cy.url().should('include', '/orders/');
-  });
-});
-```
-
-### Test Data Management
-
-**Strategy: Test Fixtures and Factories**
-
-```javascript
-// fixtures/users.js
-module.exports = {
-  validCustomer: {
-    name: 'Test Customer',
-    email: 'customer@test.com',
-    password: 'Test123!@#',
-    role: 'customer'
-  },
-  validChef: {
-    name: 'Test Chef',
-    email: 'chef@test.com',
-    password: 'Chef123!@#',
-    role: 'chef'
-  }
-};
-
-// factories/userFactory.js
-const faker = require('faker');
-
-const createUser = (overrides = {}) => ({
-  name: faker.name.findName(),
-  email: faker.internet.email(),
-  password: 'DefaultPass123!',
-  role: 'customer',
-  ...overrides
-});
-
-module.exports = { createUser };
-```
-
-### Performance Testing
-
-#### Load Test Scenarios with k6
-
-```javascript
-// loadtest/order-creation.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
-
-export let options = {
-  stages: [
-    { duration: '2m', target: 100 }, // Ramp up to 100 users
-    { duration: '5m', target: 100 }, // Stay at 100 users
-    { duration: '2m', target: 200 }, // Ramp up to 200 users
-    { duration: '5m', target: 200 }, // Stay at 200 users
-    { duration: '2m', target: 0 },   // Ramp down to 0 users
-  ],
-  thresholds: {
-    http_req_duration: ['p(95)<500'], // 95% of requests under 500ms
-    http_req_failed: ['rate<0.01'],   // Error rate under 1%
-  },
-};
-
-export default function () {
-  const payload = JSON.stringify({
-    items: [
-      { foodItemId: 1, quantity: 2 }
-    ]
-  });
-
-  const params = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + __ENV.AUTH_TOKEN,
-    },
-  };
-
-  let response = http.post('http://localhost:5000/api/orders', payload, params);
-
-  check(response, {
-    'status is 201': (r) => r.status === 201,
-    'has order id': (r) => r.json('data.id') !== undefined,
-  });
-
-  sleep(1);
-}
-```
 
 ### Test Coverage Requirements
 
