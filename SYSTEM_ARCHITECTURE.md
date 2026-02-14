@@ -1,47 +1,89 @@
 # CookNest - System Architecture Documentation
 
+> **Version 2.0**  
+> **Last Updated:** February 11, 2026  
+> **Status:** Production-Ready Architecture
+
+---
+
 ## Table of Contents
+
+### **PART I: INTRODUCTION & OVERVIEW**
 1. [Overview](#overview)
 2. [Architecture Pattern](#architecture-pattern)
-3. [C4 Model Architecture Views](#c4-model-architecture-views)
+3. [Technology Stack](#technology-stack)
+
+### **PART II: ARCHITECTURE VIEWS & DIAGRAMS**
+4. [C4 Model Architecture Views](#c4-model-architecture-views)
    - [Level 1: System Context](#level-1-system-context)
    - [Level 2: Container Diagram](#level-2-container-diagram)
-   - [Level 3: Component Diagram](#level-3-component-diagram)
-4. [Technology Stack](#technology-stack)
-5. [System Components](#system-components)
-6. [Data Architecture](#data-architecture)
-7. [API Architecture](#api-architecture)
-8. [Data Flow Diagrams](#data-flow-diagrams)
-9. [Architecture Decision Records](#architecture-decision-records)
-10. [Security Architecture](#security-architecture)
-    - [Security Zones & Network Segmentation](#security-zones--network-segmentation)
-    - [Authentication & Authorization](#authentication--authorization)
-    - [Data Security & Encryption](#data-security--encryption)
-    - [API Security](#api-security)
-11. [Infrastructure Architecture](#infrastructure-architecture)
-    - [Network Architecture](#network-architecture)
-    - [CI/CD Pipeline](#cicd-pipeline)
-    - [Infrastructure as Code](#infrastructure-as-code)
-12. [Disaster Recovery & Business Continuity](#disaster-recovery--business-continuity)
-    - [Backup Strategy](#backup-strategy)
-    - [Recovery Procedures](#recovery-procedures)
-    - [Business Continuity Plan](#business-continuity-plan)
-13. [Compliance & Audit Framework](#compliance--audit-framework)
-    - [Audit Logging Architecture](#audit-logging-architecture)
-    - [Compliance Requirements](#compliance-requirements)
-    - [Data Privacy & GDPR](#data-privacy--gdpr)
-14. [Risk Management](#risk-management)
-    - [Risk Assessment Matrix](#risk-assessment-matrix)
-    - [Threat Modeling](#threat-modeling)
-    - [Security Controls](#security-controls)
-15. [Access Control & Identity Management](#access-control--identity-management)
-16. [Incident Response](#incident-response)
-17. [Change Management](#change-management)
-18. [Capacity Planning](#capacity-planning)
-19. [Non-Functional Requirements](#non-functional-requirements)
-20. [Deployment Architecture](#deployment-architecture)
-21. [Monitoring and Observability](#monitoring-and-observability)
-22. [Scalability Considerations](#scalability-considerations)
+   - [Level 3: Component Diagram (C4)](#level-3-component-diagram)
+5. Diagrams
+   - [Use Case Diagram](#use-case-diagram)
+   - [Class Diagram](#class-diagram)
+   - [Sequence Diagrams](#sequence-diagrams)
+   - [Activity Diagram](#activity-diagram)
+   - [State Diagram](#state-diagram)
+   - [Deployment Diagram](#deployment-diagram)
+   - [Component Diagram](#component-diagram-uml)
+   - [Package Diagram](#package-diagram)
+6. [Data Flow Diagrams](#data-flow-diagrams)
+
+### **PART III: SYSTEM DESIGN & APIs**
+7. [System Components](#system-components)
+8. [Data Architecture](#data-architecture)
+9. [API Architecture](#api-architecture)
+10. [API Documentation & Specifications](#api-documentation--specifications)
+11. [Architecture Decision Records](#architecture-decision-records)
+
+### **PART IV: SECURITY & COMPLIANCE**
+12. [Security Architecture](#security-architecture)
+13. [Access Control & Identity Management](#access-control--identity-management)
+
+### **PART V: INFRASTRUCTURE & OPERATIONS**
+14. [Infrastructure Architecture](#infrastructure-architecture)
+15. [Monitoring and Observability](#monitoring-and-observability)
+16. [Disaster Recovery & Business Continuity](#disaster-recovery--business-continuity)
+
+### **PART VI: QUALITY ASSURANCE & PERFORMANCE**
+17. [Testing Strategy](#testing-strategy)
+18. [Non-Functional Requirements](#non-functional-requirements)
+
+### **PART VII: GOVERNANCE & MANAGEMENT**
+19. [Change Management](#change-management)
+20. [Incident Response](#incident-response)
+
+### **PART VIII: REFERENCE MATERIALS**
+21. [Glossary](#glossary)
+22. [Appendices](#appendices)
+
+---
+
+### Quick Navigation by Role
+
+**Executives & Stakeholders**
+- Start with: [Overview](#overview), [Architecture Pattern](#architecture-pattern), [Technology Stack](#technology-stack)
+
+**Developers**
+- Start with: [Architecture Pattern](#architecture-pattern), [System Components](#system-components), [API Documentation](#api-documentation--specifications)
+
+**Architects**
+- Start with: [C4 Model](#c4-model-architecture-views), [Architecture Decision Records](#architecture-decision-records), [Data Architecture](#data-architecture)
+
+**Security Team**
+- Start with: [Security Architecture](#security-architecture), [Access Control & Identity Management](#access-control--identity-management)
+
+**DevOps/SRE**
+- Start with: [Infrastructure Architecture](#infrastructure-architecture), [Monitoring](#monitoring-and-observability), [Disaster Recovery](#disaster-recovery--business-continuity)
+
+**QA Engineers**
+- Start with: [Testing Strategy](#testing-strategy), [Non-Functional Requirements](#non-functional-requirements)
+
+---
+
+# PART I: INTRODUCTION & OVERVIEW
+
+> **Purpose:** High-level overview, architecture patterns, technology choices, and implementation timeline
 
 ---
 
@@ -56,6 +98,17 @@ CookNest is a full-stack e-commerce application that connects users with local h
 - Payment processing (dummy gateway)
 - Order history tracking
 
+### System Characteristics
+
+| Aspect | Description |
+|--------|-------------|
+| **Type** | Web-based SaaS Platform |
+| **Architecture** | 3-Tier Layered (Presentation, Business Logic, Data) |
+| **Scale** | MVP: 500 users → Production: 50,000+ users |
+| **Deployment** | AWS Cloud (Multi-AZ, Auto-scaling) |
+| **Security** | Enterprise-grade (OAuth 2.0, JWT, Encryption at rest/transit) |
+| **Availability** | 99.9% uptime SLA |
+
 ---
 
 ## Architecture Pattern
@@ -66,35 +119,35 @@ CookNest implements a **3-Tier Layered Architecture** with clear separation betw
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     PRESENTATION LAYER                       │
-│                    (React Frontend)                          │
+│                     PRESENTATION LAYER                      │
+│                    (React Frontend)                         │
 │  • User Interface Components                                │
-│  • State Management                                          │
-│  • API Client Integration                                    │
+│  • State Management                                         │
+│  • API Client Integration                                   │
 └──────────────────────┬──────────────────────────────────────┘
                        │ HTTP/REST API
                        │
 ┌──────────────────────▼──────────────────────────────────────┐
-│                   APPLICATION LAYER                          │
-│                 (Node.js + Express)                          │
-│                                                              │
-│  ┌────────────┐  ┌────────────┐  ┌─────────────┐          │
-│  │ Controllers│  │ Controllers│  │ Controllers │          │
-│  │   (User)   │  │   (Food)   │  │  (Order)    │          │
-│  └─────┬──────┘  └─────┬──────┘  └──────┬──────┘          │
-│        │                │                 │                  │
-│  ┌─────▼──────┐  ┌─────▼──────┐  ┌──────▼──────┐          │
-│  │  Services  │  │  Services  │  │  Services   │          │
-│  │   (User)   │  │   (Food)   │  │  (Order)    │          │
-│  └─────┬──────┘  └─────┬──────┘  └──────┬──────┘          │
-│        │                │                 │                  │
-│  ┌─────▼──────┐  ┌─────▼──────┐  ┌──────▼──────┐          │
-│  │Repositories│  │Repositories│  │Repositories │          │
-│  │   (User)   │  │   (Food)   │  │  (Order)    │          │
-│  └─────┬──────┘  └─────┬──────┘  └──────┬──────┘          │
-│        └────────────────┴─────────────────┘                  │
-│                         │                                    │
-└─────────────────────────┼────────────────────────────────────┘
+│                   APPLICATION LAYER                         │
+│                 (Node.js + Express)                         │
+│                                                             │
+│  ┌────────────┐  ┌────────────┐  ┌─────────────┐            │
+│  │ Controllers│  │ Controllers│  │ Controllers │            │
+│  │   (User)   │  │   (Food)   │  │  (Order)    │            │
+│  └─────┬──────┘  └─────┬──────┘  └──────┬──────┘            │
+│        │               │                │                   │
+│  ┌─────▼──────┐  ┌─────▼──────┐  ┌──────▼──────┐            │
+│  │  Services  │  │  Services  │  │  Services   │            │
+│  │   (User)   │  │   (Food)   │  │  (Order)    │            │
+│  └─────┬──────┘  └─────┬──────┘  └──────┬──────┘            │
+│        │               │                │                   │
+│  ┌─────▼──────┐  ┌─────▼──────┐  ┌──────▼──────┐            │
+│  │Repositories│  │Repositories│  │Repositories │            │
+│  │   (User)   │  │   (Food)   │  │  (Order)    │            │
+│  └─────┬──────┘  └─────┬──────┘  └──────┬──────┘            │
+│        └───────────────┴────────────────┘                   │
+│                         │                                   │
+└─────────────────────────┼───────────────────────────────────┘
                           │
 ┌─────────────────────────▼────────────────────────────────────┐
 │                     DATA LAYER                               │
@@ -149,6 +202,12 @@ CookNest implements a **3-Tier Layered Architecture** with clear separation betw
 
 ---
 
+# PART II: ARCHITECTURE VIEWS & DIAGRAMS
+
+> **Purpose:** Visual representations of the system architecture using industry-standard modeling techniques (C4 Model, UML, DFD)
+
+---
+
 ## C4 Model Architecture Views
 
 The C4 model provides a hierarchical way to visualize the CookNest system architecture at different levels of abstraction, from high-level system context down to detailed component interactions.
@@ -159,57 +218,42 @@ The System Context diagram shows how CookNest fits into the world around it - wh
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      SYSTEM CONTEXT                              │
-│                                                                  │
-│                                                                  │
-│         ┌──────────────┐                                        │
-│         │              │                                        │
-│         │   Customer   │                                        │
-│         │   (Person)   │                                        │
-│         │              │                                        │
-│         └───────┬──────┘                                        │
-│                 │                                                │
-│                 │ Browse food, place orders,                    │
-│                 │ view order history                            │
-│                 │                                                │
-│         ┌───────▼──────────────────────────────────┐           │
-│         │                                           │           │
-│         │         CookNest Application             │           │
-│         │                                           │           │
-│         │   Local home-cooked food ordering        │           │
-│         │   platform connecting customers with     │           │
-│         │   home chefs                              │           │
-│         │                                           │           │
-│         └───────┬──────────────────────────────────┘           │
-│                 │                                                │
-│                 │ Read/Write user data,                         │
-│                 │ food items, orders                            │
-│                 │                                                │
-│         ┌───────▼──────┐                                        │
-│         │              │                                        │
-│         │  PostgreSQL  │                                        │
-│         │  Database    │                                        │
-│         │  (External   │                                        │
-│         │   System)    │                                        │
-│         └──────────────┘                                        │
-│                                                                  │
-│                                                                  │
-│   ┌──────────────┐             ┌──────────────┐               │
-│   │              │             │              │                │
-│   │  Home Chef   │────────────▶│    Admin     │                │
-│   │  (Person)    │ Manages     │   (Person)   │                │
-│   │              │ food items  │              │                │
-│   └──────────────┘             └──────────────┘                │
-│         │                               │                       │
-│         │ Update food menu,             │ Manage users,         │
-│         │ view orders                   │ monitor system        │
-│         │                               │                       │
-│         └───────────────┬───────────────┘                       │
-│                         │                                        │
-│                         ▼                                        │
-│                 CookNest Application                            │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
+│                      SYSTEM CONTEXT                             │
+│                                                                 │
+│                                                                 │
+│    ┌──────────────┐                              ┌─────────────┐│
+│    │              │                              │             ││
+│    │   Customer   │                              │  Home Chef  ││
+│    │   (Person)   │                              │  (Person)   ││
+│    │              │                              │             ││
+│    └──────┬───────┘                              └──────┬──────┘│
+│           │                                             │       │
+│           │ Browse food,                  Manage food   │       │
+│           │ place orders,                 menu, view    │       │
+│           │ view history                  orders        │       │
+│           │                                             │       │
+│           │                                             │       │
+│           │      ┌──────────────────────────┐           │       │
+│           │      │                          │           │       │
+│           └─────▶│     CookNest System      │◀──────────┘       │
+│                  │                          │                   │
+│                  │  ┌────────────────────┐  │                   │
+│                  │  │  Web Application   │  │◀──────────┐       │
+│                  │  │  (React + Express) │  │           │       │
+│                  │  └────────────────────┘  │  Manage   │       │
+│                  │                          │  users,   │       │
+│                  │  ┌────────────────────┐  │  monitor  │       │
+│                  │  │   PostgreSQL       │  │  system   │       │
+│                  │  │    Database        │  │           │       │
+│                  │  └────────────────────┘  │           │       │
+│                  │                          │    ┌──────┴──────┐│
+│                  │ Local home-cooked food   │    │             ││
+│                  │ ordering platform        │    │    Admin    ││
+│                  └──────────────────────────┘    │   (Person)  ││
+│                                                  │             ││
+│                                                  └─────────────┘│
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 
 External Systems (Future):
 - Email Service (SendGrid/Nodemailer) - Send order confirmations
@@ -226,9 +270,6 @@ External Systems (Future):
 | Home Chef | Person | Food provider who lists items | Manage food menu, view received orders |
 | Admin | Person | System administrator | Manage users, monitor system, configure settings |
 | PostgreSQL Database | External System | Data storage | Persist and retrieve application data |
-| Email Service | External System (Future) | Notification service | Send order confirmations and updates |
-| Payment Gateway | External System (Future) | Payment processor | Handle payment transactions |
-
 ---
 
 ### Level 2: Container Diagram
@@ -241,35 +282,35 @@ The Container diagram zooms into the CookNest system and shows the high-level te
                                         │ HTTPS
                                         ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Web Browser                              │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │                                                         │    │
-│  │         Single-Page Application                        │    │
-│  │         [Container: React/JavaScript]                  │    │
-│  │                                                         │    │
-│  │  Provides user interface for browsing food,            │    │
-│  │  placing orders, and managing account                  │    │
-│  │                                                         │    │
-│  └─────────────────────┬───────────────────────────────────┘    │
+│                         Web Browser                             │
+│                                                                 │
+│  ┌────────────────────────────────────────────────────────┐     │
+│  │                                                        │     │
+│  │         Single-Page Application                        │     │
+│  │         [Container: React/JavaScript]                  │     │
+│  │                                                        │     │
+│  │  Provides user interface for browsing food,            │     │
+│  │  placing orders, and managing account                  │     │
+│  │                                                        │     │
+│  └─────────────────────┬──────────────────────────────────┘     │
 │                        │ Makes API calls to                     │
 │                        │ [JSON/HTTPS]                           │
 └────────────────────────┼────────────────────────────────────────┘
                          │
                          ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Backend API Server                             │
-│           [Container: Node.js + Express]                         │
-│                                                                  │
+│                   Backend API Server                            │
+│           [Container: Node.js + Express]                        │
+│                                                                 │
 │  Provides REST API for:                                         │
 │  • User authentication and registration                         │
 │  • Food catalog management                                      │
 │  • Order processing                                             │
 │  • Business logic and validation                                │
-│                                                                  │
+│                                                                 │
 │  Technology: Node.js, Express 5.2.1                             │
 │  Port: 5000 (typical)                                           │
-│                                                                  │
+│                                                                 │
 └─────────────────────┬───────────────────────────────────────────┘
                       │
                       │ Reads from and writes to
@@ -277,17 +318,17 @@ The Container diagram zooms into the CookNest system and shows the high-level te
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Database                                       │
-│           [Container: PostgreSQL]                                │
-│                                                                  │
+│                   Database                                      │
+│           [Container: PostgreSQL]                               │
+│                                                                 │
 │  Stores:                                                        │
 │  • User accounts and credentials                                │
 │  • Food items catalog                                           │
 │  • Orders and order items                                       │
 │  • Transactional data                                           │
-│                                                                  │
+│                                                                 │
 │  Technology: PostgreSQL (pg driver 8.18.0)                      │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 Future Containers:
@@ -315,80 +356,80 @@ Future Containers:
 The Component diagram shows how the Backend API container is broken down into components, their responsibilities, and interactions.
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      Backend API Server                              │
-│                   [Container: Node.js + Express]                     │
-│                                                                      │
-│  ┌────────────────────────────────────────────────────────────┐    │
-│  │                    API Layer                                │    │
-│  │                                                             │    │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │    │
-│  │  │ User Routes  │  │ Food Routes  │  │ Order Routes │    │    │
-│  │  │              │  │              │  │              │    │    │
-│  │  │ /api/users/* │  │ /api/foods/* │  │ /api/orders/*│    │    │
-│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘    │    │
-│  │         │                  │                  │             │    │
-│  └─────────┼──────────────────┼──────────────────┼─────────────┘    │
-│            │                  │                  │                   │
-│            ▼                  ▼                  ▼                   │
+┌────────────────────────────────────────────────────────────────────┐
+│                      Backend API Server                            │
+│                   [Container: Node.js + Express]                   │
+│                                                                    │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                   Controller Layer                           │   │
-│  │                                                              │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │   │
-│  │  │    User      │  │    Food      │  │    Order     │     │   │
-│  │  │  Controller  │  │  Controller  │  │  Controller  │     │   │
-│  │  │              │  │              │  │              │     │   │
-│  │  │ • register() │  │ • getFoods() │  │ • create()   │     │   │
-│  │  │ • login()    │  │ • search()   │  │ • getById()  │     │   │
-│  │  │ • getUser()  │  │ • getById()  │  │ • getByUser()│     │   │
-│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │   │
+│  │                    API Layer                                │   │
+│  │                                                             │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │   │
+│  │  │ User Routes  │  │ Food Routes  │  │ Order Routes │       │   │
+│  │  │              │  │              │  │              │       │   │
+│  │  │ /api/users/* │  │ /api/foods/* │  │ /api/orders/*│       │   │
+│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘       │   │
+│  │         │                 │                 │               │   │
+│  └─────────┼─────────────────┼─────────────────┼───────────────┘   │
+│            │                 │                 │                   │
+│            ▼                 ▼                 ▼                   │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                   Controller Layer                          │   │
+│  │                                                             │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │   │
+│  │  │    User      │  │    Food      │  │    Order     │       │   │
+│  │  │  Controller  │  │  Controller  │  │  Controller  │       │   │
+│  │  │              │  │              │  │              │       │   │
+│  │  │ • register() │  │ • getFoods() │  │ • create()   │       │   │
+│  │  │ • login()    │  │ • search()   │  │ • getById()  │       │   │
+│  │  │ • getUser()  │  │ • getById()  │  │ • getByUser()│       │   │
+│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘       │   │
+│  │         │                 │                 │               │   │
+│  └─────────┼─────────────────┼─────────────────┼───────────────┘   │
+│            │                 │                 │                   │
+│            ▼                 ▼                 ▼                   │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                    Service Layer                            │   │
+│  │                (Business Logic Components)                  │   │
+│  │                                                             │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │   │
+│  │  │    User      │  │    Food      │  │    Order     │       │   │
+│  │  │   Service    │  │   Service    │  │   Service    │       │   │
+│  │  │              │  │              │  │              │       │   │
+│  │  │ • validate   │  │ • listItems()│  │ • calculate  │       │   │
+│  │  │   Credentials│  │ • filterBy() │  │   Total()    │       │   │
+│  │  │ • hashPwd()  │  │ • searchBy() │  │ • process    │       │   │
+│  │  │ • createUser │  │              │  │   Payment()  │       │   │
+│  │  └──────┬───────┘  └───────┬──────┘  └────────┬─────┘       │   │
 │  │         │                  │                  │             │   │
 │  └─────────┼──────────────────┼──────────────────┼─────────────┘   │
-│            │                  │                  │                   │
-│            ▼                  ▼                  ▼                   │
+│            │                  │                  │                 │
+│            ▼                  ▼                  ▼                 │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                    Service Layer                             │   │
-│  │                (Business Logic Components)                   │   │
-│  │                                                              │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │   │
-│  │  │    User      │  │    Food      │  │    Order     │     │   │
-│  │  │   Service    │  │   Service    │  │   Service    │     │   │
-│  │  │              │  │              │  │              │     │   │
-│  │  │ • validate   │  │ • listItems()│  │ • calculate  │     │   │
-│  │  │   Credentials│  │ • filterBy() │  │   Total()    │     │   │
-│  │  │ • hashPwd()  │  │ • searchBy() │  │ • process    │     │   │
-│  │  │ • createUser │  │              │  │   Payment()  │     │   │
-│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │   │
+│  │                  Repository Layer                           │   │
+│  │                (Data Access Components)                     │   │
+│  │                                                             │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │   │
+│  │  │    User      │  │    Food      │  │    Order     │       │   │
+│  │  │  Repository  │  │  Repository  │  │  Repository  │       │   │
+│  │  │              │  │              │  │              │       │   │
+│  │  │ • findByEmail│  │ • getAll()   │  │ • create()   │       │   │
+│  │  │ • create()   │  │ • findById() │  │ • findById() │       │   │
+│  │  │ • findById() │  │ • search()   │  │ • findByUser │       │   │
+│  │  │ • update()   │  │              │  │ • addItems() │       │   │
+│  │  └──────┬───────┘  └───────┬──────┘  └────────┬─────┘       │   │
 │  │         │                  │                  │             │   │
 │  └─────────┼──────────────────┼──────────────────┼─────────────┘   │
-│            │                  │                  │                   │
-│            ▼                  ▼                  ▼                   │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                  Repository Layer                            │   │
-│  │                (Data Access Components)                      │   │
-│  │                                                              │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │   │
-│  │  │    User      │  │    Food      │  │    Order     │     │   │
-│  │  │  Repository  │  │  Repository  │  │  Repository  │     │   │
-│  │  │              │  │              │  │              │     │   │
-│  │  │ • findByEmail│  │ • getAll()   │  │ • create()   │     │   │
-│  │  │ • create()   │  │ • findById() │  │ • findById() │     │   │
-│  │  │ • findById() │  │ • search()   │  │ • findByUser│     │   │
-│  │  │ • update()   │  │              │  │ • addItems() │     │   │
-│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │   │
-│  │         │                  │                  │             │   │
-│  └─────────┼──────────────────┼──────────────────┼─────────────┘   │
-│            │                  │                  │                   │
+│            │                  │                  │                 │
 │  ┌─────────▼──────────────────▼──────────────────▼─────────────┐   │
-│  │                 Database Configuration                       │   │
-│  │               [Component: db.js - pg Pool]                   │   │
-│  │                                                              │   │
+│  │                 Database Configuration                      │   │
+│  │               [Component: db.js - pg Pool]                  │   │
+│  │                                                             │   │
 │  │  • Connection pooling                                       │   │
 │  │  • Query execution helper                                   │   │
 │  │  • Transaction management                                   │   │
-│  └──────────────────────────┬───────────────────────────────────┘   │
-│                             │                                        │
-└─────────────────────────────┼────────────────────────────────────────┘
+│  └──────────────────────────┬──────────────────────────────────┘   │
+│                             │                                      │
+└─────────────────────────────┼──────────────────────────────────────┘
                               │ SQL/TCP
                               ▼
                     ┌─────────────────┐
@@ -429,69 +470,344 @@ The Component diagram shows how the Backend API container is broken down into co
 
 ---
 
-### C4 Model - Dynamic Diagrams
-
 #### User Registration Flow
 
 ```
-User → [Web Browser] → [SPA] → [Backend API] → [Database]
-  1. Enter details
-  2. Submit form → POST /api/users/register
-  3. Receive request → userController.register()
-  4. Validate & hash password → userService.createUser()
-  5. Insert user → userRepository.create()
-  6. INSERT INTO users → PostgreSQL
-  7. Return user data ← userRepository
-  8. Process result ← userService
-  9. Send response (201) ← userController
-  10. Display success ← SPA
-  11. Redirect to login ← User
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        USER REGISTRATION FLOW                                │
+│                     End-to-End Request Processing                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    USER              WEB BROWSER         REACT SPA          EXPRESS API        DATABASE
+     │                    │                   │                   │                 │
+     │ 1. Fill Form       │                   │                   │                 │
+     │─────────────────►  │                   │                   │                 │
+     │                    │                   │                   │                 │
+     │ 2. Click Submit    │                   │                   │                 │
+     │─────────────────►  │                   │                   │                 │
+     │                    │                   │                   │                 │
+     │                    │ 3. POST /api/users/register          │                 │
+     │                    │    (name, email, password, phone)    │                 │
+     │                    │───────────────────►                   │                 │
+     │                    │                   │                   │                 │
+     │                    │                   │ 4. axios.post()   │                 │
+     │                    │                   │───────────────────►                 │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────┴───────────┐     │
+     │                    │                   │    │ CONTROLLER LAYER         │     │
+     │                    │                   │    │ userController.register()│     │
+     │                    │                   │    │ - Extract req.body       │     │
+     │                    │                   │    │ - Validate input fields  │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────▼───────────┐     │
+     │                    │                   │    │ SERVICE LAYER            │     │
+     │                    │                   │    │ userService.createUser() │     │
+     │                    │                   │    │ - Check email uniqueness │     │
+     │                    │                   │    │ - Hash password (bcrypt) │     │
+     │                    │                   │    │ - Sanitize data          │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────▼───────────┐     │
+     │                    │                   │    │ REPOSITORY LAYER         │     │
+     │                    │                   │    │ userRepository.create()  │     │
+     │                    │                   │    │ - Build SQL query        │     │
+     │                    │                   │    │ - Prepare parameters     │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 5. SQL Execute  │
+     │                    │                   │                   │   INSERT INTO   │
+     │                    │                   │                   │   users(...)    │
+     │                    │                   │                   │─────────────────►
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 6. Row Created  │
+     │                    │                   │                   │ (id, email,     │
+     │                    │                   │                   │  created_at)    │
+     │                    │                   │                   │◄─────────────────
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────┴───────────┐     │
+     │                    │                   │    │ REPOSITORY LAYER         │     │
+     │                    │                   │    │ - Map DB row to object   │     │
+     │                    │                   │    │ - Exclude password hash  │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────▼───────────┐     │
+     │                    │                   │    │ SERVICE LAYER            │     │
+     │                    │                   │    │ - Generate JWT token     │     │
+     │                    │                   │    │ - Prepare response       │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────▼───────────┐     │
+     │                    │                   │    │ CONTROLLER LAYER         │     │
+     │                    │                   │    │ - Send HTTP 201          │     │
+     │                    │                   │    │ - Set auth cookie        │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │ 7. Response 201   │                 │
+     │                    │                   │ { user, token }   │                 │
+     │                    │                   │◄───────────────────                 │
+     │                    │                   │                                     │
+     │                    │ 8. Success        │                                     │
+     │                    │    Response       │                                     │
+     │                    │◄───────────────────                                     │
+     │                    │                                                         │
+     │ 9. Show Success    │                                                         │
+     │    Notification    │                                                         │
+     │◄────────────────── │                                                         │
+     │                    │                                                         │
+     │ 10. Redirect to    │                                                         │
+     │     Dashboard      │                                                         │
+     │◄────────────────── │                                                         │
+     │                    │                                                         │
+
+═══════════════════════════════════════════════════════════════════════════════════
+KEY OPERATIONS:
+  • Input Validation: Email format, password strength (min 8 chars)
+  • Password Hashing: bcrypt with salt rounds = 10
+  • JWT Generation: Expires in 24h, includes user_id, email, role
+  • Response Time: Target < 500ms (95th percentile)
+═══════════════════════════════════════════════════════════════════════════════════
 ```
 
 #### Order Placement Flow
 
 ```
-User → [Web Browser] → [SPA] → [Backend API] → [Database]
-  1. Add items to cart
-  2. Submit order → POST /api/orders
-  3. Receive request → orderController.createOrder()
-  4. Validate & calculate → orderService.processOrder()
-  5. Begin transaction
-  6. Create order → orderRepository.create()
-  7. INSERT INTO orders → PostgreSQL
-  8. Add order items → orderRepository.addItems()
-  9. INSERT INTO order_items → PostgreSQL
-  10. Commit transaction
-  11. Return order ← orderRepository
-  12. Send confirmation ← orderService
-  13. Response (201) ← orderController
-  14. Display confirmation ← SPA
-  15. View order details ← User
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         ORDER PLACEMENT FLOW                                 │
+│              Multi-Step Transaction with Rollback Support                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    USER              WEB BROWSER         REACT SPA          EXPRESS API        DATABASE
+     │                    │                   │                   │                 │
+     │ 1. Browse Menu     │                   │                   │                 │
+     │─────────────────►  │                   │                   │                 │
+     │                    │                   │                   │                 │
+     │ 2. Add Items       │                   │                   │                 │
+     │    to Cart         │                   │                   │                 │
+     │─────────────────►  │                   │                   │                 │
+     │                    │ (localStorage)    │                   │                 │
+     │                    │                   │                   │                 │
+     │ 3. Review Cart     │                   │                   │                 │
+     │    & Checkout      │                   │                   │                 │
+     │─────────────────►  │                   │                   │                 │
+     │                    │                   │                   │                 │
+     │                    │ 4. POST /api/orders                   │                 │
+     │                    │    {items[], delivery_address,        │                 │
+     │                    │     payment_method, schedule}         │                 │
+     │                    │───────────────────►                   │                 │
+     │                    │                   │                   │                 │
+     │                    │                   │ 5. axios.post()   │                 │
+     │                    │                   │───────────────────►                 │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────┴───────────┐     │
+     │                    │                   │    │ CONTROLLER LAYER         │     │
+     │                    │                   │    │ orderController.create() │     │
+     │                    │                   │    │ - Extract order data     │     │
+     │                    │                   │    │ - Validate request       │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────▼───────────┐     │
+     │                    │                   │    │ SERVICE LAYER            │     │
+     │                    │                   │    │ orderService.process()   │     │
+     │                    │                   │    │ - Verify food items      │     │
+     │                    │                   │    │ - Check chef availability│     │
+     │                    │                   │    │ - Validate delivery zone │     │
+     │                    │                   │    │ - Calculate totals       │     │
+     │                    │                   │    │   * Subtotal             │     │
+     │                    │                   │    │   * Tax (8%)             │     │
+     │                    │                   │    │   * Delivery fee         │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────▼───────────┐     │
+     │                    │                   │    │ REPOSITORY LAYER         │     │
+     │                    │                   │    │ orderRepository.create() │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 6. BEGIN TRANS  │
+     │                    │                   │                   │─────────────────►
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 7. SUCCESS      │
+     │                    │                   │                   │◄─────────────────
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 8. INSERT INTO  │
+     │                    │                   │                   │    orders(...)  │
+     │                    │                   │                   │─────────────────►
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 9. Order Created│
+     │                    │                   │                   │    (id=1234)    │
+     │                    │                   │                   │◄─────────────────
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────┴───────────┐     │
+     │                    │                   │    │ REPOSITORY LAYER         │     │
+     │                    │                   │    │ - Loop order items       │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 10. INSERT INTO │
+     │                    │                   │                   │     order_items │
+     │                    │                   │                   │     (order_id,  │
+     │                    │                   │                   │      food_item, │
+     │                    │                   │                   │      quantity)  │
+     │                    │                   │                   │─────────────────►
+     │                    │                   │                   │    [Loop 3x]    │
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 11. Items Added │
+     │                    │                   │                   │     (3 rows)    │
+     │                    │                   │                   │◄─────────────────
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────┴───────────┐     │
+     │                    │                   │    │ REPOSITORY LAYER         │     │
+     │                    │                   │    │ - Update food inventory  │     │
+     │                    │                   │    │ - Verify constraints     │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 12. COMMIT TRANS│
+     │                    │                   │                   │─────────────────►
+     │                    │                   │                   │                 │
+     │                    │                   │                   │ 13. COMMITTED   │
+     │                    │                   │                   │◄─────────────────
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────┴───────────┐     │
+     │                    │                   │    │ SERVICE LAYER            │     │
+     │                    │                   │    │ - Generate order number  │     │
+     │                    │                   │    │ - Send confirmation email│     │
+     │                    │                   │    │ - Notify chef            │     │
+     │                    │                   │    │ - Clear cart session     │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │    ┌──────────────▼───────────┐     │
+     │                    │                   │    │ CONTROLLER LAYER         │     │
+     │                    │                   │    │ - Send HTTP 201          │     │
+     │                    │                   │    │ - Return order details   │     │
+     │                    │                   │    └──────────────┬───────────┘     │
+     │                    │                   │                   │                 │
+     │                    │                   │ 14. Response 201  │                 │
+     │                    │                   │ { order, tracking }                 │
+     │                    │                   │◄───────────────────                 │
+     │                    │                   │                                     │
+     │                    │ 15. Order Success │                                     │
+     │                    │◄───────────────────                                     │
+     │                    │                                                         │
+     │ 16. Display        │                                                         │
+     │     Confirmation   │                                                         │
+     │     Order #ORD1234 │                                                         │
+     │◄────────────────── │                                                         │
+     │                    │                                                         │
+     │ 17. View Order     │                                                         │
+     │     Tracking       │                                                         │
+     │─────────────────►  │                                                         │
+     │                    │                                                         │
+
+═══════════════════════════════════════════════════════════════════════════════════
+TRANSACTION BOUNDARIES:
+  ┌─ BEGIN TRANSACTION (Step 6)
+  │  • INSERT orders
+  │  • INSERT order_items (batch)
+  │  • UPDATE food_items.stock_quantity
+  └─ COMMIT TRANSACTION (Step 12)
+     ↓ On Failure: ROLLBACK ALL
+
+KEY OPERATIONS:
+  • Inventory Check: Verify food items available before order creation
+  • Price Lock: Capture food_price at order time (denormalized)
+  • Atomic Operations: All inserts succeed or all fail (ACID compliance)
+  • Order Number Format: ORD-{timestamp}-{random4digits}
+  • Response Time Target: < 1000ms (95th percentile)
+  • Notification: Async email queue (RabbitMQ/Redis)
+═══════════════════════════════════════════════════════════════════════════════════
+
+ERROR HANDLING:
+  • Validation Failed (400): Missing fields, invalid quantities
+  • Food Unavailable (409): Item out of stock or chef inactive
+  • Transaction Failed (500): Database constraint violation → ROLLBACK
+  • Payment Failed (402): Payment processing error → Order marked 'pending_payment'
 ```
 
 ---
 
 ## Technology Stack
 
-### Frontend
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| Framework | React | UI component library |
-| Build Tool | Create React App | Development and build setup |
-| HTTP Client | Fetch API / Axios | API communication |
+### Frontend Stack
 
-### Backend
 | Component | Technology | Version | Purpose |
 |-----------|-----------|---------|---------|
-| Runtime | Node.js | - | JavaScript runtime |
-| Framework | Express | 5.2.1 | Web application framework |
-| Database Driver | pg | 8.18.0 | PostgreSQL client |
-| CORS | cors | 2.8.6 | Cross-origin resource sharing |
+| **Framework** | React | 18+ | UI component library |
+| **Build Tool** | Create React App / Vite | Latest | Development and build setup |
+| **HTTP Client** | Axios | 1.x | API communication |
+| **State Management** | React Context / Redux | - | Global state management |
+| **Routing** | React Router | 6.x | Client-side routing |
+| **Styling** | CSS Modules / Styled Components | - | Component styling |
 
-### Database
+### Backend Stack
+
+| Component | Technology | Version | Purpose |
+|-----------|-----------|---------|---------|
+| **Runtime** | Node.js | 18 LTS | JavaScript runtime environment |
+| **Framework** | Express | 5.2.1 | Web application framework |
+| **Database Driver** | pg (node-postgres) | 8.18.0 | PostgreSQL client library |
+| **CORS** | cors | 2.8.6 | Cross-origin resource sharing |
+| **Authentication** | jsonwebtoken | 9.x | JWT token generation/validation |
+| **Password Hashing** | bcrypt | 5.x | Secure password hashing |
+| **Validation** | Joi / express-validator | - | Request validation |
+| **Logging** | Winston | 3.x | Application logging |
+
+### Database Stack
+
+| Component | Technology | Version | Purpose |
+|-----------|-----------|---------|---------|
+| **Primary Database** | PostgreSQL | 14+ | Relational data storage |
+| **Cache** | Redis | 7.x | Session storage, API caching |
+| **Search** | PostgreSQL Full-Text | - | Food item search (future: Elasticsearch) |
+
+### Infrastructure & DevOps
+
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
-| RDBMS | PostgreSQL | Relational data storage |
+| **Cloud Provider** | AWS | Hosting infrastructure |
+| **Compute** | EC2 (t3.medium) | Application servers |
+| **Load Balancer** | ALB | Traffic distribution |
+| **Storage** | S3 | Static assets, images |
+| **CDN** | CloudFront | Content delivery |
+| **Container** | Docker | Application containerization |
+| **Container Registry** | ECR | Docker image storage |
+| **CI/CD** | GitHub Actions | Automated deployments |
+| **IaC** | Terraform | Infrastructure automation |
+| **Monitoring** | CloudWatch, Prometheus, Grafana | System monitoring |
+| **Error Tracking** | Sentry | Error monitoring and alerts |
+
+### Security & Compliance
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **SSL/TLS** | AWS Certificate Manager | HTTPS encryption |
+| **Secrets Management** | AWS Secrets Manager | Secure credential storage |
+| **WAF** | AWS WAF | Web application firewall |
+| **DDoS Protection** | AWS Shield | DDoS mitigation |
+
+###  Third-Party Services
+
+| Service | Provider | Purpose |
+|---------|----------|---------|
+| **Payment Processing** | Stripe | Credit card payments |
+| **Email** | SendGrid | Transactional emails |
+| **SMS** | Twilio | SMS notifications |
+| **Analytics** | Google Analytics | User behavior tracking |
+
+### Development & Testing
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Unit Testing** | Jest | JavaScript testing framework |
+| **API Testing** | Supertest | HTTP assertion library |
+| **E2E Testing** | Cypress | End-to-end testing |
+| **Load Testing** | k6 / Apache JMeter | Performance testing |
+| **Code Quality** | ESLint, Prettier | Code linting and formatting |
+| **Security Scanning** | OWASP ZAP, Snyk | Vulnerability scanning |
+
+---
+
+# PART III: SYSTEM DESIGN & APIs
+
+> **Purpose:** Detailed system design, component organization, data models, and API specifications
 
 ---
 
@@ -563,83 +879,297 @@ HTTP Response
 
 #### Entity Relationship Diagram
 
+> 📊 **Complete Database Schema**: All 12 tables with relationships for the CookNest platform.
+
 ```
-┌──────────────────┐
-│     users        │
-├──────────────────┤
-│ id (PK)          │
-│ name             │
-│ email (UNIQUE)   │
-│ password         │
-└────────┬─────────┘
-         │
-         │ 1
-         │
-         │ *
-┌────────▼─────────┐         ┌──────────────────┐
-│    orders        │         │   food_items     │
-├──────────────────┤         ├──────────────────┤
-│ id (PK)          │         │ id (PK)          │
-│ user_id (FK)     │         │ name             │
-│ total_amount     │    ┌────│ description      │
-│ created_at       │    │    │ price            │
-└────────┬─────────┘    │    └──────────────────┘
-         │              │
-         │ 1            │ 1
-         │              │
-         │ *            │ *
-┌────────▼──────────────▼──┐
-│     order_items          │
-├──────────────────────────┤
-│ id (PK)                  │
-│ order_id (FK)            │
-│ food_item_id (FK)        │
-│ quantity                 │
-│ food_name                │
-│ food_price               │
-└──────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                         COOKNEST DATABASE SCHEMA (ERD)                          │
+│                          Entity-Relationship Diagram                            │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+                            ┌──────────────────────────┐
+                            │       users              │
+                            ├──────────────────────────┤
+                            │ PK id: SERIAL            │
+                            │    name: VARCHAR(100)    │
+                            │ UK email: VARCHAR(100)   │
+                            │    password: VARCHAR(255)│
+                            │    role: VARCHAR(20)     │ ← 'customer','chef','admin'
+                            │    phone: VARCHAR(20)    │
+                            │    avatar_url: VARCHAR   │
+                            │    email_verified: BOOL  │
+                            │    status: VARCHAR(20)   │ ← 'active','suspended','deleted'
+                            │    created_at: TIMESTAMP │
+                            │    updated_at: TIMESTAMP │
+                            │    last_login: TIMESTAMP │
+                            └─┬─┬───────┬──────┬───┬───┘
+                              │ │       │      │   │
+                              │ │       │      │   └────────────────────────┐
+                1:N           │ │       │      │                            │ 1:N
+         ┌────────────────────┘ │       │      └─────┐                      │
+         │                      │       │            │                      │
+         │ 1:N                  │       │ 1:0..1     │ 1:N                  │
+         ▼                      │       │            ▼                      ▼
+  ┌──────────────┐     ┌────────┴───────▼────┐   ┌──────────────────┐  ┌────────────────┐
+  │   sessions   │     │    password_resets  │   │    addresses     │  │    audit_logs  │
+  ├──────────────┤     ├─────────────────────┤   ├──────────────────┤  ├────────────────┤
+  │ PK id: SERIAL│     │ PK id: SERIAL       │   │ PK id: SERIAL    │  │ PK id: SERIAL  │
+  │ FK user_id   │     │ FK user_id          │   │ FK user_id       │  │ FK user_id     │
+  │    token     │     │    token: VARCHAR   │   │    label: VAR(50)│  │    action: VAR │
+  │    expires_at│     │    expires_at: TIME │   │    street: VAR   │  │    entity_type │
+  │    created_at│     │    used: BOOLEAN    │   │    city: VAR(100)│  │    entity_id   │
+  │    ip_address│     │    created_at: TIME │   │    state: VAR(50)│  │    old_values  │
+  └──────────────┘     └─────────────────────┘   │    postal_code   │  │    new_values  │
+                                                 │    country: VAR  │  │    ip_address  │
+                       ┌─────────────────────────│    latitude: DEC │  │    created_at  │
+                       │ 1:1 (via role='chef')   │    longitude: DEC│  └────────────────┘
+                       │                         │    is_default    │
+                       ▼                         └─────────┬────────┘
+           ┌───────────────────────┐                       │
+           │     chefs             │                       │
+           ├───────────────────────┤                       │ N:1 (used in orders)
+           │ PK id: SERIAL         │                       │
+           │ FK user_id: INT (UK)  │                       │
+           │    bio: TEXT          │                       │
+           │    specialty: VARCHAR │                       │
+           │    years_exp: INTEGER │                       ▼
+           │    rating: DEC(3,2)   │         ┌─────────────────────────┐
+           │    total_orders: INT  │         │     orders              │
+           │    verified: BOOLEAN  │◀────────├─────────────────────────┤
+           │    license_no: VARCHAR│   1:N   │ PK id: SERIAL           │
+           │    bank_account: VAR  │         │ FK user_id: INTEGER     │
+           │    commission_rate    │         │ FK chef_id: INTEGER     │
+           │    created_at: TIME   │         │ FK address_id: INTEGER  │
+           └─┬───────────┬─────────┘         │    order_number: VARCHAR│ ← ORD-{timestamp}
+             │ 1:N       │                   │    total_amount: DECIMAL│
+             │           │ 1:N               │    tax_amount: DECIMAL  │
+             │           │                   │    delivery_fee: DECIMAL│
+             ▼           ▼                   │    status: VARCHAR(20)  │ ← pending,confirmed,
+  ┌──────────────┐  ┌────────────────┐       │    payment_status: VAR  │   preparing,delivered
+  │ food_items   │  │ delivery_zones │       │    payment_method: VAR  │
+  ├──────────────┤  ├────────────────┤       │    special_instructions │
+  │PK id: SERIAL │  │PK id: SERIAL   │       │    scheduled_for: TIME  │
+  │FK chef_id    │  │FK chef_id      │       │    created_at: TIMESTAMP│
+  │  name: VAR   │  │  name: VARCHAR │       │    updated_at: TIMESTAMP│
+  │  description │  │  polygon: GEO  │       │    completed_at: TIME   │
+  │  price: DEC  │  │  min_order: DEC│       │    cancelled_at: TIME   │
+  │  category    │  │  delivery_fee  │       └─┬────────┬──────────────┘
+  │  cuisine     │  │  active: BOOL  │         │ 1:N    │ 1:0..1
+  │  prep_time   │  │  created_at    │         │        │
+  │  serves: INT │  └────────────────┘         │        ▼
+  │  ingredients │                             │   ┌──────────────────┐
+  │  allergens[] │                             │   │  payments        │
+  │  is_vegan    │                             │   ├──────────────────┤
+  │  is_gluten_free                            │   │ PK id: SERIAL    │
+  │  image_url   │                             │   │ FK order_id (UK) │ ← 1:1 relationship
+  │  available   │                             │   │    amount: DEC   │
+  │  stock_qty   │                             │   │    payment_method│
+  │  created_at  │                             │   │    stripe_pay_id │
+  │  updated_at  │                             │   │    status: VAR   │
+  └──┬───────────┘                             │   │    processed_at  │
+     │ 1:N                                     │   │    refunded_at   │
+     │                                         │   │    refund_amount │
+     │         ┌──────────────────────────┐    │   └──────────────────┘
+     │         │   order_items            │    │
+     └────────▶├──────────────────────────┤◀───┘
+         N:1   │ PK id: SERIAL            │
+               │ FK order_id: INTEGER     │
+               │ FK food_item_id: INTEGER │
+               │    quantity: INTEGER     │
+               │    food_name: VARCHAR    │ ← Denormalized
+               │    food_price: DECIMAL   │ ← for historical accuracy
+               │    subtotal: DECIMAL     │
+               │    notes: TEXT           │
+               └──────────┬───────────────┘
+                          │
+                          │ 1:N (order can have multiple reviews)
+                          │
+                      ┌───▼────────────────┐
+                      │   reviews          │
+                      ├────────────────────┤
+                      │ PK id: SERIAL      │
+                      │ FK order_id: INT   │ ← Reviews linked to orders
+                      │ FK user_id: INT    │ ← Reviewer
+                      │ FK chef_id: INT    │ ← Chef being reviewed
+                      │ FK food_item_id    │ ← Optional: specific item review
+                      │    rating: INT(1-5)│
+                      │    comment: TEXT   │
+                      │    helpful_count   │
+                      │    response: TEXT  │ ← Chef response
+                      │    created_at      │
+                      │    updated_at      │
+                      └────────────────────┘
 ```
+
+**Key Relationships:**
+- users → chefs (1:0..1) - Users with role='chef' have extended profiles
+- users → orders (1:N) - Customers place multiple orders
+- chefs → food_items (1:N) - Chefs create menu items
+- chefs → orders (1:N) - Chefs receive orders
+- orders → order_items (1:N) - Orders contain line items
+- orders → payments (1:0..1) - Orders have payment records
+- food_items → order_items (1:N) - Items referenced in orders
+
+**Schema Files:**
+- `database/schema.sql` - Basic 4-table schema
+- `database/schema_comprehensive.sql` - Complete 12-table production schema
 
 #### Table Descriptions
 
-##### users
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | SERIAL | PRIMARY KEY | Unique user identifier |
-| name | VARCHAR(100) | NOT NULL | User's full name |
-| email | VARCHAR(100) | UNIQUE | User's email address |
-| password | VARCHAR(100) | NOT NULL | Hashed password |
+> **Note:** For complete schema with constraints, indexes, and triggers, see `database/schema_comprehensive.sql`
 
-##### food_items
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | SERIAL | PRIMARY KEY | Unique food item identifier |
-| name | VARCHAR(100) | NOT NULL | Food item name |
-| description | TEXT | - | Detailed description |
-| price | NUMERIC(10,2) | NOT NULL | Price in currency |
+##### Core Tables
 
-##### orders
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | SERIAL | PRIMARY KEY | Unique order identifier |
-| user_id | INT | FOREIGN KEY → users(id) | User who placed order |
-| total_amount | NUMERIC(10,2) | NOT NULL | Total order value |
-| created_at | TIMESTAMP | DEFAULT NOW() | Order creation timestamp |
+**users** - User accounts and authentication
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Unique user identifier |
+| name | VARCHAR(100) | User's full name |
+| email | VARCHAR(100) UNIQUE | User's email (login) |
+| password | VARCHAR(255) | Hashed password (bcrypt) |
+| role | VARCHAR(20) | 'customer', 'chef', 'admin' |
+| phone | VARCHAR(20) | Contact number |
+| email_verified | BOOLEAN | Email verification status |
+| status | VARCHAR(20) | 'active', 'suspended', 'deleted' |
 
-##### order_items
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | SERIAL | PRIMARY KEY | Unique order item identifier |
-| order_id | INT | FOREIGN KEY → orders(id) | Associated order |
-| food_item_id | INT | FOREIGN KEY → food_items(id) | Food item ordered |
-| quantity | INT | NOT NULL | Quantity ordered |
-| food_name | VARCHAR(100) | - | Snapshot of food name |
-| food_price | NUMERIC(10,2) | - | Snapshot of food price |
+**chefs** - Chef profiles (extends users with role='chef')
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Chef identifier |
+| user_id | INT UNIQUE FK | Links to users table |
+| bio | TEXT | Chef biography |
+| specialty | VARCHAR(100) | Cuisine specialty |
+| rating | DECIMAL(3,2) | Average rating (0-5) |
+| verified | BOOLEAN | Verification status |
+| commission_rate | DECIMAL(5,2) | Platform commission % |
+
+**food_items** - Menu items created by chefs
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Food item identifier |
+| chef_id | INT FK | Chef who created item |
+| name | VARCHAR(100) | Food item name |
+| price | DECIMAL(10,2) | Item price |
+| category | VARCHAR(50) | 'Appetizer', 'Main', 'Dessert' |
+| cuisine | VARCHAR(50) | 'Italian', 'Mexican', etc. |
+| available | BOOLEAN | Availability status |
+| stock_quantity | INTEGER | Inventory count |
+
+**orders** - Customer orders
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Order identifier |
+| user_id | INT FK | Customer who placed order |
+| chef_id | INT FK | Chef fulfilling order |
+| address_id | INT FK | Delivery address |
+| order_number | VARCHAR(50) UNIQUE | ORD-{timestamp}-{random} |
+| total_amount | DECIMAL(10,2) | Total order value |
+| status | VARCHAR(20) | Order status workflow |
+| payment_status | VARCHAR(20) | Payment processing status |
+
+**order_items** - Order line items (denormalized for history)
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Line item identifier |
+| order_id | INT FK | Associated order |
+| food_item_id | INT FK | Food item reference |
+| quantity | INTEGER | Quantity ordered |
+| food_name | VARCHAR(100) | Snapshot of food name |
+| food_price | DECIMAL(10,2) | Snapshot of price at order time |
+
+##### Supporting Tables
+
+**addresses** - User delivery addresses
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Address identifier |
+| user_id | INT FK | User who owns address |
+| street, city, state, postal_code | VARCHAR | Address components |
+| is_default | BOOLEAN | Default address flag |
+
+**sessions** - User session management
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Session identifier |
+| user_id | INT FK | Logged-in user |
+| token | VARCHAR(255) UNIQUE | Session token |
+| expires_at | TIMESTAMP | Session expiration |
+
+**password_resets** - Password recovery tokens
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Reset token identifier |
+| user_id | INT FK | User requesting reset |
+| token | VARCHAR(255) UNIQUE | Reset token |
+| used | BOOLEAN | Token usage flag |
+
+**delivery_zones** - Chef service areas
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Zone identifier |
+| chef_id | INT FK | Chef defining zone |
+| polygon | GEOMETRY | Geographic boundary |
+| min_order_amount | DECIMAL(10,2) | Minimum order value |
+
+**payments** - Payment transaction records
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Payment identifier |
+| order_id | INT UNIQUE FK | Associated order (1:1) |
+| amount | DECIMAL(10,2) | Payment amount |
+| stripe_payment_id | VARCHAR(255) | External payment reference |
+| status | VARCHAR(20) | Payment status |
+
+**reviews** - Rating and review system
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Review identifier |
+| order_id | INT FK | Order being reviewed |
+| user_id | INT FK | Reviewer |
+| chef_id | INT FK | Chef being rated |
+| food_item_id | INT FK | Optional: specific item review |
+| rating | INTEGER | Rating (1-5) |
+| comment | TEXT | Review text |
+
+**audit_logs** - Security and compliance tracking
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | Log entry identifier |
+| user_id | INT FK | User performing action |
+| action | VARCHAR(50) | Action type |
+| entity_type | VARCHAR(50) | Affected entity |
+| old_values, new_values | JSONB | Change tracking |
 
 ### Data Integrity
-- **Referential Integrity**: Foreign key constraints ensure data consistency
-- **Unique Constraints**: Email uniqueness prevents duplicate accounts
-- **Data Snapshots**: order_items stores food_name and food_price to maintain historical accuracy
+
+**Referential Integrity:**
+- 17 foreign key relationships enforce data consistency across all 12 tables
+- CASCADE deletes for dependent records (sessions, password_resets, audit_logs)
+- RESTRICT deletes for business-critical references (orders, payments)
+
+**Unique Constraints:**
+- users.email - Prevent duplicate accounts
+- chefs.user_id - Enforce 1:1 relationship between users and chef profiles
+- orders.order_number - Unique order tracking
+- payments.order_id - One payment per order (1:1 relationship)
+
+**Data Snapshots (Denormalization):**
+- order_items stores food_name and food_price at order time
+- Maintains accurate historical records even if menu items change
+
+**Business Rules Enforcement:**
+- User roles validated: 'customer', 'chef', 'admin'
+- Order status workflow: pending → confirmed → preparing → delivered
+- Payment status tracking: pending → processing → paid/failed
+- Rating constraints: 1-5 stars only
+- Check constraints on amounts (must be > 0)
+
+**Data Validation:**
+- Email format validation
+- Password strength requirements (min 8 characters)
+- Price and amount fields validated as positive decimals
+- Required fields enforced with NOT NULL constraints
 
 ---
 
@@ -878,6 +1408,765 @@ Data Flow Diagrams (DFD) show how data moves through the CookNest system, includ
 
 ---
 
+### Use Case Diagram
+
+The Use Case diagram shows the functional requirements of the system from the user's perspective.
+
+The Use Case diagram shows the functional requirements of the system from the user's perspective.
+
+```
+                    CookNest System
+    ┌─────────────────────────────────────────────────┐
+    │                                                 │
+    │   ┌──────────────────┐                          │
+    │   │ Register Account │                          │
+    │   └────────┬─────────┘                          │
+    │            │                                    │
+    │   ┌────────▼─────────┐                          │
+    │   │      Login       │                          │
+    │   └────────┬─────────┘                          │
+    │            │                                    │
+┌───┴───┐   ┌───▼──────────────┐   ┌──────────────┐   │
+│       │   │   Browse Food    │   │ Manage Food  │   │
+│Customer│  │    Catalog       │   │    Items     │   │
+│       │   └───┬──────────────┘   └──────┬───────┘   │
+└───┬───┘       │                         │           │
+    │   ┌───────▼──────────┐              │           │
+    │   │  Search Food     │              │           │
+    │   └───┬──────────────┘              │           │
+    │       │                             │           │
+    │   ┌───▼──────────────┐   ┌──────────▼───────┐   │
+    │   │   Place Order    │   │  View Received   │   │
+    │   └───┬──────────────┘   │     Orders       │   │
+    │       │                  └──────────┬───────┘   │
+    │   ┌───▼──────────────┐             │            │
+    │   │  Process Payment │             │            │
+    │   └───┬──────────────┘             │      ┌───┴────┐
+    │       │                            │      │        │
+    │   ┌───▼──────────────┐             │      │ Home   │
+    │   │  View Order      │             │      │ Chef   │
+    │   │    History       │             │      │        │
+    │   └──────────────────┘             │      └───┬────┘
+    │                                    │          │
+    │                       ┌────────────▼──────────▼───┐
+    │                       │  Update Order Status      │
+    │                       └───────────────────────────┘
+    │                                                 │
+    │   ┌──────────────────────────────┐              │
+    │   │   Manage Users               │              │
+    │   └────────┬─────────────────────┘              │
+    │            │                                    │
+    │   ┌────────▼─────────────────────┐              │
+    │   │   View System Reports        │              │
+    │   └────────┬─────────────────────┘              │
+    │            │                                    │
+    │   ┌────────▼─────────────────────┐              │
+    │   │   Monitor System             │              │
+    │   └──────────────────────────────┘              │
+    │                                                 │
+    └─────────────────────────────────────────────────┘
+                         │
+                    ┌────┴────┐
+                    │         │
+                    │  Admin  │
+                    │         │
+                    └─────────┘
+```
+
+#### Use Case Descriptions
+
+| Use Case | Actor | Description | Preconditions |
+|----------|-------|-------------|---------------|
+| Register Account | Customer, Home Chef | Create a new user account | Valid email, password |
+| Login | All Users | Authenticate to access the system | Active account |
+| Browse Food Catalog | Customer | View available food items | None |
+| Search Food | Customer | Find specific food items | None |
+| Place Order | Customer | Create a new food order | Logged in, items in cart |
+| Process Payment | Customer | Pay for the order | Order created |
+| View Order History | Customer | See past orders | Logged in |
+| Manage Food Items | Home Chef | Add, update, delete food items | Logged in as chef |
+| View Received Orders | Home Chef | See orders for their food | Logged in as chef |
+| Update Order Status | Home Chef | Mark order as prepared/delivered | Order exists |
+| Manage Users | Admin | Create, update, delete users | Logged in as admin |
+| View System Reports | Admin | Access analytics and reports | Logged in as admin |
+| Monitor System | Admin | Check system health and performance | Logged in as admin |
+
+---
+
+## Class Diagram
+
+The Class diagram shows the structure of the system's domain model with classes, attributes, methods, and relationships.
+
+```
+┌─────────────────────────────┐
+│          User               │
+├─────────────────────────────┤
+│ - id: Integer               │
+│ - name: String              │
+│ - email: String             │
+│ - password: String          │
+│ - role: String              │
+│ - createdAt: DateTime       │
+├─────────────────────────────┤
+│ + register(): User          │
+│ + login(): Token            │
+│ + updateProfile(): void     │
+│ + deleteAccount(): void     │
+└──────────┬──────────────────┘
+           │ 1
+           │
+           │ places
+           │
+           │ *
+┌──────────▼──────────────────┐
+│          Order              │
+├─────────────────────────────┤
+│ - id: Integer               │
+│ - userId: Integer           │
+│ - totalAmount: Decimal      │
+│ - status: String            │
+│ - createdAt: DateTime       │
+│ - updatedAt: DateTime       │
+├─────────────────────────────┤
+│ + create(): Order           │
+│ + getById(id): Order        │
+│ + updateStatus(): void      │
+│ + calculateTotal(): Decimal │
+│ + cancel(): void            │
+└──────────┬──────────────────┘
+           │ 1
+           │
+           │ contains
+           │
+           │ *
+┌──────────▼──────────────────┐         ┌─────────────────────────┐
+│       OrderItem             │    *    │      FoodItem           │
+├─────────────────────────────┤─────────├─────────────────────────┤
+│ - id: Integer               │ refers  │ - id: Integer           │
+│ - orderId: Integer          │   to    │ - name: String          │
+│ - foodItemId: Integer       │    1    │ - description: Text     │
+│ - quantity: Integer         │         │ - price: Decimal        │
+│ - foodName: String          │         │ - chefId: Integer       │
+│ - foodPrice: Decimal        │         │ - category: String      │
+├─────────────────────────────┤         │ - available: Boolean    │
+│ + addItem(): OrderItem      │         │ - createdAt: DateTime   │
+│ + updateQuantity(): void    │         ├─────────────────────────┤
+│ + removeItem(): void        │         │ + create(): FoodItem    │
+│ + getSubtotal(): Decimal    │         │ + update(): void        │
+└─────────────────────────────┘         │ + delete(): void        │
+                                        │ + search(query): List   │
+                                        └────────┬────────────────┘
+                                                 │ *
+                                                 │
+                                                 │ manages
+                                                 │
+                                                 │ 1
+                                        ┌────────▼────────────────┐
+                                        │       Chef              │
+                                        ├─────────────────────────┤
+                                        │ (inherits from User)    │
+                                        ├─────────────────────────┤
+                                        │ + addFoodItem(): void   │
+                                        │ + viewOrders(): List    │
+                                        │ + updateOrderStatus()   │
+                                        └─────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────┐
+│                      Supporting Classes                           │
+├───────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  ┌─────────────────────┐  ┌──────────────────┐  ┌─────────────┐   │
+│  │   UserRepository    │  │  FoodRepository  │  │OrderRepository  │
+│  ├─────────────────────┤  ├──────────────────┤  ├─────────────┤   │
+│  │+ findByEmail()      │  │+ getAll()        │  │+ create()   │   │
+│  │+ create()           │  │+ findById()      │  │+ findById() │   │
+│  │+ update()           │  │+ search()        │  │+ findByUser()│  │
+│  │+ delete()           │  │+ update()        │  │+ addItems() │   │
+│  └─────────────────────┘  └──────────────────┘  └─────────────┘   │
+│                                                                   │
+│  ┌─────────────────────┐  ┌──────────────────┐  ┌─────────────┐   │
+│  │   UserService       │  │   FoodService    │  │OrderService │   │
+│  ├─────────────────────┤  ├──────────────────┤  ├─────────────┤   │
+│  │+ validateCreds()    │  │+ listItems()     │  │+ processOrder│  │
+│  │+ hashPassword()     │  │+ filterItems()   │  │+ calcTotal()│   │
+│  │+ createUser()       │  │+ searchItems()   │  │+ validateCart│  │
+│  └─────────────────────┘  └──────────────────┘  └─────────────┘   │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Sequence Diagrams
+
+Sequence diagrams show how objects interact in a particular scenario, focusing on the order of messages exchanged.
+
+#### User Registration Sequence
+
+```
+┌──────┐       ┌────────┐      ┌──────────┐     ┌─────────┐     ┌──────────┐
+│Client│       │  API   │      │Controller│     │ Service │     │Repository│
+└──┬───┘       └───┬────┘      └────┬─────┘     └────┬────┘     └────┬─────┘
+   │               │                │                │               │
+   │ POST /register│                │                │               │
+   ├──────────────>│                │                │               │
+   │               │ register()     │                │               │
+   │               ├───────────────>│                │               │
+   │               │                │ validateInput()│               │
+   │               │                ├───────────────>│               │
+   │               │                │                │ findByEmail() │
+   │               │                │                ├──────────────>│
+   │               │                │                │               │
+   │               │                │                │ null (not found)
+   │               │                │                │<──────────────┤
+   │               │                │ hashPassword() │               │
+   │               │                │<───────────────┤               │
+   │               │                │                │               │
+   │               │                │ createUser()   │               │
+   │               │                ├───────────────>│               │
+   │               │                │                │ insertUser()  │
+   │               │                │                ├──────────────>│
+   │               │                │                │               │
+   │               │                │                │ newUser       │
+   │               │                │                │<──────────────┤
+   │               │                │ user           │               │
+   │               │                │<───────────────┤               │
+   │               │ 201 Created    │                │               │
+   │               │<───────────────┤                │               │
+   │ 201 + userData│                │                │               │
+   │<──────────────┤                │                │               │
+   │               │                │                │               │
+```
+
+#### Order Placement Sequence
+
+```
+┌──────┐  ┌──────┐  ┌──────────┐  ┌────────┐  ┌──────────┐  ┌──────────┐
+│Client│  │ Auth │  │Order Ctrl│  │Order Svc│ │Food Repo │  │Order Repo│
+└──┬───┘  └──┬───┘  └────┬─────┘  └────┬────┘  └────┬─────┘  └────┬─────┘
+   │          │           │             │            │             │
+   │POST /orders + JWT    │             │            │             │
+   ├─────────────────────>│             │            │             │
+   │          │ verifyJWT()│             │            │             │
+   │          │<──────────┤             │            │             │
+   │          │ valid      │             │            │             │
+   │          ├───────────>│             │            │             │
+   │          │           │ createOrder()│            │             │
+   │          │           ├────────────>│             │            │
+   │          │           │             │ validateCart│            │
+   │          │           │             ├────────────>│            │
+   │          │           │             │ getFoodItems│            │
+   │          │           │             ├────────────>│            │
+   │          │           │             │             │            │
+   │          │           │             │ foodItems[] │            │
+   │          │           │             │<────────────┤            │
+   │          │           │             │ calcTotal() │            │
+   │          │           │             │             │            │
+   │          │           │             │ BEGIN TRANSACTION        │
+   │          │           │             ├─────────────────────────>│
+   │          │           │             │             │ insertOrder│
+   │          │           │             ├─────────────────────────>│
+   │          │           │             │             │ orderId    │
+   │          │           │             │<─────────────────────────┤
+   │          │           │             │ insertOrderItems         │
+   │          │           │             ├─────────────────────────>│
+   │          │           │             │             │ success    │
+   │          │           │             │<─────────────────────────┤
+   │          │           │             │ COMMIT TRANSACTION       │
+   │          │           │             ├─────────────────────────>│
+   │          │           │ order       │             │            │
+   │          │           │<────────────┤             │            │
+   │          │ 201 Created│             │            │             │
+   │          │<───────────┤             │            │             │
+   │ 201 + orderData       │             │            │             │
+   │<──────────────────────┤             │            │             │
+   │          │           │             │            │             │
+```
+
+#### Authentication Flow Sequence
+
+```
+┌──────┐  ┌──────┐  ┌──────────┐  ┌─────────┐  ┌──────────┐  ┌──────────┐
+│Client│  │ API  │  │User Ctrl │  │User Svc │  │User Repo │  │JWT Svc   │
+└──┬───┘  └──┬───┘  └────┬─────┘  └────┬────┘  └────┬─────┘  └────┬─────┘
+   │         │           │             │            │             │
+   │POST /login          │             │            │             │
+   ├────────>│           │             │            │             │
+   │         │ login()   │             │            │             │
+   │         ├──────────>│             │            │             │
+   │         │           │ authenticate│            │             │
+   │         │           ├────────────>│            │             │
+   │         │           │             │ findByEmail│             │
+   │         │           │             ├───────────>│             │
+   │         │           │             │            │             │
+   │         │           │             │ userRecord │             │
+   │         │           │             │<───────────┤             │
+   │         │           │ verifyPassword(bcrypt)   │             │
+   │         │           │             │            │             │
+   │         │           │             │ valid ✓    │             │
+   │         │           │             │            │             │
+   │         │           │             │ generateJWT│             │
+   │         │           │             ├───────────────────────>  │
+   │         │           │             │            │ JWT token   │
+   │         │           │             │<───────────────────────┤ │
+   │         │           │ token + user│            │             │
+   │         │           │<────────────┤            │             │
+   │         │ 200 OK + token          │            │             │
+   │         │<──────────┤             │            │             │
+   │ 200 + JWT + user    │             │            │             │
+   │<────────┤           │             │            │             │
+   │         │           │             │            │             │
+```
+
+---
+
+## Activity Diagram
+
+Activity diagrams show the workflow and business process logic, particularly for complex operations.
+
+#### Order Processing Workflow
+
+```
+                    [Start: Customer places order]
+                              │
+                              ▼
+                    ┌─────────────────────┐
+                    │ Validate cart items │
+                    └──────────┬──────────┘
+                              │
+                              ▼
+                    ┌─────────────────────┐
+                    │  Check item         │
+                    │  availability       │
+                    └──────────┬──────────┘
+                              │
+                 ┌────────────┴────────────┐
+                 │                         │
+          [Items Available]          [Items Unavailable]
+                 │                         │
+                 ▼                         ▼
+      ┌──────────────────┐      ┌──────────────────┐
+      │ Calculate total  │      │ Return error:    │
+      │ amount           │      │ Items unavailable│
+      └─────────┬────────┘      └────────┬─────────┘
+                │                        │
+                ▼                        ▼
+      ┌──────────────────┐           [End: Order failed]
+      │ Validate user    │
+      │ authentication   │
+      └─────────┬────────┘
+                │
+   ┌────────────┴────────────┐
+   │                         │
+[Authenticated]        [Not Authenticated]
+   │                         │
+   ▼                         ▼
+┌──────────────┐   ┌────────────────────┐
+│ Create order │   │ Return 401         │
+│ record       │   │ Unauthorized       │
+└──────┬───────┘   └──────────┬─────────┘
+       │                      │
+       ▼                      ▼
+┌──────────────────┐      [End: Auth failed]
+│ Begin database   │
+│ transaction      │
+└──────┬───────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Insert order     │
+│ into orders table│
+└──────┬───────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Insert order     │
+│ items            │
+└──────┬───────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Update food item │
+│ quantities       │
+│ (if applicable)  │
+└──────┬───────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Commit           │
+│ transaction      │
+└──────┬───────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Send order       │
+│ confirmation     │
+└──────┬───────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Return order     │
+│ details to client│
+└──────┬───────────┘
+       │
+       ▼
+   [End: Order successful]
+
+
+Parallel Activities (Future):
+┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐
+│ Send email       │    │ Notify chef      │    │ Update analytics │
+│ notification     │    │ of new order     │    │ dashboard        │
+└──────────────────┘    └──────────────────┘    └──────────────────┘
+```
+
+---
+
+## State Diagram
+
+State diagrams show the different states an object can be in and the transitions between those states.
+
+#### Order State Diagram
+
+```
+                    [Order Created]
+                          │
+                          │ create
+                          ▼
+                   ┌──────────────┐
+              ┌────│   PENDING    │
+              │    └──────┬───────┘
+              │           │ confirm payment
+              │           ▼
+              │    ┌──────────────┐
+              │    │  CONFIRMED   │
+              │    └──────┬───────┘
+              │           │ chef accepts
+              │           ▼
+   cancel     │    ┌──────────────┐
+              │    │ PREPARING    │
+              │    └──────┬───────┘
+              │           │ mark ready
+              │           ▼
+              │    ┌──────────────┐
+              │    │    READY     │
+              │    └──────┬───────┘
+              │           │ out for delivery
+              │           ▼
+              │    ┌──────────────┐
+              │    │ IN_TRANSIT   │
+              │    └──────┬───────┘
+              │           │ customer confirms
+              │           ▼
+              │    ┌──────────────┐
+              └───▶│  DELIVERED   │
+                   └──────┬───────┘
+                          │ rating submitted
+                          ▼
+                   ┌──────────────┐
+                   │  COMPLETED   │
+                   └──────────────┘
+
+
+States from PENDING can transition to:
+                   ┌──────────────┐
+              ┌────│   PENDING    │
+              │    └──────┬───────┘
+              │           │
+     cancel   │           │ payment fails
+              │           ▼
+              │    ┌──────────────┐
+              └───▶│  CANCELLED   │
+                   └──────────────┘
+                          │
+                          ▼
+                   [Terminal State]
+
+States from CONFIRMED/PREPARING can transition to:
+                   ┌──────────────┐
+                   │ CONFIRMED/   │
+                   │ PREPARING    │
+                   └──────┬───────┘
+                          │ chef rejects or issue
+                          ▼
+                   ┌──────────────┐
+                   │   REJECTED   │
+                   └──────────────┘
+                          │
+                          ▼
+                   [Terminal State]
+
+
+Complete State Transition Table:
+┌──────────────┬─────────────────────────────────────────┐
+│ Current State│ Possible Transitions                    │
+├──────────────┼─────────────────────────────────────────┤
+│ PENDING      │ → CONFIRMED (payment)                   │
+│              │ → CANCELLED (cancel)                    │
+├──────────────┼─────────────────────────────────────────┤
+│ CONFIRMED    │ → PREPARING (chef accepts)              │
+│              │ → REJECTED (chef rejects)               │
+│              │ → CANCELLED (cancel)                    │
+├──────────────┼─────────────────────────────────────────┤
+│ PREPARING    │ → READY (completed cooking)             │
+│              │ → CANCELLED (mutual agreement)          │
+├──────────────┼─────────────────────────────────────────┤
+│ READY        │ → IN_TRANSIT (pickup/delivery starts)   │
+├──────────────┼─────────────────────────────────────────┤
+│ IN_TRANSIT   │ → DELIVERED (customer receives)         │
+├──────────────┼─────────────────────────────────────────┤
+│ DELIVERED    │ → COMPLETED (rating/feedback submitted) │
+├──────────────┼─────────────────────────────────────────┤
+│ CANCELLED    │ [Terminal - no transitions]             │
+├──────────────┼─────────────────────────────────────────┤
+│ REJECTED     │ [Terminal - no transitions]             │
+├──────────────┼─────────────────────────────────────────┤
+│ COMPLETED    │ [Terminal - no transitions]             │
+└──────────────┴─────────────────────────────────────────┘
+```
+
+#### User Account State Diagram
+
+```
+                [Registration]
+                      │
+                      │ submit form
+                      ▼
+               ┌──────────────┐
+               │   PENDING    │
+               │ VERIFICATION │
+               └──────┬───────┘
+                      │ verify email
+                      ▼
+               ┌──────────────┐
+          ┌────│    ACTIVE    │────┐
+          │    └──────┬───────┘    │
+          │           │            │
+  suspend │           │ login      │ deactivate
+          │           ▼            │
+          │    ┌──────────────┐    │
+          │    │ AUTHENTICATED│    │
+          │    └──────┬───────┘    │
+          │           │ logout     │
+          │           ▼            │
+          │    ┌──────────────┐    │
+          └───▶│  SUSPENDED   │◀───┘
+               └──────┬───────┘
+                      │ delete account
+                      ▼
+               ┌──────────────┐
+               │   DELETED    │
+               └──────────────┘
+                      │
+                      ▼
+              [Terminal State]
+```
+
+---
+
+## Deployment Diagram
+
+The Deployment diagram shows the physical architecture and how software components are deployed on hardware and cloud infrastructure.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                          AWS Cloud / Production Environment         │
+│                                                                     │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │                      Availability Zone 1                       │ │
+│  │                                                                │ │
+│  │  ┌─────────────────────────────────────────────────────────┐   │ │
+│  │  │  «device» EC2 Instance                                  │   │ │
+│  │  │  t3.medium (2 vCPU, 4GB RAM)                            │   │ │
+│  │  │                                                         │   │ │
+│  │  │  ┌───────────────────────────────────────────────────┐  │   │ │
+│  │  │  │ «execution environment» Docker Container          │  │   │ │
+│  │  │  │                                                   │  │   │ │
+│  │  │  │  ┌─────────────────────────────────────┐          │  │   │ │
+│  │  │  │  │ «artifact» Node.js Application      │          │  │   │ │
+│  │  │  │  │                                     │          │  │   │ │
+│  │  │  │  │  - Express Web Server               │          │  │   │ │
+│  │  │  │  │  - API Controllers                  │          │  │   │ │
+│  │  │  │  │  - Business Services                │          │  │   │ │
+│  │  │  │  │  - Data Repositories                │          │  │   │ │
+│  │  │  │  │                                     │          │  │   │ │
+│  │  │  │  │  Port: 5000                         │          │  │   │ │
+│  │  │  │  └─────────────────────────────────────┘          │  │   │ │
+│  │  │  │                                                   │  │   │ │
+│  │  │  └───────────────────────────────────────────────────┘  │   │ │
+│  │  └─────────────────────────────────────────────────────────┘   │ │
+│  │                                                                │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │                      Availability Zone 2                       │ │
+│  │                                                                │ │
+│  │  ┌─────────────────────────────────────────────────────────┐   │ │
+│  │  │  «device» EC2 Instance                                  │   │ │
+│  │  │  t3.medium (2 vCPU, 4GB RAM)                            │   │ │
+│  │  │                                                         │   │ │
+│  │  │  ┌───────────────────────────────────────────────────┐  │   │ │
+│  │  │  │ «execution environment» Docker Container          │  │   │ │
+│  │  │  │                                                   │  │   │ │
+│  │  │  │  ┌─────────────────────────────────────┐          │  │   │ │
+│  │  │  │  │ «artifact» Node.js Application      │          │  │   │ │
+│  │  │  │  │  (Same as AZ1)                      │          │  │   │ │
+│  │  │  │  └─────────────────────────────────────┘          │  │   │ │
+│  │  │  └───────────────────────────────────────────────────┘  │   │ │
+│  │  └─────────────────────────────────────────────────────────┘   │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│                              ▲                                      │
+│                              │ HTTPS (443)                          │
+│                              │                                      │
+│  ┌──────────────────────────┴───────────────────────────────────┐   │
+│  │  «device» Application Load Balancer                          │   │
+│  │  - Health checks                                             │   │
+│  │  - SSL/TLS termination                                       │   │
+│  │  - Round-robin distribution                                  │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │  «device» RDS PostgreSQL Instance                              │ │
+│  │  db.t3.medium (2 vCPU, 4GB RAM)                                │ │
+│  │                                                                │ │
+│  │  ┌──────────────────────────────────────────────────────────┐  │ │
+│  │  │ «database» PostgreSQL 14                                 │  │ │
+│  │  │                                                          │  │ │
+│  │  │  - users, food_items, orders, order_items                │  │ │
+│  │  │  - Automated backups                                     │  │ │
+│  │  │  - Multi-AZ standby                                      │  │ │
+│  │  │                                                          │  │ │
+│  │  │  Port: 5432                                              │  │ │
+│  │  └──────────────────────────────────────────────────────────┘  │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │  «device» S3 Bucket                                            │ │
+│  │  - Static assets (React build)                                 │ │
+│  │  - Food images                                                 │ │
+│  │  - CloudFront CDN distribution                                 │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │  «device» ElastiCache Redis Cluster                            │ │
+│  │  - Session storage                                             │ │
+│  │  - API response caching                                        │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+                              ▲
+                              │ HTTPS
+                              │
+                    ┌─────────▼──────────┐
+                    │   «device»         │
+                    │   User Browser     │
+                    │                    │
+                    │   - Chrome/Firefox │
+                    │   - React SPA      │
+                    └────────────────────┘
+```
+
+### Deployment Environment Specifications
+
+| Environment | Purpose | Infrastructure |
+|-------------|---------|----------------|
+| **Development** | Local development | Docker Compose, localhost PostgreSQL |
+| **Staging** | Pre-production testing | AWS EC2 t3.small, RDS db.t3.micro, S3 |
+| **Production** | Live environment | AWS EC2 t3.medium x2, RDS db.t3.medium (Multi-AZ), S3 + CloudFront |
+
+### Infrastructure Components
+
+| Component | Technology | Specifications | Purpose |
+|-----------|-----------|----------------|---------|
+| Load Balancer | AWS ALB | Cross-zone enabled | Distribute traffic, SSL termination |
+| Web Server | Node.js + Express | Docker containerized | API server |
+| Database | PostgreSQL RDS | Multi-AZ, automated backups | Data persistence |
+| Cache | ElastiCache Redis | Cluster mode | Session management, caching |
+| CDN | CloudFront + S3 | Global edge locations | Static asset delivery |
+| Container Registry | ECR | Private repository | Docker image storage |
+
+---
+
+## Package Diagram
+
+The Package diagram shows how the codebase is organized into logical packages and their dependencies.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        backend (root package)                       │
+│                                                                     │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │  «package» src                                                 │ │
+│  │                                                                │ │
+│  │  ┌──────────────────────────────────────────────────────────┐  │ │
+│  │  │  «package» routes                                        │  │ │
+│  │  │                                                          │  │ │
+│  │  │  - userRoutes.js                                         │  │ │
+│  │  │  - foodRoutes.js                                         │  │ │
+│  │  │  - orderRoutes.js                                        │  │ │
+│  │  │  - index.js                                              │  │ │
+│  │  └────────────────┬─────────────────────────────────────────┘  │ │
+│  │                   │ imports                                    │ │
+│  │  ┌────────────────▼─────────────────────────────────────────┐  │ │
+│  │  │  «package» controllers                                   │  │ │
+│  │  │                                                          │  │ │
+│  │  │  - userController.js                                     │  │ │
+│  │  │  - foodController.js                                     │  │ │
+│  │  │  - orderController.js                                    │  │ │
+│  │  └────────────────┬─────────────────────────────────────────┘  │ │
+│  │                   │ imports                                    │ │
+│  │  ┌────────────────▼─────────────────────────────────────────┐  │ │
+│  │  │  «package» services                                      │  │ │
+│  │  │                                                          │  │ │
+│  │  │  - userService.js                                        │  │ │
+│  │  │  - foodService.js                                        │  │ │
+│  │  │  - orderService.js (future)                              │  │ │
+│  │  └────────────────┬─────────────────────────────────────────┘  │ │
+│  │                   │ imports                                    │ │
+│  │  ┌────────────────▼─────────────────────────────────────────┐  │ │
+│  │  │  «package» repositories                                  │  │ │
+│  │  │                                                          │  │ │
+│  │  │  - userRepository.js                                     │  │ │
+│  │  │  - foodRepository.js                                     │  │ │
+│  │  │  - orderRepository.js                                    │  │ │
+│  │  └────────────────┬─────────────────────────────────────────┘  │ │
+│  │                   │ imports                                    │ │
+│  │  ┌────────────────▼─────────────────────────────────────────┐  │ │
+│  │  │  «package» config                                        │  │ │
+│  │  │                                                          │  │ │
+│  │  │  - db.js (connection pool)                               │  │ │
+│  │  │  - environment.js (future)                               │  │ │
+│  │  │  - constants.js (future)                                 │  │ │
+│  │  └──────────────────────────────────────────────────────────┘  │ │
+│  │                                                                │ │
+│  │                                                                │ │
+│  │  - app.js (Express configuration)                              │ │
+│  │  - server.js (Entry point)                                     │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  - package.json                                                     │
+│  - .env                                                             │
+│  - .gitignore                                                       │
+│  - Dockerfile                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+
+Dependency Flow: Routes → Controllers → Services → Repositories → Config
+Cross-cutting: Middleware, Utils used by multiple layers
+```
+
+### Package Organization Principles
+
+| Principle | Implementation |
+|-----------|----------------|
+| **Separation of Concerns** | Each package has single responsibility |
+| **Dependency Rule** | Inner layers don't depend on outer layers |
+| **Cohesion** | Related functionality grouped together |
+| **Low Coupling** | Minimal dependencies between packages |
+
+---
+
 ## Architecture Decision Records
 
 Architecture Decision Records (ADRs) document important architectural decisions made during the development of CookNest.
@@ -1074,6 +2363,12 @@ May adopt Prisma or another modern ORM as application complexity grows.
 
 ---
 
+# PART IV: SECURITY & COMPLIANCE
+
+> **Purpose:** Comprehensive security measures, access controls, compliance frameworks, and risk management
+
+---
+
 ## Security Architecture
 
 A comprehensive security architecture following defense-in-depth principles, industry standards (OWASP, NIST), and compliance requirements.
@@ -1082,30 +2377,30 @@ A comprehensive security architecture following defense-in-depth principles, ind
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    DEFENSE IN DEPTH LAYERS                       │
+│                    DEFENSE IN DEPTH LAYERS                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Layer 7: Physical Security                                     │
 │  └─> Data center security, physical access controls             │
-│                                                                  │
+│                                                                 │
 │  Layer 6: Network Security                                      │
 │  └─> Firewalls, VPN, Network segmentation, DDoS protection      │
-│                                                                  │
+│                                                                 │
 │  Layer 5: Host Security                                         │
 │  └─> OS hardening, Antivirus, Patch management                  │
-│                                                                  │
+│                                                                 │
 │  Layer 4: Application Security                                  │
 │  └─> Input validation, OWASP Top 10, Secure coding              │
-│                                                                  │
+│                                                                 │
 │  Layer 3: Data Security                                         │
 │  └─> Encryption at rest/transit, Data classification, DLP       │
-│                                                                  │
+│                                                                 │
 │  Layer 2: Identity & Access                                     │
-│  └─> Authentication, Authorization, MFA, SSO                     │
-│                                                                  │
+│  └─> Authentication, Authorization, MFA, SSO                    │
+│                                                                 │
 │  Layer 1: Policies & Procedures                                 │
 │  └─> Security policies, Training, Incident response             │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1117,80 +2412,80 @@ Production environment segmented into security zones following the principle of 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                          INTERNET                                │
+│                          INTERNET                               │
 └────────────────────┬────────────────────────────────────────────┘
                      │
                      │ HTTPS (443)
                      │
 ┌────────────────────▼────────────────────────────────────────────┐
-│                    DMZ (Demilitarized Zone)                      │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │  WAF (Web Application Firewall)                          │  │
-│  │  • OWASP ModSecurity                                     │  │
-│  │  • DDoS Protection (Cloudflare/AWS Shield)              │  │
-│  │  • Rate Limiting                                         │  │
-│  │  • SSL/TLS Termination                                   │  │
-│  └────────────────────┬─────────────────────────────────────┘  │
-│                       │                                          │
-│  ┌────────────────────▼─────────────────────────────────────┐  │
-│  │  Load Balancer (Public)                                  │  │
-│  │  • Nginx / AWS ALB                                       │  │
-│  │  • Health Checks                                         │  │
-│  │  • SSL/TLS Certificates                                  │  │
-│  └────────────────────┬─────────────────────────────────────┘  │
-└─────────────────────────┼────────────────────────────────────────┘
+│                    DMZ (Demilitarized Zone)                     │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  WAF (Web Application Firewall)                          │   │
+│  │  • OWASP ModSecurity                                     │   │
+│  │  • DDoS Protection (Cloudflare/AWS Shield)               │   │
+│  │  • Rate Limiting                                         │   │
+│  │  • SSL/TLS Termination                                   │   │
+│  └────────────────────┬─────────────────────────────────────┘   │
+│                       │                                         │
+│  ┌────────────────────▼─────────────────────────────────────┐   │
+│  │  Load Balancer (Public)                                  │   │
+│  │  • Nginx / AWS ALB                                       │   │
+│  │  • Health Checks                                         │   │
+│  │  • SSL/TLS Certificates                                  │   │
+│  └────────────────────┬─────────────────────────────────────┘   │
+└─────────────────────────┼───────────────────────────────────────┘
                           │
                    Firewall Rules
                    (Allow: 443, 80)
                           │
-┌─────────────────────────▼────────────────────────────────────────┐
-│                   APPLICATION ZONE (Private Subnet)              │
+┌─────────────────────────▼──────────────────────────────────────┐
+│                   APPLICATION ZONE (Private Subnet)            │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │  API Server Cluster                                      │  │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │  │
-│  │  │ API Node 1  │  │ API Node 2  │  │ API Node 3  │     │  │
-│  │  │ (Express)   │  │ (Express)   │  │ (Express)   │     │  │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘     │  │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │  │
+│  │  │ API Node 1  │  │ API Node 2  │  │ API Node 3  │       │  │
+│  │  │ (Express)   │  │ (Express)   │  │ (Express)   │       │  │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘       │  │
 │  │                                                          │  │
-│  │  Security Controls:                                     │  │
-│  │  • No direct internet access                           │  │
-│  │  • Private IP addresses                                │  │
-│  │  • Outbound through NAT Gateway                        │  │
-│  │  • Security groups: Allow from LB only                 │  │
+│  │  Security Controls:                                      │  │
+│  │  • No direct internet access                             │  │
+│  │  • Private IP addresses                                  │  │
+│  │  • Outbound through NAT Gateway                          │  │
+│  │  • Security groups: Allow from LB only                   │  │
 │  └────────────────────┬─────────────────────────────────────┘  │
-└─────────────────────────┼────────────────────────────────────────┘
+└─────────────────────────┼──────────────────────────────────────┘
                           │
                    Firewall Rules
                    (Allow: 5432 from App Zone only)
                           │
-┌─────────────────────────▼────────────────────────────────────────┐
-│                   DATA ZONE (Private Subnet)                     │
+┌─────────────────────────▼──────────────────────────────────────┐
+│                   DATA ZONE (Private Subnet)                   │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │  Database Cluster                                        │  │
-│  │  ┌─────────────────────────────────────────────────┐    │  │
-│  │  │  PostgreSQL Primary (Read/Write)                │    │  │
-│  │  │  • Encrypted at rest (AES-256)                  │    │  │
-│  │  │  • Encrypted in transit (TLS 1.3)               │    │  │
-│  │  │  • Daily automated backups                      │    │  │
-│  │  └─────────────────┬───────────────────────────────┘    │  │
+│  │  ┌─────────────────────────────────────────────────┐     │  │
+│  │  │  PostgreSQL Primary (Read/Write)                │     │  │
+│  │  │  • Encrypted at rest (AES-256)                  │     │  │
+│  │  │  • Encrypted in transit (TLS 1.3)               │     │  │
+│  │  │  • Daily automated backups                      │     │  │
+│  │  └─────────────────┬───────────────────────────────┘     │  │
 │  │                    │ Replication                         │  │
 │  │         ┌──────────┴──────────┐                          │  │
 │  │         │                     │                          │  │
-│  │  ┌──────▼────────┐    ┌──────▼────────┐                │  │
-│  │  │ Replica 1     │    │ Replica 2     │                │  │
-│  │  │ (Read-only)   │    │ (Read-only)   │                │  │
-│  │  └───────────────┘    └───────────────┘                │  │
+│  │  ┌──────▼────────┐    ┌──────▼────────┐                  │  │
+│  │  │ Replica 1     │    │ Replica 2     │                  │  │
+│  │  │ (Read-only)   │    │ (Read-only)   │                  │  │
+│  │  └───────────────┘    └───────────────┘                  │  │
 │  │                                                          │  │
-│  │  Security Controls:                                     │  │
-│  │  • No internet access (fully isolated)                 │  │
-│  │  • Access only from App Zone                           │  │
-│  │  • Database-level access controls                      │  │
-│  │  • Audit logging enabled                               │  │
+│  │  Security Controls:                                      │  │
+│  │  • No internet access (fully isolated)                   │  │
+│  │  • Access only from App Zone                             │  │
+│  │  • Database-level access controls                        │  │
+│  │  • Audit logging enabled                                 │  │
 │  └──────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
+└────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                   MANAGEMENT ZONE (Bastion/Jump Host)            │
+│                   MANAGEMENT ZONE (Bastion/Jump Host)           │
 │  • SSH access only via VPN                                      │
 │  • MFA required                                                 │
 │  • All actions logged                                           │
@@ -1224,26 +2519,26 @@ Production environment segmented into security zones following the principle of 
        ▼
 ┌────────────────────────────────────────┐
 │        API Server                      │
-│  ┌──────────────────────────────────┐ │
-│  │  Authentication Controller       │ │
-│  └─────────────┬────────────────────┘ │
+│  ┌──────────────────────────────────┐  │
+│  │  Authentication Controller       │  │
+│  └─────────────┬────────────────────┘  │
 │                │                       │
 │                │ 2. Validate request   │
 │                ▼                       │
-│  ┌──────────────────────────────────┐ │
-│  │  Authentication Service          │ │
-│  │  • Fetch user by email           │ │
-│  │  • Verify password (bcrypt)      │ │
-│  │  • Check account status          │ │
-│  │  • Check rate limiting           │ │
-│  └─────────────┬────────────────────┘ │
+│  ┌──────────────────────────────────┐  │
+│  │  Authentication Service          │  │
+│  │  • Fetch user by email           │  │
+│  │  • Verify password (bcrypt)      │  │
+│  │  • Check account status          │  │
+│  │  • Check rate limiting           │  │
+│  └─────────────┬────────────────────┘  │
 │                │                       │
 │                │ 3. Query DB           │
 │                ▼                       │
-│  ┌──────────────────────────────────┐ │
-│  │  User Repository                 │ │
-│  └─────────────┬────────────────────┘ │
-└────────────────┼────────────────────────┘
+│  ┌──────────────────────────────────┐  │
+│  │  User Repository                 │  │
+│  └─────────────┬────────────────────┘  │
+└────────────────┼───────────────────────┘
                  │
                  ▼
        ┌─────────────────┐
@@ -1253,8 +2548,8 @@ Production environment segmented into security zones following the principle of 
                  │
                  │ 4. Return user record
                  ▼
-┌────────────────────────────────────────┐
-│        API Server                      │
+┌───────────────────────────────────────┐
+│        API Server                     │
 │  ┌──────────────────────────────────┐ │
 │  │  JWT Token Service               │ │
 │  │                                  │ │
@@ -1262,7 +2557,7 @@ Production environment segmented into security zones following the principle of 
 │  │  {                               │ │
 │  │    "sub": "user_id",             │ │
 │  │    "email": "user@example.com",  │ │
-│  │    "role": "customer",            │ │
+│  │    "role": "customer",           │ │
 │  │    "iat": 1707696000,            │ │
 │  │    "exp": 1707782400             │ │
 │  │  }                               │ │
@@ -1270,16 +2565,16 @@ Production environment segmented into security zones following the principle of 
 │  │  Sign with: JWT_SECRET           │ │
 │  │  Algorithm: HS256                │ │
 │  └─────────────┬────────────────────┘ │
-└────────────────┼────────────────────────┘
+└────────────────┼──────────────────────┘
                  │
                  │ 5. Return JWT token
                  ▼
-       ┌──────────────┐
-       │   Client     │
-       │  Store token │
+       ┌────────────────┐
+       │   Client       │
+       │  Store token   │
        │  (localStorage │
-       │   or cookie)  │
-       └──────────────┘
+       │   or cookie)   │
+       └────────────────┘
 
 Subsequent Requests:
 ─────────────────────
@@ -1320,8 +2615,8 @@ Subsequent Requests:
 #### Role-Based Access Control (RBAC)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        RBAC Matrix                           │
+┌────────────────────────────────────────────────────────────┐
+│                        RBAC Matrix                         │
 ├─────────────┬───────────┬─────────────┬────────────────────┤
 │   Resource  │  Customer │  Home Chef  │  Administrator     │
 ├─────────────┼───────────┼─────────────┼────────────────────┤
@@ -1381,41 +2676,41 @@ Login Process with MFA:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    DATA ENCRYPTION LAYERS                    │
+│                    DATA ENCRYPTION LAYERS                   │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
+│                                                             │
 │  Layer 1: Data in Transit                                   │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │  • TLS 1.3 for all connections                     │    │
-│  │  • Client ↔ Load Balancer: HTTPS                   │    │
-│  │  │  • Strong cipher suites only                     │    │
-│  │  • Load Balancer ↔ API: TLS                        │    │
-│  │  • API ↔ Database: TLS/SSL                         │    │
-│  │  • Certificate: Let's Encrypt / AWS ACM            │    │
-│  └────────────────────────────────────────────────────┘    │
-│                                                              │
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  • TLS 1.3 for all connections                     │     │
+│  │  • Client ↔ Load Balancer: HTTPS                   │     │
+│  │  │  • Strong cipher suites only                    │     │
+│  │  • Load Balancer ↔ API: TLS                        │     │
+│  │  • API ↔ Database: TLS/SSL                         │     │
+│  │  • Certificate: Let's Encrypt / AWS ACM            │     │
+│  └────────────────────────────────────────────────────┘     │
+│                                                             │
 │  Layer 2: Data at Rest                                      │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │  Database Encryption:                              │    │
-│  │  • Algorithm: AES-256-GCM                          │    │
-│  │  • Encrypted columns: password (bcrypt hashed)     │    │
-│  │  • Full disk encryption (FDE)                      │    │
-│  │  • Key Management: AWS KMS / HashiCorp Vault       │    │
-│  │                                                     │    │
-│  │  Backup Encryption:                                │    │
-│  │  • Encrypted backups (AES-256)                     │    │
-│  │  • Separate encryption keys                        │    │
-│  │  • Stored in encrypted S3 buckets                  │    │
-│  └────────────────────────────────────────────────────┘    │
-│                                                              │
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  Database Encryption:                              │     │
+│  │  • Algorithm: AES-256-GCM                          │     │
+│  │  • Encrypted columns: password (bcrypt hashed)     │     │
+│  │  • Full disk encryption (FDE)                      │     │
+│  │  • Key Management: AWS KMS / HashiCorp Vault       │     │
+│  │                                                    │     │
+│  │  Backup Encryption:                                │     │
+│  │  • Encrypted backups (AES-256)                     │     │
+│  │  • Separate encryption keys                        │     │
+│  │  • Stored in encrypted S3 buckets                  │     │
+│  └────────────────────────────────────────────────────┘     │
+│                                                             │
 │  Layer 3: Application Level                                 │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │  • Password hashing: bcrypt (cost factor: 12)      │    │
-│  │  • JWT secret: 256-bit random key                  │    │
-│  │  • API keys: SHA-256 hashed                        │    │
-│  │  • Sensitive fields: Field-level encryption        │    │
-│  └────────────────────────────────────────────────────┘    │
-│                                                              │
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  • Password hashing: bcrypt (cost factor: 12)      │     │
+│  │  • JWT secret: 256-bit random key                  │     │
+│  │  • API keys: SHA-256 hashed                        │     │
+│  │  • Sensitive fields: Field-level encryption        │     │
+│  └────────────────────────────────────────────────────┘     │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1428,57 +2723,6 @@ Login Process with MFA:
 | **Confidential** | User emails, order details | TLS + DB encryption | Owner + Admin | 7 years |
 | **Restricted** | Passwords, payment info | TLS + Hashing/Encryption | System only | Per regulation |
 
-#### Encryption Implementation
-
-```javascript
-// Password Hashing (bcrypt)
-const bcrypt = require('bcrypt');
-const SALT_ROUNDS = 12;
-
-async function hashPassword(plainPassword) {
-  return await bcrypt.hash(plainPassword, SALT_ROUNDS);
-}
-
-async function verifyPassword(plainPassword, hashedPassword) {
-  return await bcrypt.compare(plainPassword, hashedPassword);
-}
-
-// JWT Token Generation
-const jwt = require('jsonwebtoken');
-
-function generateToken(user) {
-  const payload = {
-    sub: user.id,
-    email: user.email,
-    role: user.role,
-    iat: Math.floor(Date.now() / 1000)
-  };
-  
-  return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: '24h',
-    algorithm: 'HS256'
-  });
-}
-
-// Field-level encryption (for sensitive data)
-const crypto = require('crypto');
-
-function encryptField(data, key) {
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-  
-  let encrypted = cipher.update(data, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  
-  const authTag = cipher.getAuthTag();
-  
-  return {
-    encrypted,
-    iv: iv.toString('hex'),
-    authTag: authTag.toString('hex')
-  };
-}
-```
 
 ---
 
@@ -1488,57 +2732,57 @@ function encryptField(data, key) {
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    API SECURITY LAYERS                       │
+│                    API SECURITY LAYERS                      │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
+│                                                             │
 │  1. Rate Limiting                                           │
-│     ┌──────────────────────────────────────────────────┐   │
-│     │ • Global: 1000 requests/hour per IP             │   │
-│     │ • Authenticated: 5000 requests/hour per user    │   │
-│     │ • Login endpoint: 5 attempts/15 minutes         │   │
-│     │ • Implementation: express-rate-limit + Redis    │   │
-│     └──────────────────────────────────────────────────┘   │
-│                                                              │
+│     ┌──────────────────────────────────────────────────┐    │
+│     │ • Global: 1000 requests/hour per IP              │    │
+│     │ • Authenticated: 5000 requests/hour per user     │    │
+│     │ • Login endpoint: 5 attempts/15 minutes          │    │
+│     │ • Implementation: express-rate-limit + Redis     │    │
+│     └──────────────────────────────────────────────────┘    │
+│                                                             │
 │  2. Request Validation                                      │
-│     ┌──────────────────────────────────────────────────┐   │
-│     │ • Schema validation: Joi / express-validator    │   │
-│     │ • Type checking                                  │   │
-│     │ • Size limits: Body 10MB, Upload 5MB            │   │
-│     │ • Content-Type validation                        │   │
-│     └──────────────────────────────────────────────────┘   │
-│                                                              │
+│     ┌──────────────────────────────────────────────────┐    │
+│     │ • Schema validation: Joi / express-validator     │    │
+│     │ • Type checking                                  │    │
+│     │ • Size limits: Body 10MB, Upload 5MB             │    │
+│     │ • Content-Type validation                        │    │
+│     └──────────────────────────────────────────────────┘    │
+│                                                             │
 │  3. Input Sanitization                                      │
-│     ┌──────────────────────────────────────────────────┐   │
-│     │ • SQL Injection: Parameterized queries          │   │
-│     │ • XSS: DOMPurify, escape HTML                   │   │
-│     │ • NoSQL Injection: Input validation             │   │
-│     │ • Path Traversal: Whitelist validation          │   │
-│     └──────────────────────────────────────────────────┘   │
-│                                                              │
+│     ┌──────────────────────────────────────────────────┐    │
+│     │ • SQL Injection: Parameterized queries           │    │
+│     │ • XSS: DOMPurify, escape HTML                    │    │
+│     │ • NoSQL Injection: Input validation              │    │
+│     │ • Path Traversal: Whitelist validation           │    │
+│     └──────────────────────────────────────────────────┘    │
+│                                                             │
 │  4. Security Headers (helmet.js)                            │
-│     ┌──────────────────────────────────────────────────┐   │
-│     │ • X-Frame-Options: DENY                         │   │
-│     │ • X-Content-Type-Options: nosniff               │   │
-│     │ • Strict-Transport-Security: max-age=31536000   │   │
-│     │ • Content-Security-Policy: strict               │   │
-│     │ • X-XSS-Protection: 1; mode=block               │   │
-│     └──────────────────────────────────────────────────┘   │
-│                                                              │
+│     ┌──────────────────────────────────────────────────┐    │
+│     │ • X-Frame-Options: DENY                          │    │
+│     │ • X-Content-Type-Options: nosniff                │    │
+│     │ • Strict-Transport-Security: max-age=31536000    │    │
+│     │ • Content-Security-Policy: strict                │    │
+│     │ • X-XSS-Protection: 1; mode=block                │    │
+│     └──────────────────────────────────────────────────┘    │
+│                                                             │
 │  5. CORS Configuration                                      │
-│     ┌──────────────────────────────────────────────────┐   │
-│     │ • Allowed Origins: Whitelist only               │   │
-│     │ • Allowed Methods: GET, POST, PUT, DELETE       │   │
-│     │ • Credentials: true (for cookies)               │   │
-│     │ • Max Age: 86400                                │   │
-│     └──────────────────────────────────────────────────┘   │
-│                                                              │
+│     ┌──────────────────────────────────────────────────┐    │
+│     │ • Allowed Origins: Whitelist only                │    │
+│     │ • Allowed Methods: GET, POST, PUT, DELETE        │    │
+│     │ • Credentials: true (for cookies)                │    │
+│     │ • Max Age: 86400                                 │    │
+│     └──────────────────────────────────────────────────┘    │
+│                                                             │
 │  6. API Versioning                                          │
-│     ┌──────────────────────────────────────────────────┐   │
-│     │ • URI versioning: /api/v1/, /api/v2/            │   │
-│     │ • Deprecation policy: 6 months notice           │   │
-│     │ • Version sunset schedule                        │   │
-│     └──────────────────────────────────────────────────┘   │
-│                                                              │
+│     ┌──────────────────────────────────────────────────┐    │
+│     │ • URI versioning: /api/v1/, /api/v2/             │    │
+│     │ • Deprecation policy: 6 months notice            │    │
+│     │ • Version sunset schedule                        │    │
+│     └──────────────────────────────────────────────────┘    │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1546,16 +2790,22 @@ function encryptField(data, key) {
 
 | Risk | Mitigation Strategy | Implementation Status |
 |------|---------------------|----------------------|
-| **A01: Broken Access Control** | RBAC, JWT verification, ownership checks | ⏳ Planned |
-| **A02: Cryptographic Failures** | TLS 1.3, AES-256, bcrypt, secure key management | ⏳ Planned |
-| **A03: Injection** | Parameterized queries, input validation, ORM | ✅ Partial (SQL) |
-| **A04: Insecure Design** | Threat modeling, security requirements, code review | 🔄 In Progress |
-| **A05: Security Misconfiguration** | Security headers, least privilege, hardening | ⏳ Planned |
-| **A06: Vulnerable Components** | Dependency scanning, regular updates, SCA tools | ⏳ Planned |
-| **A07: Authentication Failures** | JWT, MFA, password policies, rate limiting | ⏳ Planned |
-| **A08: Software & Data Integrity** | Code signing, integrity checks, SRI | ⏳ Planned |
-| **A09: Logging Failures** | Comprehensive logging, SIEM integration | ⏳ Planned |
-| **A10: SSRF** | URL validation, whitelist, network segmentation | ⏳ Planned |
+| **A01: Broken Access Control** | RBAC, JWT verification, ownership checks |  Planned |
+| **A02: Cryptographic Failures** | TLS 1.3, AES-256, bcrypt, secure key management |  Planned |
+| **A03: Injection** | Parameterized queries, input validation, ORM |  Partial (SQL) |
+| **A04: Insecure Design** | Threat modeling, security requirements, code review |  In Progress |
+| **A05: Security Misconfiguration** | Security headers, least privilege, hardening |  Planned |
+| **A06: Vulnerable Components** | Dependency scanning, regular updates, SCA tools |  Planned |
+| **A07: Authentication Failures** | JWT, MFA, password policies, rate limiting |  Planned |
+| **A08: Software & Data Integrity** | Code signing, integrity checks, SRI |  Planned |
+| **A09: Logging Failures** | Comprehensive logging, SIEM integration |  Planned |
+| **A10: SSRF** | URL validation, whitelist, network segmentation |  Planned |
+
+---
+
+# PART V: INFRASTRUCTURE & OPERATIONS
+
+> **Purpose:** Infrastructure setup, deployment strategies, monitoring, disaster recovery, and operational procedures
 
 ---
 
@@ -1570,9 +2820,9 @@ Production network architecture with high availability and security.
                                │
                                │
                        ┌───────▼────────┐
-                       │   DNS (Route53) │
-                       │   • Geo-routing  │
-                       │   • Failover     │
+                       │   DNS (Route53)│
+                       │   • Geo-routing│
+                       │   • Failover   │
                        └───────┬────────┘
                                │
                                │
@@ -1584,53 +2834,53 @@ Production network architecture with high availability and security.
                     └──────────┬───────────┘
                                │
         ┌──────────────────────┴──────────────────────┐
-        │                                              │
+        │                                             │
   ┌─────▼─────┐                                 ┌─────▼─────┐
-  │  Region 1  │                                 │  Region 2  │
-  │  (Primary) │                                 │ (Failover) │
+  │  Region 1 │                                 │  Region 2 │
+  │  (Primary)│                                 │ (Failover)│
   └─────┬─────┘                                 └─────┬─────┘
-        │                                              │
+        │                                             │
 ┌───────▼────────────────────────────────┐            │
 │       VPC (Virtual Private Cloud)      │            │
-│    CIDR: 10.0.0.0/16                  │            │
+│    CIDR: 10.0.0.0/16                   │            │
 │                                        │            │
-│  ┌──────────────────────────────────┐ │            │
-│  │  Availability Zone A              │ │            │
-│  │                                   │ │            │
-│  │  ┌─────────────────────────────┐ │ │            │
-│  │  │ Public Subnet                │ │ │            │
-│  │  │ 10.0.1.0/24                  │ │ │            │
-│  │  │ • NAT Gateway                │ │ │            │
-│  │  │ • Bastion Host               │ │ │            │
-│  │  └─────────────────────────────┘ │ │            │
-│  │                                   │ │            │
-│  │  ┌─────────────────────────────┐ │ │            │
-│  │  │ Private Subnet (App)         │ │ │            │
-│  │  │ 10.0.10.0/24                 │ │ │            │
-│  │  │ • API Servers                │ │ │            │
-│  │  │ • Application Load Balancer  │ │ │            │
-│  │  └─────────────────────────────┘ │ │            │
-│  │                                   │ │            │
-│  │  ┌─────────────────────────────┐ │ │            │
-│  │  │ Private Subnet (Data)        │ │ │            │
-│  │  │ 10.0.20.0/24                 │ │ │            │
-│  │  │ • PostgreSQL Primary         │ │ │            │
-│  │  │ • Redis Cache                │ │ │            │
-│  │  └─────────────────────────────┘ │ │            │
-│  └───────────────────────────────────┘ │            │
+│  ┌──────────────────────────────────┐  │            │
+│  │  Availability Zone A             │  │            │
+│  │                                  │  │            │
+│  │  ┌─────────────────────────────┐ │  │            │
+│  │  │ Public Subnet               │ │  │            │
+│  │  │ 10.0.1.0/24                 │ │  │            │
+│  │  │ • NAT Gateway               │ │  │            │
+│  │  │ • Bastion Host              │ │  │            │
+│  │  └─────────────────────────────┘ │  │            │
+│  │                                  │  │            │
+│  │  ┌─────────────────────────────┐ │  │            │
+│  │  │ Private Subnet (App)        │ │  │            │
+│  │  │ 10.0.10.0/24                │ │  │            │
+│  │  │ • API Servers               │ │  │            │
+│  │  │ • Application Load Balancer │ │  │            │
+│  │  └─────────────────────────────┘ │  │            │
+│  │                                  │  │            │
+│  │  ┌─────────────────────────────┐ │  │            │
+│  │  │ Private Subnet (Data)       │ │  │            │
+│  │  │ 10.0.20.0/24                │ │  │            │
+│  │  │ • PostgreSQL Primary        │ │  │            │
+│  │  │ • Redis Cache               │ │  │            │
+│  │  └─────────────────────────────┘ │  │            │
+│  └──────────────────────────────────┘  │            │
 │                                        │            │
-│  ┌──────────────────────────────────┐ │            │
-│  │  Availability Zone B              │ │            │
-│  │  (Same structure for HA)          │ │            │
-│  └──────────────────────────────────┘ │            │
+│  ┌──────────────────────────────────┐  │            │
+│  │  Availability Zone B             │  │            │
+│  │  (Same structure for HA)         │  │            │
+│  └──────────────────────────────────┘  │            │
 │                                        │            │
-│  ┌──────────────────────────────────┐ │            │
-│  │  Security Groups                  │ │            │
-│  │  • ALB-SG: 443,80 from Internet   │ │            │
-│  │  • App-SG: 5000 from ALB-SG       │ │            │
-│  │  • DB-SG: 5432 from App-SG        │ │            │
-│  │  • Bastion-SG: 22 from VPN        │ │            │
-│  └──────────────────────────────────┘ │            │
+│  ┌──────────────────────────────────┐  │            │
+│  │  Security Groups                 │  │            │
+│  │  • ALB-SG: 443,80 from Internet  │  │            │
+│  │  • App-SG: 5000 from ALB-SG      │  │            │
+│  │  • DB-SG: 5432 from App-SG       │  │            │
+│  │  • Bastion-SG: 22 from VPN       │  │            │
+│  └──────────────────────────────────┘  │            │
 └────────────────────────────────────────┘            │
                                                       │
                    ┌──────────────────────────────────┘
@@ -1649,7 +2899,7 @@ Automated, secure deployment pipeline with quality gates.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        CI/CD PIPELINE                            │
+│                        CI/CD PIPELINE                           │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌──────────┐
@@ -1666,107 +2916,107 @@ Automated, secure deployment pipeline with quality gates.
      │ 2. Webhook trigger
      ▼
 ┌──────────────────────────────────────────────────────────┐
-│                   CI Pipeline (GitHub Actions / Jenkins)  │
+│                   CI Pipeline (GitHub Actions / Jenkins) │
 ├──────────────────────────────────────────────────────────┤
-│                                                           │
+│                                                          │
 │  Stage 1: Build                                          │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • Checkout code                                 │     │
-│  │ • Install dependencies (npm ci)                │     │
-│  │ • Build application                             │     │
-│  │ • Version tagging                               │     │
-│  └────────────────────────────────────────────────┘     │
-│                         │                                 │
-│                         ▼                                 │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • Checkout code                                │      │
+│  │ • Install dependencies (npm ci)                │      │
+│  │ • Build application                            │      │
+│  │ • Version tagging                              │      │
+│  └────────────────────────────────────────────────┘      │
+│                         │                                │
+│                         ▼                                │
 │  Stage 2: Code Quality                                   │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • Linting (ESLint)                             │     │
-│  │ • Code formatting (Prettier)                   │     │
-│  │ • Code complexity analysis                     │     │
-│  │ • Duplicate detection                          │     │
-│  │ Quality Gate: Must pass                         │     │
-│  └────────────────────────────────────────────────┘     │
-│                         │                                 │
-│                         ▼                                 │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • Linting (ESLint)                             │      │
+│  │ • Code formatting (Prettier)                   │      │
+│  │ • Code complexity analysis                     │      │
+│  │ • Duplicate detection                          │      │
+│  │ Quality Gate: Must pass                        │      │
+│  └────────────────────────────────────────────────┘      │
+│                         │                                │
+│                         ▼                                │
 │  Stage 3: Security Scanning                              │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • Dependency vulnerability scan (npm audit)    │     │
-│  │ • SAST (Snyk, SonarQube)                       │     │
-│  │ • Secret detection (GitGuardian)               │     │
-│  │ • License compliance                            │     │
-│  │ Security Gate: No critical/high vulnerabilities│     │
-│  └────────────────────────────────────────────────┘     │
-│                         │                                 │
-│                         ▼                                 │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • Dependency vulnerability scan (npm audit)    │      │
+│  │ • SAST (Snyk, SonarQube)                       │      │
+│  │ • Secret detection (GitGuardian)               │      │
+│  │ • License compliance                           │      │
+│  │ Security Gate: No critical/high vulnerabilities│      │
+│  └────────────────────────────────────────────────┘      │
+│                         │                                │
+│                         ▼                                │
 │  Stage 4: Testing                                        │
-│  ┌────────────────────────────────────────────────┘     │
-│  │ • Unit tests (Jest) - Coverage >70%            │     │
-│  │ • Integration tests                             │     │
-│  │ • API contract tests                            │     │
-│  │ • Coverage report generation                    │     │
-│  │ Test Gate: All tests must pass                  │     │
-│  └────────────────────────────────────────────────┘     │
-│                         │                                 │
-│                         ▼                                 │
+│  ┌────────────────────────────────────────────────┘      │
+│  │ • Unit tests (Jest) - Coverage >70%            │      │
+│  │ • Integration tests                            │      │
+│  │ • API contract tests                           │      │
+│  │ • Coverage report generation                   │      │
+│  │ Test Gate: All tests must pass                 │      │
+│  └────────────────────────────────────────────────┘      │
+│                         │                                │
+│                         ▼                                │
 │  Stage 5: Build Artifacts                                │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • Docker image build                           │     │
-│  │ • Image scanning (Trivy, Clair)               │     │
-│  │ • Sign image (Cosign)                          │     │
-│  │ • Push to registry (ECR, Docker Hub)           │     │
-│  └────────────────────────────────────────────────┘     │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • Docker image build                           │      │
+│  │ • Image scanning (Trivy, Clair)                │      │
+│  │ • Sign image (Cosign)                          │      │
+│  │ • Push to registry (ECR, Docker Hub)           │      │
+│  └────────────────────────────────────────────────┘      │
 └───────────────────────┬──────────────────────────────────┘
                         │
                         │ Artifacts ready
                         ▼
 ┌──────────────────────────────────────────────────────────┐
-│                   CD Pipeline (ArgoCD / Spinnaker)        │
+│                   CD Pipeline (ArgoCD / Spinnaker)       │
 ├──────────────────────────────────────────────────────────┤
-│                                                           │
+│                                                          │
 │  Stage 6: Deploy to Staging                              │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • Deploy to staging environment                │     │
-│  │ • Run smoke tests                               │     │
-│  │ • Database migrations (with rollback)          │     │
-│  │ • Integration tests                             │     │
-│  └────────────────────────────────────────────────┘     │
-│                         │                                 │
-│                         ▼                                 │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • Deploy to staging environment                │      │
+│  │ • Run smoke tests                              │      │
+│  │ • Database migrations (with rollback)          │      │
+│  │ • Integration tests                            │      │
+│  └────────────────────────────────────────────────┘      │
+│                         │                                │
+│                         ▼                                │
 │  Stage 7: Automated Testing (Staging)                    │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • E2E tests (Cypress, Playwright)              │     │
-│  │ • Performance tests (k6, JMeter)               │     │
-│  │ • Security tests (DAST - OWASP ZAP)            │     │
-│  │ • Load tests                                    │     │
-│  │ Gate: All tests pass + performance SLA met      │     │
-│  └────────────────────────────────────────────────┘     │
-│                         │                                 │
-│                         ▼                                 │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • E2E tests (Cypress, Playwright)              │      │
+│  │ • Performance tests (k6, JMeter)               │      │
+│  │ • Security tests (DAST - OWASP ZAP)            │      │
+│  │ • Load tests                                   │      │
+│  │ Gate: All tests pass + performance SLA met     │      │
+│  └────────────────────────────────────────────────┘      │
+│                         │                                │
+│                         ▼                                │
 │  Stage 8: Manual Approval (Production)                   │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • Deployment approval required                 │     │
-│  │ • Change ticket validation                      │     │
-│  │ • Rollback plan verified                        │     │
-│  │ • Approvers: Tech Lead + DevOps                 │     │
-│  └────────────────────────────────────────────────┘     │
-│                         │                                 │
-│                         ▼                                 │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • Deployment approval required                 │      │
+│  │ • Change ticket validation                     │      │
+│  │ • Rollback plan verified                       │      │
+│  │ • Approvers: Tech Lead + DevOps                │      │
+│  └────────────────────────────────────────────────┘      │
+│                         │                                │
+│                         ▼                                │
 │  Stage 9: Production Deployment                          │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • Blue-Green deployment                         │     │
-│  │ • Canary release (10% → 50% → 100%)            │     │
-│  │ • Health checks monitoring                      │     │
-│  │ • Automated rollback on failure                 │     │
-│  └────────────────────────────────────────────────┘     │
-│                         │                                 │
-│                         ▼                                 │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • Blue-Green deployment                        │      │
+│  │ • Canary release (10% → 50% → 100%)            │      │
+│  │ • Health checks monitoring                     │      │
+│  │ • Automated rollback on failure                │      │
+│  └────────────────────────────────────────────────┘      │
+│                         │                                │
+│                         ▼                                │
 │  Stage 10: Post-Deployment                               │
-│  ┌────────────────────────────────────────────────┐     │
-│  │ • Smoke tests in production                    │     │
-│  │ • Monitor metrics (5 min)                      │     │
-│  │ • Alert stakeholders                            │     │
-│  │ • Update documentation                          │     │
-│  └────────────────────────────────────────────────┘     │
+│  ┌────────────────────────────────────────────────┐      │
+│  │ • Smoke tests in production                    │      │
+│  │ • Monitor metrics (5 min)                      │      │
+│  │ • Alert stakeholders                           │      │
+│  │ • Update documentation                         │      │
+│  └────────────────────────────────────────────────┘      │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -1828,579 +3078,51 @@ infrastructure/
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  BUSINESS CONTINUITY PLAN                        │
+│                  BUSINESS CONTINUITY PLAN                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Recovery Objectives:                                           │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │  RTO (Recovery Time Objective):      < 1 hour          │    │
-│  │  RPO (Recovery Point Objective):     < 15 minutes      │    │
-│  │  MTTR (Mean Time To Recovery):       < 30 minutes      │    │
-│  │  Target Availability:                99.9% (8.76 hrs)  │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
+│  ┌────────────────────────────────────────────────────────┐     │
+│  │  RTO (Recovery Time Objective):      < 1 hour          │     │
+│  │  RPO (Recovery Point Objective):     < 15 minutes      │     │
+│  │  MTTR (Mean Time To Recovery):       < 30 minutes      │     │
+│  │  Target Availability:                99.9% (8.76 hrs)  │     │
+│  └────────────────────────────────────────────────────────┘     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
-
-### Backup Strategy
-
-#### Backup Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     BACKUP INFRASTRUCTURE                        │
-└─────────────────────────────────────────────────────────────────┘
-
-Primary Data Center (Region 1)
-┌────────────────────────────────────────┐
-│  Production Database                   │
-│  ┌──────────────────────────────────┐ │
-│  │  PostgreSQL Primary              │ │
-│  │  • Continuous WAL archiving      │ │
-│  │  • Point-in-time recovery (PITR)│ │
-│  └──────────┬───────────────────────┘ │
-└─────────────┼──────────────────────────┘
-              │
-              │ Real-time replication
-              ▼
-┌─────────────────────────────────────────────────────────┐
-│               BACKUP LAYERS                              │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  Layer 1: Hot Standby (Synchronous Replication)         │
-│  ┌────────────────────────────────────────────────┐    │
-│  │  • Real-time replication (streaming)           │    │
-│  │  • RPO: ~0 seconds                             │    │
-│  │  • RTO: < 5 minutes                            │    │
-│  │  • Location: Same region, different AZ         │    │
-│  │  • Automatic failover enabled                  │    │
-│  └────────────────────────────────────────────────┘    │
-│                                                          │
-│  Layer 2: Automated Snapshots                           │
-│  ┌────────────────────────────────────────────────┐    │
-│  │  • Full backup: Daily at 02:00 UTC             │    │
-│  │  • Incremental: Every 6 hours                  │    │
-│  │  • Retention: 30 days                          │    │
-│  │  • Storage: Encrypted S3 (different region)    │    │
-│  │  • RPO: < 6 hours                              │    │
-│  │  • RTO: < 1 hour                               │    │
-│  └────────────────────────────────────────────────┘    │
-│                                                          │
-│  Layer 3: Long-term Archive                             │
-│  ┌────────────────────────────────────────────────┐    │
-│  │  • Weekly full backups                         │    │
-│  │  • Retention: 7 years (compliance)             │    │
-│  │  • Storage: Glacier / Cold storage             │    │
-│  │  • Encryption: AES-256                         │    │
-│  │  • Immutable backups (WORM)                    │    │
-│  └────────────────────────────────────────────────┘    │
-│                                                          │
-│  Layer 4: Disaster Recovery (Asynchronous Replication)  │
-│  ┌────────────────────────────────────────────────┐    │
-│  │  • Cross-region replication                    │    │
-│  │  • RPO: < 15 minutes                           │    │
-│  │  • RTO: < 1 hour                               │    │
-│  │  • Location: Secondary region (geo-redundant)  │    │
-│  │  • Manual failover (planned)                   │    │
-│  └────────────────────────────────────────────────┘    │
-└──────────────────────────────────────────────────────────┘
-```
-
-#### Backup Schedule Matrix
-
-| Backup Type | Frequency | Retention | Storage Location | Encryption | Tested |
-|-------------|-----------|-----------|------------------|------------|---------|
-| **Hot Standby** | Real-time | N/A (live) | Same region, diff AZ | TLS | Monthly |
-| **Automated Snapshot** | Daily | 30 days | S3 (cross-region) | AES-256 | Weekly |
-| **Incremental** | 6 hours | 7 days | S3 (cross-region) | AES-256 | Weekly |
-| **Weekly Full** | Weekly | 7 years | Glacier | AES-256 | Quarterly |
-| **Transaction Logs** | Continuous | 30 days | S3 | AES-256 | Daily |
-| **Application Config** | On change | 90 days | Git + S3 | AES-256 | On deploy |
-
-#### Backup Validation Process
-
-```
-Automated Backup Testing (Weekly):
-
-1. Select random backup ────> Restore to test environment
-                                      │
-                                      ▼
-2. Verify data integrity ────> Run consistency checks
-                                      │
-                                      ▼
-3. Test application ──────────> Connect app to restored DB
-                                      │
-                                      ▼
-4. Validate functionality ────> Run test suite
-                                      │
-                                      ▼
-5. Document results ──────────> Update backup success log
-                                      │
-                                      ▼
-6. Alert on failure ──────────> Notify DevOps team
-```
-
----
-
-### Recovery Procedures
-
-#### Disaster Recovery Scenarios
-
-| Scenario | Impact | Recovery Procedure | RTO | RPO |
-|----------|--------|-------------------|-----|-----|
-| **Single Server Failure** | Low | Auto-failover to standby | < 5 min | 0 |
-| **Database Corruption** | Medium | Restore from latest snapshot | < 30 min | < 6 hrs |
-| **Availability Zone Failure** | Medium | Failover to another AZ | < 15 min | < 15 min |
-| **Region Failure** | High | Activate DR site | < 1 hour | < 15 min |
-| **Data Center Disaster** | Severe | Full DR activation | < 4 hours | < 1 hour |
-| **Ransomware Attack** | Critical | Restore from immutable backup | < 2 hours | < 24 hours |
-| **Human Error (Delete)** | Variable | Point-in-time recovery | < 1 hour | Minimal |
-
-#### Recovery Workflow
-
-```
-Incident Detected
-       │
-       ▼
-┌──────────────────┐
-│ Alert Generated  │
-│ • Automated      │
-│ • Manual report  │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────────────┐
-│ Assess Impact            │
-│ • Scope of failure       │
-│ • Affected systems       │
-│ • Data loss estimation   │
-└────────┬─────────────────┘
-         │
-         ▼
-┌──────────────────────────┐
-│ Activate DRP             │
-│ • Notify stakeholders    │
-│ • Assemble recovery team │
-│ • Begin documentation    │
-└────────┬─────────────────┘
-         │
-         ▼
-┌──────────────────────────┐
-│ Execute Recovery         │
-│ ┌────────────────────┐   │
-│ │ 1. Stop services   │   │
-│ │ 2. Restore backup  │   │
-│ │ 3. Verify integrity│   │
-│ │ 4. Test connection │   │
-│ │ 5. Restart services│   │
-│ │ 6. Smoke tests     │   │
-│ └────────────────────┘   │
-└────────┬─────────────────┘
-         │
-         ▼
-┌──────────────────────────┐
-│ Validation               │
-│ • Data consistency       │
-│ • Application functional │
-│ • Performance check      │
-└────────┬─────────────────┘
-         │
-         ▼
-┌──────────────────────────┐
-│ Resume Operations        │
-│ • Gradual traffic ramp   │
-│ • Monitor closely        │
-│ • User communication     │
-└────────┬─────────────────┘
-         │
-         ▼
-┌──────────────────────────┐
-│ Post-Incident Review     │
-│ • Root cause analysis    │
-│ • Lessons learned        │
-│ • Update procedures      │
-│ • Preventive measures    │
-└──────────────────────────┘
-```
-
----
-
-### Business Continuity Plan
-
-#### Critical Business Functions
-
-| Function | RTO | RPO | Recovery Priority | Alternative Process |
-|----------|-----|-----|------------------|---------------------|
-| User Authentication | 15 min | 0 | P1 - Critical | N/A - System dependent |
-| Order Placement | 1 hour | 15 min | P1 - Critical | Manual order taking (phone) |
-| Payment Processing | 1 hour | 0 | P1 - Critical | Offline payment recording |
-| Food Catalog Browse | 4 hours | 6 hours | P2 - High | Cached static catalog |
-| Order History | 24 hours | 24 hours | P3 - Medium | Email confirmations |
-| User Registration | 24 hours | 24 hours | P4 - Low | Queue for later processing |
-
-#### Continuity Testing Schedule
-
-```
-Testing Frequency:
-
-┌────────────────────────────────────────────────────────┐
-│  Monthly:                                              │
-│  • Backup restoration test                            │
-│  • Failover to hot standby                            │
-│  • Application recovery drill                         │
-├────────────────────────────────────────────────────────┤
-│  Quarterly:                                            │
-│  • Full DR site activation                            │
-│  • Cross-region failover                              │
-│  • Long-term backup restoration                       │
-│  • Load balancer failover                             │
-├────────────────────────────────────────────────────────┤
-│  Annually:                                             │
-│  • Complete disaster simulation                       │
-│  • Multi-component failure                            │
-│  • Communication plan validation                      │
-│  • Third-party recovery service test                  │
-└────────────────────────────────────────────────────────┘
-```
-
----
-
-## Compliance & Audit Framework
-
-### Compliance Overview
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    COMPLIANCE FRAMEWORK                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │     GDPR     │  │    SOC 2     │  │  ISO 27001   │         │
-│  │   (EU Data)  │  │  (Security)  │  │  (InfoSec)   │         │
-│  └──────────────┘  └──────────────┘  └──────────────┘         │
-│         │                  │                  │                  │
-│         └──────────────────┴──────────────────┘                  │
-│                            │                                     │
-│                ┌───────────▼───────────┐                        │
-│                │  Unified Compliance    │                        │
-│                │  Control Framework     │                        │
-│                └───────────┬───────────┘                        │
-│                            │                                     │
-│              ┌─────────────┴─────────────┐                      │
-│              │                           │                      │
-│     ┌────────▼────────┐         ┌───────▼────────┐            │
-│     │  Technical      │         │  Administrative│            │
-│     │  Controls       │         │  Controls      │            │
-│     └─────────────────┘         └────────────────┘            │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-### Audit Logging Architecture
-
-#### Comprehensive Audit Trail
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      AUDIT LOGGING SYSTEM                        │
-└─────────────────────────────────────────────────────────────────┘
-
-Application Layer
-┌────────────────────────────────────────┐
-│  Audit Events Generated:               │
-│  ┌──────────────────────────────────┐ │
-│  │ • User authentication            │ │
-│  │ • Data access (read/write)       │ │
-│  │ • Permission changes             │ │
-│  │ • Configuration updates          │ │
-│  │ • API calls                      │ │
-│  │ • Failed access attempts         │ │
-│  │ • Admin actions                  │ │
-│  └──────────┬───────────────────────┘ │
-└─────────────┼──────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────────┐
-│  Audit Log Middleware                   │
-│  ┌───────────────────────────────────┐ │
-│  │  Capture context:                 │ │
-│  │  • User ID & IP address           │ │
-│  │  • Timestamp (UTC)                │ │
-│  │  • Action performed               │ │
-│  │  • Resource accessed              │ │
-│  │  • Result (success/failure)       │ │
-│  │  • Before/After state             │ │
-│  │  • Request/Response data          │ │
-│  └───────────────┬───────────────────┘ │
-└──────────────────┼──────────────────────┘
-                   │
-                   ▼
-┌──────────────────────────────────────────┐
-│  Log Enrichment & Formatting             │
-│  • Add correlation ID                    │
-│  • Add session ID                        │
-│  • Structure as JSON                     │
-│  • Add geolocation data                  │
-│  • Classify sensitivity level            │
-└───────────────┬──────────────────────────┘
-                │
-                ▼
-┌──────────────────────────────────────────┐
-│  Log Storage (Immutable)                 │
-│  ┌────────────────────────────────────┐ │
-│  │  Primary: Elasticsearch            │ │
-│  │  • Real-time indexing              │ │
-│  │  • Retention: 90 days              │ │
-│  │  • Searchable                      │ │
-│  │                                    │ │
-│  │  Archive: S3 (append-only)         │ │
-│  │  • Compressed & encrypted          │ │
-│  │  • Retention: 7 years              │ │
-│  │  • Immutable (WORM)                │ │
-│  │  • Tamper-proof                    │ │
-│  └────────────────────────────────────┘ │
-└───────────────┬──────────────────────────┘
-                │
-                ▼
-┌──────────────────────────────────────────┐
-│  Audit Analytics & Reporting             │
-│  • Suspicious activity detection         │
-│  • Compliance reporting                  │
-│  • Trend analysis                        │
-│  • Automated alerts                      │
-└──────────────────────────────────────────┘
-```
-
-#### Audit Event Schema
-
-```javascript
-{
-  "event_id": "evt_20260211_abc123",
-  "timestamp": "2026-02-11T14:30:00.000Z",
-  "event_type": "DATA_ACCESS",
-  "severity": "INFO",
-  "actor": {
-    "user_id": "usr_123",
-    "email": "user@example.com",
-    "role": "customer",
-    "ip_address": "203.0.113.42",
-    "user_agent": "Mozilla/5.0...",
-    "session_id": "sess_xyz789"
-  },
-  "action": {
-    "type": "READ",
-    "resource": "orders",
-    "resource_id": "ord_456",
-    "endpoint": "/api/orders/456",
-    "method": "GET"
-  },
-  "result": {
-    "status": "SUCCESS",
-    "http_code": 200,
-    "duration_ms": 45
-  },
-  "context": {
-    "correlation_id": "corr_def456",
-    "trace_id": "trace_ghi789",
-    "environment": "production",
-    "region": "us-east-1"
-  },
-  "data_classification": "CONFIDENTIAL",
-  "retention_class": "LONG_TERM",
-  "compliance_tags": ["GDPR", "SOC2"]
-}
-```
-
-#### Auditable Events
-
-| Event Category | Examples | Retention | Real-time Alert |
-|----------------|----------|-----------|-----------------|
-| **Authentication** | Login, logout, password reset, MFA | 7 years | Failed attempts |
-| **Authorization** | Permission grants, role changes | 7 years | Privilege escalation |
-| **Data Access** | View, create, update, delete | 7 years | Bulk access |
-| **Configuration** | System settings, security config | 7 years | All changes |
-| **Administrative** | User management, system admin | 7 years | All actions |
-| **Security Events** | Firewall blocks, intrusion attempts | 7 years | All events |
-| **Compliance** | Data export, deletion requests | 7 years | All events |
-
----
-
-### Compliance Requirements
-
-#### GDPR Compliance
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                  GDPR COMPLIANCE CONTROLS                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Right to Access (Art. 15)                                      │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │  Implementation:                                        │    │
-│  │  • GET /api/users/:id/data-export                      │    │
-│  │  • Generate comprehensive data report                   │    │
-│  │  • Include all personal data                           │    │
-│  │  • Response within 30 days                             │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  Right to Rectification (Art. 16)                               │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │  Implementation:                                        │    │
-│  │  • PUT /api/users/:id                                  │    │
-│  │  • Allow users to update their data                    │    │
-│  │  • Audit log all changes                               │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  Right to Erasure (Art. 17)                                     │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │  Implementation:                                        │    │
-│  │  • DELETE /api/users/:id/gdpr-delete                   │    │
-│  │  • Anonymize data (keep order history)                 │    │
-│  │  • Delete identifiable information                      │    │
-│  │  • Retain transaction logs (7 years - legal)           │    │
-│  │  • Cascade deletion where appropriate                   │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  Right to Data Portability (Art. 20)                            │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │  Implementation:                                        │    │
-│  │  • Export in machine-readable format (JSON/CSV)        │    │
-│  │  • Include all user-provided data                       │    │
-│  │  • Structured and commonly used format                  │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  Right to Object (Art. 21)                                      │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │  Implementation:                                        │    │
-│  │  • Marketing opt-out option                            │    │
-│  │  • Profiling restrictions                               │    │
-│  │  • Purpose-specific consent                            │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  Data Protection Impact Assessment (Art. 35)                    │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │  • Risk assessment completed                           │    │
-│  │  • Privacy by design implemented                       │    │
-│  │  • Regular DPIA reviews                                │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  Breach Notification (Art. 33-34)                               │
-│  ┌────────────────────────────────────────────────────────┐    │
-│  │  • Detection within 24 hours                           │    │
-│  │  • Authority notification within 72 hours              │    │
-│  │  • User notification if high risk                      │    │
-│  │  • Incident response plan documented                   │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-#### SOC 2 Type II Controls
-
-| Control Domain | Control | Implementation | Evidence |
-|----------------|---------|----------------|----------|
-| **CC6.1 - Logical Access** | User authentication | JWT, MFA, password policies | Auth logs, config files |
-| **CC6.2 - User Access** | Authorization controls | RBAC, least privilege | Access matrix, audit logs |
-| **CC6.3 - Access Removal** | Timely deprovisioning | Automated user removal | Deactivation logs |
-| **CC6.6 - Encryption** | Data protection | TLS 1.3, AES-256, bcrypt | SSL cert, encryption config |
-| **CC6.7 - Access Restriction** | Network segmentation | Security groups, firewalls | Network diagrams, rules |
-| **CC7.2 - Change Detection** | System monitoring | IDS/IPS, file integrity | Monitoring dashboards |
-| **CC7.3 - Incident Response** | Security incidents | IR plan, escalation | Incident reports |
-| **CC8.1 - Change Management** | Change control | Approval workflow, testing | Change tickets, test results |
-| **CC9.2 - Risk Assessment** | Periodic assessment | Annual risk reviews | Risk register |
-
----
-
-###Data Privacy & GDPR
-
-#### Data Subject Rights Implementation
-
-```
-User Data Management Portal:
-
-┌─────────────────────────────────────────┐
-│  User Privacy Dashboard                 │
-├─────────────────────────────────────────┤
-│                                          │
-│  📊 My Data                              │
-│  ├─ View all collected data             │
-│  ├─ Download data (JSON/CSV)            │
-│  └─ Data usage transparency             │
-│                                          │
-│  ✏️  Update Information                  │
-│  ├─ Edit profile                        │
-│  ├─ Update preferences                  │
-│  └─ Correct inaccuracies                │
-│                                          │
-│  🚫 Consent Management                   │
-│  ├─ Marketing communications (ON/OFF)   │
-│  ├─ Analytics tracking (ON/OFF)         │
-│  ├─ Third-party sharing (ON/OFF)        │
-│  └─ Cookie preferences                  │
-│                                          │
-│  🗑️  Delete My Account                   │
-│  ├─ Request data deletion               │
-│  ├─ Export before deletion              │
-│  └─ Confirmation required               │
-│                                          │
-│  📄 Privacy Information                  │
-│  ├─ Privacy policy                      │
-│  ├─ Data processing activities          │
-│  └─ Contact DPO                         │
-│                                          │
-└─────────────────────────────────────────┘
-```
-
-#### Data Retention Policy
-
-| Data Type | Retention Period | Reason | Deletion Method |
-|-----------|------------------|--------|-----------------|
-| User account data | Until account deletion | Service provision | Hard delete + anonymization |
-| Order history | 7 years after order | Tax/legal compliance | Archive after 2 years |
-| Payment information | Not stored (tokenized) | PCI compliance | N/A (tokens only) |
-| Session logs | 90 days | Security analysis | Automated purge |
-| Audit logs | 7 years | Compliance | Archived to cold storage |
-| Analytics data | 2 years | Business analysis | Aggregated & anonymized |
-| Backup data | 30 days (operational) | Disaster recovery | Automatic rotation |
-| backup data (archival) | 7 years | Compliance | Encrypted cold storage |
-
----
-
-## Risk Management
 
 ### Risk Assessment Matrix
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    RISK ASSESSMENT MATRIX                        │
-│                                                                  │
-│                           LIKELIHOOD                             │
+│                    RISK ASSESSMENT MATRIX                       │
+│                                                                 │
+│                           LIKELIHOOD                            │
 │                  Rare  Unlikely  Possible  Likely  Certain      │
-│                    1      2        3        4        5           │
+│                    1      2        3        4        5          │
 │                  ────────────────────────────────────           │
-│  IMPACT       │                                                  │
-│               │                                                  │
+│  IMPACT       │                                                 │
+│               │                                                 │
 │  Catastrophic │   M      H        E        E        E           │
-│      5        │                                                  │
-│               │                                                  │
+│      5        │                                                 │
+│               │                                                 │
 │  Major        │   L      M        H        E        E           │
-│      4        │                                                  │
-│               │                                                  │
+│      4        │                                                 │
+│               │                                                 │
 │  Moderate     │   L      M        M        H        E           │
-│      3        │                                                  │
-│               │                                                  │
+│      3        │                                                 │
+│               │                                                 │
 │  Minor        │   L      L        M        M        H           │
-│      2        │                                                  │
-│               │                                                  │
+│      2        │                                                 │
+│               │                                                 │
 │  Negligible   │   L      L        L        M        M           │
-│      1        │                                                  │
-│                                                                  │
+│      1        │                                                 │
+│                                                                 │
 │  Legend:  L = Low Risk    M = Medium Risk    H = High Risk      │
-│           E = Extreme Risk                                       │
+│           E = Extreme Risk                                      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -2427,7 +3149,7 @@ User Data Management Portal:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      STRIDE ANALYSIS                             │
+│                      STRIDE ANALYSIS                            │
 ├──────────────┬──────────────────────────────────────────────────┤
 │  Threat      │  Identified Threats & Controls                   │
 ├──────────────┼──────────────────────────────────────────────────┤
@@ -2437,7 +3159,7 @@ User Data Management Portal:
 │              │  • Token theft                                   │
 │              │  Controls:                                       │
 │              │  ✓ JWT with short expiration                     │
-│              │  ✓ MFA (planned)                                │
+│              │  ✓ MFA (planned)                                 │
 │              │  ✓ HTTPS only                                    │
 │              │  ✓ IP-based anomaly detection                    │
 ├──────────────┼──────────────────────────────────────────────────┤
@@ -2446,18 +3168,18 @@ User Data Management Portal:
 │              │  • Request tampering                             │
 │              │  • Log alteration                                │
 │              │  Controls:                                       │
-│              │  ✓ Parameterized queries                        │
-│              │  ✓ Input validation                             │
-│              │  ✓ Immutable audit logs                         │
-│              │  ✓ Database integrity constraints               │
+│              │  ✓ Parameterized queries                         │
+│              │  ✓ Input validation                              │
+│              │  ✓ Immutable audit logs                          │
+│              │  ✓ Database integrity constraints                │
 ├──────────────┼──────────────────────────────────────────────────┤
 │  Repudiation │  Threats:                                        │
 │              │  • Deny performing action                        │
 │              │  • Claim unauthorized access                     │
 │              │  Controls:                                       │
 │              │  ✓ Comprehensive audit logging                   │
-│              │  ✓ Digital signatures (JWT)                     │
-│              │  ✓ Non-repudiation logs                         │
+│              │  ✓ Digital signatures (JWT)                      │
+│              │  ✓ Non-repudiation logs                          │
 │              │  ✓ Timestamp all transactions                    │
 ├──────────────┼──────────────────────────────────────────────────┤
 │  Information │  Threats:                                        │
@@ -2465,53 +3187,35 @@ User Data Management Portal:
 │              │  • Man-in-the-middle attacks                     │
 │              │  • Database leaks                                │
 │              │  Controls:                                       │
-│              │  ✓ TLS 1.3 encryption                           │
-│              │  ✓ Database encryption                          │
-│              │  ✓ Secrets management                           │
-│              │  ✓ Least privilege access                       │
+│              │  ✓ TLS 1.3 encryption                            │
+│              │  ✓ Database encryption                           │
+│              │  ✓ Secrets management                            │
+│              │  ✓ Least privilege access                        │
 ├──────────────┼──────────────────────────────────────────────────┤
 │  Denial of   │  Threats:                                        │
 │  Service     │  • DDoS attacks                                  │
 │              │  • Resource exhaustion                           │
 │              │  • Database connection pool exhaustion           │
 │              │  Controls:                                       │
-│              │  ✓ Rate limiting                                │
-│              │  ✓ WAF / DDoS protection                        │
-│              │  ✓ Connection pooling                           │
-│              │  ✓ Auto-scaling                                 │
+│              │  ✓ Rate limiting                                 │
+│              │  ✓ WAF / DDoS protection                         │
+│              │  ✓ Connection pooling                            │
+│              │  ✓ Auto-scaling                                  │
 ├──────────────┼──────────────────────────────────────────────────┤
 │  Elevation   │  Threats:                                        │
 │  of          │  • Privilege escalation                          │
 │  Privilege   │  • Unauthorized admin access                     │
 │              │  • Broken access control                         │
 │              │  Controls:                                       │
-│              │  ✓ RBAC implementation                          │
-│              │  ✓ Principle of least privilege                 │
-│              │  ✓ Authorization checks                         │
-│              │  ✓ Admin action logging                         │
+│              │  ✓ RBAC implementation                           │
+│              │  ✓ Principle of least privilege                  │
+│              │  ✓ Authorization checks                          │
+│              │  ✓ Admin action logging                          │
 └──────────────┴──────────────────────────────────────────────────┘
 ```
 
 ---
 
-### Security Controls
-
-#### Control Effectiveness Tracking
-
-| Control ID | Control Name | Type | Status | Effectiveness | Last Tested | Next Review |
-|------------|-------------|------|--------|---------------|-------------|-------------|
-| SC-001 | TLS Encryption | Preventive | ⏳ Planned | N/A | N/A | 2026-03-01 |
-| SC-002 | JWT Authentication | Preventive | ⏳ Planned | N/A | N/A | 2026-03-01 |
-| SC-003 | Input Validation | Preventive | 🔄 Partial | Medium | 2026-02-01 | 2026-03-01 |
-| SC-004 | Audit Logging | Detective | ⏳ Planned | N/A | N/A | 2026-03-01 |
-| SC-005 | Database Backups | Corrective | ✅ Active | High | 2026-02-10 | 2026-03-10 |
-| SC-006 | Rate Limiting | Preventive | ⏳ Planned | N/A | N/A | 2026-03-01 |
-| SC-007 | RBAC | Preventive | ⏳ Planned | N/A | N/A | 2026-03-01 |
-| SC-008 | WAF | Preventive | ⏳ Planned | N/A | N/A | 2026-03-01 |
-| SC-009 | IDS/IPS | Detective | ⏳ Planned | N/A | N/A | 2026-03-01 |
-| SC-010 | Vulnerability Scanning | Detective | ⏳ Planned | N/A | N/A | 2026-03-01 |
-
----
 
 ## Access Control & Identity Management
 
@@ -2519,7 +3223,7 @@ User Data Management Portal:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  IDENTITY MANAGEMENT SYSTEM                      │
+│                  IDENTITY MANAGEMENT SYSTEM                     │
 └─────────────────────────────────────────────────────────────────┘
 
 User Registration & Onboarding
@@ -2559,15 +3263,15 @@ User Registration & Onboarding
 Access Management Lifecycle
 ┌────────────────────────────────────────────────────┐
 │  User Access Lifecycle                             │
-│                                                     │
+│                                                    │
 │  Request → Review → Approve → Provision → Monitor  │
-│     ↑                                        │      │
-│     └────────────── Revoke ──────────────────┘      │
-│                                                     │
+│     ↑                                        │     │
+│     └────────────── Revoke ──────────────────┘     │
+│                                                    │
 │  Automated Reviews:                                │
-│  • Quarterly access reviews                       │
-│  • Inactive user deactivation (90 days)           │
-│  • Privilege escalation monitoring                │
+│  • Quarterly access reviews                        │
+│  • Inactive user deactivation (90 days)            │
+│  • Privilege escalation monitoring                 │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -2575,36 +3279,36 @@ Access Management Lifecycle
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              DETAILED ACCESS CONTROL MATRIX                      │
+│              DETAILED ACCESS CONTROL MATRIX                     │
 ├────────────┬────────┬────────┬────────┬────────┬────────────────┤
 │  Resource  │ Public │Customer│  Chef  │  Admin │  System        │
 ├────────────┼────────┼────────┼────────┼────────┼────────────────┤
-│ USERS                                                            │
+│ USERS                                                           │
 │ /register  │   W    │   -    │   -    │   -    │   -            │
 │ /login     │   W    │   -    │   -    │   -    │   -            │
 │ /:id       │   -    │  R(own)│  R(own)│  R,W   │   -            │
 │ /list      │   -    │   -    │   -    │  R     │   -            │
 │ /delete    │   -    │  D(own)│  D(own)│  D     │   -            │
 ├────────────┼────────┼────────┼────────┼────────┼────────────────┤
-│ FOOD ITEMS                                                       │
+│ FOOD ITEMS                                                      │
 │ /list      │   R    │   R    │   R    │  R     │   -            │
 │ /:id       │   R    │   R    │   R    │  R,W,D │   -            │
 │ /create    │   -    │   -    │   W    │  W     │   -            │
 │ /update    │   -    │   -    │  W(own)│  W     │   -            │
 │ /delete    │   -    │   -    │  D(own)│  D     │   -            │
 ├────────────┼────────┼────────┼────────┼────────┼────────────────┤
-│ ORDERS                                                           │
+│ ORDERS                                                          │
 │ /create    │   -    │   W    │   -    │  W     │   -            │
 │ /:id       │   -    │  R(own)│ R(assoc│  R     │   -            │
 │ /list      │   -    │  R(own)│ R(assoc│  R     │   -            │
 │ /update    │   -    │   -    │ W(stat)│  W     │   -            │
 │ /cancel    │   -    │  W(own)│   -    │  W     │   -            │
 ├────────────┼────────┼────────┼────────┼────────┼────────────────┤
-│ SETTINGS                                                         │
+│ SETTINGS                                                        │
 │ /app       │   -    │   -    │   -    │  R,W   │   -            │
 │ /security  │   -    │   -    │   -    │  R,W   │  R,W           │
 ├────────────┼────────┼────────┼────────┼────────┼────────────────┤
-│ REPORTS                                                          │
+│ REPORTS                                                         │
 │ /dashboard │   -    │  R(own)│  R(own)│  R     │   -            │
 │ /analytics │   -    │   -    │  R(own)│  R     │   -            │
 │ /audit     │   -    │   -    │   -    │  R     │  R,W           │
@@ -2626,7 +3330,7 @@ Legend:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                 INCIDENT RESPONSE LIFECYCLE                      │
+│                 INCIDENT RESPONSE LIFECYCLE                     │
 └─────────────────────────────────────────────────────────────────┘
 
 1. PREPARATION
@@ -2646,7 +3350,7 @@ Legend:
 │ • Anomaly detection                      │
 │ • Log analysis                           │
 │                                          │
-│ Incident Classification:                │
+│ Incident Classification:                 │
 │ • P1: Critical (< 15 min response)       │
 │ • P2: High (< 1 hour)                    │
 │ • P3: Medium (< 4 hours)                 │
@@ -2739,21 +3443,27 @@ P4 - LOW (Minor Issues)
 
 ---
 
+# PART VII: GOVERNANCE & MANAGEMENT
+
+> **Purpose:** Change management processes, incident response procedures, and cost analysis
+
+---
+
 ## Change Management
 
 ### Change Management Process
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  CHANGE MANAGEMENT WORKFLOW                      │
+│                  CHANGE MANAGEMENT WORKFLOW                     │
 └─────────────────────────────────────────────────────────────────┘
 
 1. CHANGE REQUEST
 ┌──────────────────────────────────────┐
-│ • Requester submits change ticket   │
-│ • Description & justification       │
-│ • Impact assessment                 │
-│ • Rollback plan required            │
+│ • Requester submits change ticket    │
+│ • Description & justification        │
+│ • Impact assessment                  │
+│ • Rollback plan required             │
 └────────────┬─────────────────────────┘
              │
              ▼
@@ -2782,7 +3492,7 @@ P4 - LOW (Minor Issues)
              ▼
 3. REVIEW & APPROVAL
 ┌──────────────────────────────────────┐
-│ Change Advisory Board (CAB):        │
+│ Change Advisory Board (CAB):         │
 │ • Technical Lead                     │
 │ • DevOps Lead                        │
 │ • Security Representative            │
@@ -2850,124 +3560,6 @@ P4 - LOW (Minor Issues)
 | **Medium Risk** | New features, minor DB changes | Medium | Full test suite | CAB approval |
 | **High Risk** | Architecture changes, major migrations | High | Full testing + staging | CAB + Executive |
 | **Emergency** | Security patches, critical fixes | Variable | Minimal (post-fix testing) | Emergency CAB |
-
----
-
-## Capacity Planning
-
-### Capacity Planning Framework
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    CAPACITY PLANNING CYCLE                       │
-└─────────────────────────────────────────────────────────────────┘
-
-1. BASELINE MEASUREMENT
-┌──────────────────────────────────────┐
-│ Current Capacity Metrics:            │
-│ • CPU utilization                    │
-│ • Memory usage                       │
-│ • Network bandwidth                  │
-│ • Storage (DB & files)               │
-│ • API request rate                   │
-│ • Concurrent users                   │
-│ • Database connections               │
-│ • Response times                     │
-└────────────┬─────────────────────────┘
-             │
-             ▼
-2. GROWTH PROJECTION
-┌──────────────────────────────────────┐
-│ Historical Analysis:                 │
-│ • User growth rate                   │
-│ • Transaction volume trends          │
-│ • Seasonal patterns                  │
-│ • Feature adoption rates             │
-│                                      │
-│ Forecasting:                         │
-│ • 3-month projections                │
-│ • 6-month projections                │
-│ • 12-month projections               │
-└────────────┬─────────────────────────┘
-             │
-             ▼
-3. CAPACITY REQUIREMENTS
-┌──────────────────────────────────────┐
-│ Infrastructure Sizing:               │
-│ • Compute resources                  │
-│ • Storage requirements               │
-│ • Network bandwidth                  │
-│ • Database capacity                  │
-│                                      │
-│ Include headroom:                    │
-│ • 30% buffer for normal operations   │
-│ • 50% for peak periods               │
-└────────────┬─────────────────────────┘
-             │
-             ▼
-4. IMPLEMENTATION
-┌──────────────────────────────────────┐
-│ • Procure resources                  │
-│ • Scale infrastructure               │
-│ • Configure auto-scaling             │
-│ • Update monitoring thresholds       │
-└────────────┬─────────────────────────┘
-             │
-             ▼
-5. MONITORING & ADJUSTMENT
-┌──────────────────────────────────────┐
-│ • Continuous monitoring              │
-│ • Monthly review meetings            │
-│ • Adjust forecasts                   │
-│ • Optimize resource usage            │
-└──────────────────────────────────────┘
-```
-
-### Capacity Metrics & Thresholds
-
-| Resource | Current Usage | Warning Threshold | Critical Threshold | Auto-Scale Trigger |
-|----------|---------------|-------------------|--------------------|--------------------|
-| **CPU** | 45% avg | 70% | 85% | 75% for 5 min |
-| **Memory** | 60% avg | 80% | 90% | 85% for 5 min |
-| **Database Connections** | 12/20 | 16/20 (80%) | 19/20 (95%) | 15/20 |
-| **Disk I/O** | 40% | 70% | 85% | 75% sustained |
-| **Network Bandwidth** | 200 Mbps | 700 Mbps | 900 Mbps | 750 Mbps |
-| **Database Size** | 5 GB | 50 GB | 80 GB | N/A (planned expansion) |
-| **API Request Rate** | 50 req/s | 400 req/s | 480 req/s | 350 req/s |
-
-### Growth Projections
-
-```
-Year 1 Capacity Planning (2026):
-
-Q1 (Current):
-├─ Users: 1,000
-├─ Orders/day: 100
-├─ DB Size: 5 GB
-├─ API req/s: 50
-└─ Servers: 2
-
-Q2 (Projected):
-├─ Users: 2,500 (+150%)
-├─ Orders/day: 300 (+200%)
-├─ DB Size: 15 GB (+200%)
-├─ API req/s: 125 (+150%)
-└─ Servers: 3 (+1)
-
-Q3 (Projected):
-├─ Users: 5,000 (+100%)
-├─ Orders/day: 700 (+133%)
-├─ DB Size: 35 GB (+133%)
-├─ API req/s: 250 (+100%)
-└─ Servers: 5 (+2)
-
-Q4 (Projected):
-├─ Users: 10,000 (+100%)
-├─ Orders/day: 1,500 (+114%)
-├─ DB Size: 75 GB (+114%)
-├─ API req/s: 500 (+100%)
-└─ Servers: 8 (+3)
-```
 
 ---
 
@@ -3150,16 +3742,16 @@ A comprehensive monitoring and observability strategy for CookNest to ensure sys
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    OBSERVABILITY                             │
-│                                                              │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐  │
-│  │    METRICS    │  │     LOGS      │  │    TRACES     │  │
-│  │               │  │               │  │               │  │
-│  │ • Performance │  │ • Events      │  │ • Request     │  │
-│  │ • Usage       │  │ • Errors      │  │   Flow        │  │
-│  │ • Resources   │  │ • Audit Trail │  │ • Latency     │  │
-│  └───────────────┘  └───────────────┘  └───────────────┘  │
-│                                                              │
+│                    OBSERVABILITY                            │
+│                                                             │
+│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐    │
+│  │    METRICS    │  │     LOGS      │  │    TRACES     │    │
+│  │               │  │               │  │               │    │
+│  │ • Performance │  │ • Events      │  │ • Request     │    │
+│  │ • Usage       │  │ • Errors      │  │   Flow        │    │
+│  │ • Resources   │  │ • Audit Trail │  │ • Latency     │    │
+│  └───────────────┘  └───────────────┘  └───────────────┘    │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -3173,40 +3765,6 @@ A comprehensive monitoring and observability strategy for CookNest to ensure sys
 | **Business Metrics** | Orders created, users registered, revenue | Custom counters |
 | **Database** | Query duration, connection pool usage, slow queries | pg instrumentation |
 | **System** | CPU, memory, disk I/O | Node.js process metrics |
-
-#### Implementation: Prometheus + Grafana
-
-```javascript
-// Example: Express middleware for metrics
-const promClient = require('prom-client');
-
-// Request duration histogram
-const httpRequestDuration = new promClient.Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'Duration of HTTP requests in seconds',
-  labelNames: ['method', 'route', 'status_code']
-});
-
-// Request counter
-const httpRequestTotal = new promClient.Counter({
-  name: 'http_requests_total',
-  help: 'Total number of HTTP requests',
-  labelNames: ['method', 'route', 'status_code']
-});
-
-// Database query duration
-const dbQueryDuration = new promClient.Histogram({
-  name: 'db_query_duration_seconds',
-  help: 'Duration of database queries',
-  labelNames: ['query_type', 'table']
-});
-
-// Active connections
-const dbConnectionsActive = new promClient.Gauge({
-  name: 'db_connections_active',
-  help: 'Number of active database connections'
-});
-```
 
 ---
 
@@ -3295,420 +3853,6 @@ API Gateway
         ├── Database Query (span_id: 1.3.1)
         └── Payment Service (span_id: 1.3.2)
 ```
-
-#### Implementation: OpenTelemetry
-
-```javascript
-// tracing.js
-const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { registerInstrumentations } = require('@opentelemetry/instrumentation');
-const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
-const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
-const { PgInstrumentation } = require('@opentelemetry/instrumentation-pg');
-
-const provider = new NodeTracerProvider();
-provider.register();
-
-registerInstrumentations({
-  instrumentations: [
-    new HttpInstrumentation(),
-    new ExpressInstrumentation(),
-    new PgInstrumentation()
-  ]
-});
-```
-
----
-
-### Health Checks
-
-#### Endpoint: GET /health
-
-```javascript
-// healthCheck.js
-app.get('/health', async (req, res) => {
-  const health = {
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    checks: {
-      database: await checkDatabase(),
-      memory: checkMemory(),
-      disk: await checkDiskSpace()
-    }
-  };
-  
-  const isHealthy = Object.values(health.checks)
-    .every(check => check.status === 'healthy');
-  
-  res.status(isHealthy ? 200 : 503).json(health);
-});
-
-async function checkDatabase() {
-  try {
-    await db.query('SELECT 1');
-    return { status: 'healthy', latency: '<10ms' };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-
-function checkMemory() {
-  const used = process.memoryUsage();
-  const heapPercentage = (used.heapUsed / used.heapTotal) * 100;
-  return {
-    status: heapPercentage < 90 ? 'healthy' : 'unhealthy',
-    heapUsed: `${Math.round(used.heapUsed / 1024 / 1024)}MB`,
-    heapTotal: `${Math.round(used.heapTotal / 1024 / 1024)}MB`,
-    percentage: `${heapPercentage.toFixed(2)}%`
-  };
-}
-```
-
----
-
-### Alert Configuration
-
-#### Critical Alerts
-
-| Alert | Condition | Action |
-|-------|-----------|--------|
-| Service Down | Health check fails 3+ times | Page on-call engineer |
-| High Error Rate | > 5% of requests fail | Notify team channel |
-| Database Unavailable | Connection failures | Page on-call + rollback |
-| High Latency | p95 > 2 seconds | Notify team |
-| Disk Space Critical | > 90% full | Auto-scale + notify |
-
-#### Warning Alerts
-
-| Alert | Condition | Action |
-|-------|-----------|--------|
-| Elevated Error Rate | > 1% of requests fail | Log to monitoring channel |
-| Slow Queries | Query > 500ms | Log for optimization |
-| Memory High | > 85% usage | Monitor closely |
-| Connection Pool High | > 80% utilized | Consider scaling |
-
----
-
-### Monitoring Dashboard Layout
-
-```
-┌────────────────────────────────────────────────────────────┐
-│                    CookNest Dashboard                       │
-├────────────────────────────────────────────────────────────┤
-│  System Health: ● Healthy    Uptime: 99.8%                 │
-├─────────────────────────┬──────────────────────────────────┤
-│  Request Rate           │  Response Time (p95)             │
-│  [Graph: 125 req/min]   │  [Graph: 245ms]                  │
-├─────────────────────────┼──────────────────────────────────┤
-│  Error Rate             │  Database Connections            │
-│  [Graph: 0.5%]          │  [Graph: 12/20]                  │
-├─────────────────────────┴──────────────────────────────────┤
-│  Top Endpoints by Volume                                   │
-│  1. GET /api/foods          - 50 req/min                   │
-│  2. POST /api/orders        - 15 req/min                   │
-│  3. GET /api/orders/:id     - 25 req/min                   │
-├────────────────────────────────────────────────────────────┤
-│  Slow Queries (>100ms)                                     │
-│  • SELECT * FROM orders WHERE user_id = $1  - 150ms        │
-│  • <Add index recommendation>                              │
-├────────────────────────────────────────────────────────────┤
-│  Recent Errors                                             │
-│  • 500 Error - UserController.register (2 occurrences)     │
-│  • View Details →                                          │
-└────────────────────────────────────────────────────────────┘
-```
-
----
-
-### Monitoring Stack Recommendation
-
-| Component | Recommended Tool | Purpose | Priority |
-|-----------|-----------------|---------|----------|
-| Metrics | Prometheus + Grafana | Time-series metrics and visualization | High |
-| Logging | Winston + ELK Stack | Structured logging and search | High |
-| Tracing | OpenTelemetry + Jaeger | Distributed request tracing | Medium |
-| APM | New Relic / DataDog | Application performance monitoring | Medium |
-| Uptime | UptimeRobot | External uptime monitoring | High |
-| Errors | Sentry | Error tracking and alerting | High |
-
----
-
-## Deployment Architecture
-
-### Development Environment
-
-```
-┌────────────────────┐
-│   Developer        │
-│   Workstation      │
-│                    │
-│  ┌──────────────┐  │
-│  │   React      │  │
-│  │   Dev Server │  │
-│  │   :3000      │  │
-│  └──────────────┘  │
-│                    │
-│  ┌──────────────┐  │
-│  │   Node.js    │  │
-│  │   Express    │  │
-│  │   :5000      │  │
-│  └──────────────┘  │
-│                    │
-│  ┌──────────────┐  │
-│  │  PostgreSQL  │  │
-│  │   :5432      │  │
-│  └──────────────┘  │
-└────────────────────┘
-```
-
-### Production Deployment (Recommended)
-
-```
-                    Internet
-                       │
-                       ▼
-              ┌────────────────┐
-              │  Load Balancer │
-              │   (Nginx/ALB)  │
-              └────────┬───────┘
-                       │
-        ┌──────────────┴──────────────┐
-        │                             │
-        ▼                             ▼
-┌──────────────┐            ┌──────────────┐
-│  Web Server  │            │  Web Server  │
-│   (Nginx)    │            │   (Nginx)    │
-│  Static      │            │  Static      │
-│  React App   │            │  React App   │
-└──────┬───────┘            └──────┬───────┘
-       │                            │
-       └──────────┬─────────────────┘
-                  │
-                  ▼
-          ┌───────────────┐
-          │ API Gateway   │
-          │  (Optional)   │
-          └───────┬───────┘
-                  │
-    ┌─────────────┴─────────────┐
-    │                           │
-    ▼                           ▼
-┌────────────┐          ┌────────────┐
-│  Node.js   │          │  Node.js   │
-│  Express   │          │  Express   │
-│  App #1    │          │  App #2    │
-└─────┬──────┘          └─────┬──────┘
-      │                       │
-      └───────────┬───────────┘
-                  │
-                  ▼
-        ┌──────────────────┐
-        │   PostgreSQL     │
-        │   (Primary)      │
-        │                  │
-        │   ┌──────────┐   │
-        │   │ Replica  │   │
-        │   │(Read-only)│  │
-        │   └──────────┘   │
-        └──────────────────┘
-```
-
-### Deployment Options
-
-#### Option 1: Traditional Hosting
-- **Frontend**: Static hosting (Netlify, Vercel, S3 + CloudFront)
-- **Backend**: VPS (DigitalOcean, Linode, AWS EC2)
-- **Database**: Managed PostgreSQL (AWS RDS, DigitalOcean)
-
-#### Option 2: Containerized (Docker)
-```yaml
-services:
-  frontend:
-    - React app build
-  backend:
-    - Node.js Express app
-  database:
-    - PostgreSQL container
-```
-
-#### Option 3: Platform-as-a-Service
-- **Frontend**: Vercel / Netlify
-- **Backend**: Heroku / Railway / Render
-- **Database**: Heroku Postgres / Supabase
-
----
-
-## Scalability Considerations
-
-### Current Architecture Limitations
-- Single server instance
-- Stateful sessions (if implemented)
-- Direct database connections
-
-### Horizontal Scaling Strategy
-
-#### 1. Application Layer Scaling
-```
-Load Balancer
-    │
-    ├── Backend Instance 1
-    ├── Backend Instance 2
-    ├── Backend Instance 3
-    └── Backend Instance N
-```
-
-**Requirements**:
-- Stateless application design
-- Session management via Redis/JWT
-- Connection pooling optimization
-
-#### 2. Database Scaling
-
-##### Read Replicas
-```
-Primary DB (Write)
-    │
-    ├── Replica 1 (Read)
-    ├── Replica 2 (Read)
-    └── Replica N (Read)
-```
-
-##### Sharding Strategy (Future)
-- Shard by user_id for users and orders
-- Geographical sharding for regional deployment
-
-#### 3. Caching Strategy
-
-```
-Application Layer
-    │
-    ├── Cache Layer (Redis)
-    │   ├── Food items catalog
-    │   ├── User sessions
-    │   └── Frequently accessed data
-    │
-    └── Database Layer
-```
-
-**Cache Candidates**:
-- Food items list (TTL: 5-10 minutes)
-- User profiles (TTL: 30 minutes)
-- Search results (TTL: 5 minutes)
-
-#### 4. Performance Optimization
-
-##### Database Optimization
-```sql
--- Indexing strategy
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_orders_user_id ON orders(user_id);
-CREATE INDEX idx_orders_created_at ON orders(created_at);
-CREATE INDEX idx_order_items_order_id ON order_items(order_id);
-CREATE INDEX idx_food_items_name ON food_items(name);
-```
-
-##### API Optimization
-- Implement pagination for list endpoints
-- Add ETag caching headers
-- Compress responses (gzip)
-- Implement GraphQL for flexible queries (optional)
-
-#### 5. Monitoring & Observability
-
-**Metrics to Track**:
-- API response times
-- Database query performance
-- Error rates
-- Active users
-- Order completion rate
-
-**Tools**:
-- Application: PM2, New Relic, DataDog
-- Database: pg_stat_statements
-- Logging: Winston, ELK Stack
-- Uptime: UptimeRobot, Pingdom
-
----
-
-## Future Enhancements
-
-### Phase 1: Core Improvements
-- [ ] Add comprehensive error handling
-- [ ] Implement JWT authentication
-- [ ] Add input validation middleware
-- [ ] Set up environment configuration
-- [ ] Add API documentation (Swagger/OpenAPI)
-
-### Phase 2: Features
-- [ ] Real-time order tracking (WebSockets)
-- [ ] Email notifications (SendGrid/Nodemailer)
-- [ ] File uploads (food images)
-- [ ] Advanced search and filtering
-- [ ] Rating and review system
-
-### Phase 3: Scalability
-- [ ] Implement caching layer (Redis)
-- [ ] Add rate limiting
-- [ ] Set up CI/CD pipeline
-- [ ] Containerize with Docker
-- [ ] Implement microservices (optional)
-
-### Phase 4: Analytics
-- [ ] User behavior tracking
-- [ ] Order analytics dashboard
-- [ ] Performance monitoring
-- [ ] A/B testing framework
-
----
-
-## Appendix
-
-### Database Connection Configuration
-
-```javascript
-// config/db.js
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT || 5432,
-  max: 20, // Maximum connections
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-
-module.exports = {
-  query: (text, params) => pool.query(text, params)
-};
-```
-
-### Environment Variables Template
-
-```env
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=cooknest
-DB_USER=postgres
-DB_PASSWORD=your_password
-
-# Application Configuration
-NODE_ENV=development
-PORT=5000
-
-# Security
-JWT_SECRET=your_jwt_secret_key
-BCRYPT_ROUNDS=10
-
-# CORS
-CORS_ORIGIN=http://localhost:3000
-```
-
----
 
 ## Glossary
 
@@ -3846,195 +3990,6 @@ order_items.food_item_id → food_items.id
 
 ---
 
-## Implementation Checklists
-
-### Pre-Production Checklist
-
-#### Security
-- [ ] Implement JWT authentication
-- [ ] Hash passwords with bcrypt
-- [ ] Add input validation middleware
-- [ ] Implement rate limiting
-- [ ] Enable HTTPS/TLS
-- [ ] Set up CORS properly
-- [ ] Sanitize user inputs
-- [ ] Add CSRF protection
-- [ ] Implement security headers (helmet.js)
-- [ ] Set up environment variables
-
-#### Performance
-- [ ] Add database indexes
-- [ ] Implement caching strategy
-- [ ] Optimize database queries
-- [ ] Enable response compression
-- [ ] Add pagination to list endpoints
-- [ ] Optimize bundle size (frontend)
-- [ ] Implement lazy loading
-- [ ] Set up CDN for static assets
-
-#### Monitoring & Logging
-- [ ] Set up structured logging (Winston)
-- [ ] Configure error tracking (Sentry)
-- [ ] Implement health check endpoints
-- [ ] Set up metrics collection (Prometheus)
-- [ ] Create monitoring dashboards (Grafana)
-- [ ] Configure alerts
-- [ ] Set up uptime monitoring
-- [ ] Implement distributed tracing
-
-#### Testing
-- [ ] Write unit tests (target >70% coverage)
-- [ ] Write integration tests
-- [ ] Perform load testing
-- [ ] Conduct security testing
-- [ ] Test error scenarios
-- [ ] Test edge cases
-- [ ] Perform user acceptance testing
-
-#### Documentation
-- [ ] Complete API documentation (Swagger/OpenAPI)
-- [ ] Document deployment process
-- [ ] Create runbooks for common issues
-- [ ] Document environment setup
-- [ ] Write user documentation
-- [ ] Document database schema
-- [ ] Create architecture diagrams
-
-#### Infrastructure
-- [ ] Set up CI/CD pipeline
-- [ ] Configure production environment
-- [ ] Set up database backups
-- [ ] Implement disaster recovery plan
-- [ ] Configure auto-scaling
-- [ ] Set up load balancer
-- [ ] Configure firewall rules
-- [ ] Set up SSL certificates
-
----
-
-## Common Patterns & Best Practices
-
-### Error Handling Pattern
-
-```javascript
-// Controller layer
-try {
-  const result = await userService.createUser(userData);
-  res.status(201).json({ success: true, data: result });
-} catch (error) {
-  logger.error('User creation failed', { error: error.message, userData });
-  
-  if (error.code === 'DUPLICATE_EMAIL') {
-    return res.status(409).json({ 
-      success: false, 
-      error: 'Email already exists' 
-    });
-  }
-  
-  res.status(500).json({ 
-    success: false, 
-    error: 'Internal server error' 
-  });
-}
-```
-
-### Database Transaction Pattern
-
-```javascript
-// Service layer
-async function createOrderWithItems(orderData) {
-  const client = await pool.connect();
-  
-  try {
-    await client.query('BEGIN');
-    
-    const order = await client.query(
-      'INSERT INTO orders (user_id, total_amount) VALUES ($1, $2) RETURNING *',
-      [orderData.userId, orderData.total]
-    );
-    
-    for (const item of orderData.items) {
-      await client.query(
-        'INSERT INTO order_items (order_id, food_item_id, quantity) VALUES ($1, $2, $3)',
-        [order.rows[0].id, item.foodId, item.quantity]
-      );
-    }
-    
-    await client.query('COMMIT');
-    return order.rows[0];
-    
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
-}
-```
-
-### Validation Pattern
-
-```javascript
-// Middleware
-const validateOrder = (req, res, next) => {
-  const { items, userId } = req.body;
-  
-  if (!items || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ 
-      error: 'Items array is required' 
-    });
-  }
-  
-  if (!userId || typeof userId !== 'number') {
-    return res.status(400).json({ 
-      error: 'Valid user ID is required' 
-    });
-  }
-  
-  next();
-};
-```
-
----
-
-## Troubleshooting Guide
-
-### Common Issues
-
-| Issue | Possible Cause | Solution |
-|-------|---------------|----------|
-| Database connection timeout | Pool exhausted | Increase pool size or check for connection leaks |
-| Slow query performance | Missing indexes | Add indexes on frequently queried columns |
-| High memory usage | Memory leaks | Use heap snapshots to identify leaks |
-| CORS errors | Incorrect CORS config | Verify CORS_ORIGIN environment variable |
-| 500 errors on startup | Missing env variables | Check .env file configuration |
-| Authentication failures | Incorrect JWT secret | Verify JWT_SECRET environment variable |
-
-### Debug Checklist
-
-1. **Check Logs**
-   - Application logs: `logs/combined.log`
-   - Error logs: `logs/error.log`
-   - Database logs: PostgreSQL logs
-
-2. **Verify Environment**
-   - Database connection: `psql -U user -d cooknest`
-   - Environment variables: `printenv | grep DB_`
-   - Node version: `node --version`
-
-3. **Test Components**
-   - Database: `SELECT 1` query
-   - API health: `curl http://localhost:5000/health`
-   - Frontend: Check browser console
-
-4. **Monitor Resources**
-   - CPU usage: `top` or `htop`
-   - Memory: `free -m`
-   - Disk space: `df -h`
-   - Database connections: `SELECT * FROM pg_stat_activity`
-
----
-
 ## References & Further Reading
 
 ### Official Documentation
@@ -4105,31 +4060,757 @@ Dashed line     → Optional or async flow
 
 ---
 
-## Document Changelog
+## API Documentation & Specifications
 
-### Version 1.1 - February 11, 2026
-- Added comprehensive C4 model diagrams (Context, Container, Component)
-- Added detailed Data Flow Diagrams (DFD)
-- Added Architecture Decision Records (ADRs)
-- Added Non-Functional Requirements section
-- Enhanced Monitoring and Observability section
-- Added Glossary and Quick Reference Guide
-- Added Implementation Checklists
-- Added Troubleshooting Guide
-- Added References and Further Reading
+### OpenAPI 3.0 Specification
 
-### Version 1.0 - February 11, 2026
-- Initial system architecture documentation
-- Basic architecture patterns
-- Technology stack overview
-- Data architecture and API design
-- Security considerations
-- Deployment and scalability planning
+```yaml
+openapi: 3.0.0
+info:
+  title: CookNest API
+  description: RESTful API for local home-cooked food ordering platform
+  version: 1.0.0
+  contact:
+    name: CookNest Development Team
+    email: api@cooknest.com
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:5000/api
+    description: Development server
+  - url: https://staging-api.cooknest.com/api
+    description: Staging server
+  - url: https://api.cooknest.com/api
+    description: Production server
+
+paths:
+  /users/register:
+    post:
+      summary: Register a new user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                  minLength: 2
+                  maxLength: 100
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john.doe@example.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  example: "SecureP@ss123"
+                role:
+                  type: string
+                  enum: [customer, chef]
+                  default: customer
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Email already exists
+
+  /users/login:
+    post:
+      summary: Authenticate user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /foods:
+    get:
+      summary: Get all food items
+      tags: [Foods]
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: Filter by category
+        - in: query
+          name: maxPrice
+          schema:
+            type: number
+          description: Maximum price filter
+        - in: query
+          name: chefId
+          schema:
+            type: integer
+          description: Filter by chef ID
+      responses:
+        '200':
+          description: List of food items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FoodItem'
+
+  /foods/{id}:
+    get:
+      summary: Get food item by ID
+      tags: [Foods]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Food item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodItem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /orders:
+    post:
+      summary: Create a new order
+      tags: [Orders]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      foodItemId:
+                        type: integer
+                      quantity:
+                        type: integer
+                        minimum: 1
+                notes:
+                  type: string
+                  maxLength: 500
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /orders/{id}:
+    get:
+      summary: Get order by ID
+      tags: [Orders]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        role:
+          type: string
+          enum: [customer, chef, admin]
+          example: "customer"
+        createdAt:
+          type: string
+          format: date-time
+
+    FoodItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: "Butter Chicken"
+        description:
+          type: string
+          example: "Authentic North Indian curry"
+        price:
+          type: number
+          format: decimal
+          example: 12.99
+        category:
+          type: string
+          example: "Main Course"
+        chefId:
+          type: integer
+        available:
+          type: boolean
+          example: true
+        imageUrl:
+          type: string
+          format: uri
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        totalAmount:
+          type: number
+          format: decimal
+        status:
+          type: string
+          enum: [pending, confirmed, preparing, ready, in_transit, delivered, cancelled]
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        createdAt:
+          type: string
+          format: date-time
+
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        foodItemId:
+          type: integer
+        foodName:
+          type: string
+        foodPrice:
+          type: number
+        quantity:
+          type: integer
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Validation failed"
+              details:
+                type: array
+                items:
+                  type: string
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid credentials"
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Access denied"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Resource not found"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+```
+
+### API Versioning Strategy
+
+| Approach | Implementation | Example |
+|----------|----------------|---------|
+| **URL Versioning** | Version in URL path | `/api/v1/users`, `/api/v2/users` |
+| **Header Versioning** | Custom header | `API-Version: 1.0` |
+| **Current Strategy** | URL versioning (planned for v2) | Currently unversioned |
+
+
+### API Error Codes
+
+| Code | HTTP Status | Description |
+|------|-------------|-------------|
+| `VALIDATION_ERROR` | 400 | Request validation failed |
+| `UNAUTHORIZED` | 401 | Authentication required or failed |
+| `FORBIDDEN` | 403 | User lacks permission |
+| `NOT_FOUND` | 404 | Resource not found |
+| `CONFLICT` | 409 | Resource already exists (e.g., duplicate email) |
+| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
+| `INTERNAL_ERROR` | 500 | Server error |
+| `SERVICE_UNAVAILABLE` | 503 | Service temporarily unavailable |
 
 ---
 
-**Document Version**: 1.1  
-**Last Updated**: February 11, 2026  
-**Author**: System Architecture Team  
-**Reviewers**: Development Team  
-**Next Review Date**: May 11, 2026
+# PART VI: QUALITY ASSURANCE & PERFORMANCE
+
+> **Purpose:** Testing methodologies, performance benchmarks, quality metrics, and scalability planning
+
+---
+
+## Testing Strategy
+
+### Test Pyramid
+
+```
+                    ┌────────────┐
+                    │            │  5% - E2E Tests
+                    │    E2E     │  (Cypress, Selenium)
+                    │            │
+                    └────────────┘
+                  ┌──────────────────┐
+                  │                  │  25% - Integration Tests
+                  │   Integration    │  (Supertest, Test Database)
+                  │                  │
+                  └──────────────────┘
+              ┌──────────────────────────┐
+              │                          │  70% - Unit Tests
+              │         Unit             │  (Jest, Mocha)
+              │                          │
+              └──────────────────────────┘
+```
+
+### Testing Tools & Frameworks
+
+| Type | Tool | Purpose | Coverage Target |
+|------|------|---------|-----------------|
+| **Unit Testing** | Jest | Test individual functions/modules | 80%+ |
+| **Integration Testing** | Supertest + Jest | Test API endpoints | 70%+ |
+| **E2E Testing** | Cypress | Test complete user flows | Critical paths |
+| **Load Testing** | Apache JMeter / k6 | Performance and scalability | Key endpoints |
+| **Security Testing** | OWASP ZAP | Vulnerability scanning | All endpoints |
+
+### Unit Testing Strategy
+
+#### Example: User Service Tests
+
+```javascript
+// userService.test.js
+const userService = require('../src/services/userService');
+const userRepository = require('../src/repositories/userRepository');
+
+jest.mock('../src/repositories/userRepository');
+
+describe('UserService', () => {
+  describe('createUser', () => {
+    test('should hash password before creating user', async () => {
+      const userData = {
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'plaintext'
+      };
+
+      userRepository.findByEmail.mockResolvedValue(null);
+      userRepository.create.mockResolvedValue({ id: 1, ...userData });
+
+      const result = await userService.createUser(userData);
+
+      expect(result.password).not.toBe('plaintext');
+      expect(userRepository.create).toHaveBeenCalled();
+    });
+
+    test('should throw error if email already exists', async () => {
+      userRepository.findByEmail.mockResolvedValue({ id: 1 });
+
+      await expect(userService.createUser({
+        email: 'existing@example.com'
+      })).rejects.toThrow('Email already exists');
+    });
+  });
+});
+```
+
+### Integration Testing Strategy
+
+#### Example: Order API Tests
+
+```javascript
+// orderRoutes.test.js
+const request = require('supertest');
+const app = require('../src/app');
+const db = require('../src/config/db');
+
+describe('Order API', () => {
+  beforeAll(async () => {
+    await db.query('BEGIN');
+  });
+
+  afterAll(async () => {
+    await db.query('ROLLBACK');
+    await db.end();
+  });
+
+  describe('POST /api/orders', () => {
+    test('should create order for authenticated user', async () => {
+      const authToken = 'valid-jwt-token';
+      
+      const response = await request(app)
+        .post('/api/orders')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({
+          items: [
+            { foodItemId: 1, quantity: 2 }
+          ]
+        });
+
+      expect(response.status).toBe(201);
+      expect(response.body.data).toHaveProperty('id');
+      expect(response.body.data.status).toBe('pending');
+    });
+
+    test('should return 401 for unauthenticated request', async () => {
+      const response = await request(app)
+        .post('/api/orders')
+        .send({ items: [] });
+
+      expect(response.status).toBe(401);
+    });
+  });
+});
+```
+
+### E2E Testing Strategy
+
+#### Example: Complete Order Flow
+
+```javascript
+// cypress/e2e/order-flow.cy.js
+describe('Complete Order Flow', () => {
+  it('should allow user to browse, select, and order food', () => {
+    // Login
+    cy.visit('/login');
+    cy.get('[data-testid="email"]').type('customer@example.com');
+    cy.get('[data-testid="password"]').type('password123');
+    cy.get('[data-testid="login-button"]').click();
+
+    // Browse food
+    cy.url().should('include', '/foods');
+    cy.get('[data-testid="food-item"]').should('have.length.gt', 0);
+
+    // Add to cart
+    cy.get('[data-testid="food-item"]').first().click();
+    cy.get('[data-testid="add-to-cart"]').click();
+    cy.get('[data-testid="cart-count"]').should('contain', '1');
+
+    // Checkout
+    cy.get('[data-testid="cart-icon"]').click();
+    cy.get('[data-testid="checkout-button"]').click();
+
+    // Confirm order
+    cy.get('[data-testid="confirm-order"]').click();
+    cy.get('[data-testid="order-success"]').should('be.visible');
+    cy.url().should('include', '/orders/');
+  });
+});
+```
+
+### Test Data Management
+
+**Strategy: Test Fixtures and Factories**
+
+```javascript
+// fixtures/users.js
+module.exports = {
+  validCustomer: {
+    name: 'Test Customer',
+    email: 'customer@test.com',
+    password: 'Test123!@#',
+    role: 'customer'
+  },
+  validChef: {
+    name: 'Test Chef',
+    email: 'chef@test.com',
+    password: 'Chef123!@#',
+    role: 'chef'
+  }
+};
+
+// factories/userFactory.js
+const faker = require('faker');
+
+const createUser = (overrides = {}) => ({
+  name: faker.name.findName(),
+  email: faker.internet.email(),
+  password: 'DefaultPass123!',
+  role: 'customer',
+  ...overrides
+});
+
+module.exports = { createUser };
+```
+
+### Performance Testing
+
+#### Load Test Scenarios with k6
+
+```javascript
+// loadtest/order-creation.js
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export let options = {
+  stages: [
+    { duration: '2m', target: 100 }, // Ramp up to 100 users
+    { duration: '5m', target: 100 }, // Stay at 100 users
+    { duration: '2m', target: 200 }, // Ramp up to 200 users
+    { duration: '5m', target: 200 }, // Stay at 200 users
+    { duration: '2m', target: 0 },   // Ramp down to 0 users
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)<500'], // 95% of requests under 500ms
+    http_req_failed: ['rate<0.01'],   // Error rate under 1%
+  },
+};
+
+export default function () {
+  const payload = JSON.stringify({
+    items: [
+      { foodItemId: 1, quantity: 2 }
+    ]
+  });
+
+  const params = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + __ENV.AUTH_TOKEN,
+    },
+  };
+
+  let response = http.post('http://localhost:5000/api/orders', payload, params);
+
+  check(response, {
+    'status is 201': (r) => r.status === 201,
+    'has order id': (r) => r.json('data.id') !== undefined,
+  });
+
+  sleep(1);
+}
+```
+
+### Test Coverage Requirements
+
+| Component | Unit Coverage | Integration Coverage | E2E Coverage |
+|-----------|---------------|---------------------|--------------|
+| Controllers | 80% | 90% | - |
+| Services | 90% | 80% | - |
+| Repositories | 85% | 90% | - |
+| Critical User Flows | - | - | 100% |
+| API Endpoints | 70% | 100% | Key flows |
+
+---
+
+# PART VIII: REFERENCE MATERIALS
+
+> **Purpose:** Glossary of terms, appendices with standards, tools, setup guides, and contact information
+
+---
+
+## Glossary
+
+### Technical Terms
+
+| Term | Definition |
+|------|------------|
+| **API (Application Programming Interface)** | Set of rules allowing different software applications to communicate |
+| **ACID** | Atomicity, Consistency, Isolation, Durability - database transaction properties |
+| **ALB (Application Load Balancer)** | AWS service distributing incoming traffic across multiple targets |
+| **Auto-scaling** | Automatically adjusting compute resources based on demand |
+| **B-Tree Index** | Balanced tree data structure for efficient database searching |
+| **Bcrypt** | Cryptographic hash function used for password hashing |
+| **CDN (Content Delivery Network)** | Distributed network delivering web content based on user location |
+| **CI/CD** | Continuous Integration / Continuous Deployment - automated software delivery |
+| **Container** | Lightweight, standalone executable package of software |
+| **CORS (Cross-Origin Resource Sharing)** | Security feature allowing/restricting resource requests from another domain |
+| **DFD (Data Flow Diagram)** | Visual representation of data movement through a system |
+| **DOM (Document Object Model)** | Programming interface for web documents |
+| **Docker** | Platform for developing, shipping, and running containerized applications |
+| **E2E (End-to-End Testing)** | Testing complete user workflows from start to finish |
+| **ERD (Entity-Relationship Diagram)** | Visual representation of database schema |
+| **Horizontal Scaling** | Adding more machines/instances to distribute load |
+| **JWT (JSON Web Token)** | Compact token format for securely transmitting information |
+| **Microservices** | Architectural style structuring an application as collection of small services |
+| **ORM (Object-Relational Mapping)** | Technique for converting data between incompatible type systems |
+| **REST (Representational State Transfer)** | Architectural style for web services using HTTP methods |
+| **Redis** | In-memory data structure store used as cache or message broker |
+| **RTO (Recovery Time Objective)** | Targeted duration to restore service after disruption |
+| **RPO (Recovery Point Objective)** | Maximum acceptable data loss measured in time |
+| **SLA (Service Level Agreement)** | Commitment between service provider and client |
+| **SLO (Service Level Objective)** | Specific measurable target within an SLA |
+| **SQL Injection** | Security vulnerability allowing attacker to interfere with database queries |
+| **SSL/TLS** | Security protocols for encrypted communication over networks |
+| **Vertical Scaling** | Adding more resources (CPU, RAM) to existing machine |
+| **VPC (Virtual Private Cloud)** | Isolated virtual network within cloud environment |
+| **XSS (Cross-Site Scripting)** | Security vulnerability injecting malicious scripts into web pages |
+
+### Domain-Specific Terms
+
+| Term | Definition |
+|------|------------|
+| **Chef** | Home cook providing food items on CookNest platform |
+| **Customer** | End user ordering food from home chefs |
+| **Food Item** | Individual dish or meal offered by a chef |
+| **Order** | Customer's request to purchase one or more food items |
+| **Order Item** | Individual line item within an order |
+| **Home Chef** | Synonym for Chef - individual preparing homemade meals |
+| **Meal Plan** | Subscription-based recurring food orders (future feature) |
+| **Delivery Zone** | Geographic area where chef offers delivery service |
+
+### Acronyms
+
+| Acronym | Full Form |
+|---------|-----------|
+| **ADR** | Architecture Decision Record |
+| **API** | Application Programming Interface |
+| **APM** | Application Performance Monitoring |
+| **AWS** | Amazon Web Services |
+| **CDN** | Content Delivery Network |
+| **CRUD** | Create, Read, Update, Delete |
+| **DDoS** | Distributed Denial of Service |
+| **DR** | Disaster Recovery |
+| **EC2** | Elastic Compute Cloud |
+| **GDPR** | General Data Protection Regulation |
+| **IAM** | Identity and Access Management |
+| **IOPS** | Input/Output Operations Per Second |
+| **JSON** | JavaScript Object Notation |
+| **KPI** | Key Performance Indicator |
+| **MFA** | Multi-Factor Authentication |
+| **MITM** | Man-in-the-Middle (attack) |
+| **OWASP** | Open Worldwide Application Security Project |
+| **PII** | Personally Identifiable Information |
+| **RBAC** | Role-Based Access Control |
+| **RDS** | Relational Database Service |
+| **S3** | Simple Storage Service |
+| **SPA** | Single-Page Application |
+| **STRIDE** | Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privileges |
+| **UML** | Unified Modeling Language |
+| **UUID** | Universally Unique Identifier |
+| **VPN** | Virtual Private Network |
+| **WAF** | Web Application Firewall |
+
+---
+
+## Appendices
+
+### Appendix A: References & Standards
+
+#### Industry Standards
+- **OWASP Top 10 (2021)**: https://owasp.org/www-project-top-ten/
+- **ISO/IEC 27001**: Information Security Management
+- **SOC 2 Type II**: Service Organization Control 2
+- **GDPR**: General Data Protection Regulation (EU)
+- **PCI DSS**: Payment Card Industry Data Security Standard
+- **WCAG 2.1**: Web Content Accessibility Guidelines
+
+#### Architecture Frameworks
+- **C4 Model**: https://c4model.com/
+- **12-Factor App**: https://12factor.net/
+- **Microservices Patterns**: https://microservices.io/
+- **REST API Design**: https://restfulapi.net/
+
+#### Technology Documentation
+- **Node.js Official Docs**: https://nodejs.org/docs/
+- **Express.js Guide**: https://expressjs.com/
+- **PostgreSQL Documentation**: https://www.postgresql.org/docs/
+- **React Documentation**: https://react.dev/
+- **Docker Documentation**: https://docs.docker.com/
+- **AWS Well-Architected Framework**: https://aws.amazon.com/architecture/well-architected/
+
+---
+
